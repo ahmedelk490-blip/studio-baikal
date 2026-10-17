@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import type { Dict, Lang } from "@/data/i18n";
+import { Magnetic } from "./Magnetic";
 
 const srcs = ["/projects/october-250/01.webp", "/projects/el-nakhil-villa/01.webp", "/projects/maadi-285/01.webp", "/projects/maadi-180/05.webp"];
 const EVERY = 4200;
@@ -58,8 +59,8 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
         <span className="h-rule mt-6 block h-px w-full origin-left bg-[var(--bronze)]/70 rtl:origin-right md:w-2/3" aria-hidden />
         <div className="mt-6 grid gap-6 md:grid-cols-12 md:items-end">
           <p className="h-fade max-w-md text-sm leading-relaxed text-[var(--surface)]/80 md:col-span-6">{t.hero.intro}</p>
-          <div className={`h-fade flex flex-wrap gap-x-6 gap-y-1 ${u} md:col-span-6 md:justify-end`}>
-            <a href={`/${lang}#contact`} className="inline-block border-b border-[var(--surface)] py-2">{t.hero.cta1}</a>
+          <div className={`h-fade flex flex-wrap items-center gap-x-6 gap-y-3 ${u} md:col-span-6 md:justify-end`}>
+            <Magnetic><a href={`/${lang}#contact`} className="inline-block bg-[var(--bronze)] px-6 py-3.5 font-semibold text-[var(--deep)]">{t.hero.cta1}</a></Magnetic>
             <a href={`/${lang}#projects`} className="inline-block border-b border-transparent py-2 text-[var(--surface)]/70">{t.hero.cta2}</a>
           </div>
         </div>

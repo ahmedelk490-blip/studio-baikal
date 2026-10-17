@@ -17,6 +17,8 @@ import { WhatsAppFab } from "@/components/WhatsAppFab";
 import { projects, localize } from "@/data/projects";
 import { dict, isLang } from "@/data/i18n";
 
+export const instant = false;
+
 export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   if (!isLang(lang)) notFound();

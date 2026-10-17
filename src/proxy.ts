@@ -6,4 +6,4 @@ export function proxy(request: NextRequest) {
   const target = pathname === "/" ? "/en" : `/en${pathname}`;
   return NextResponse.redirect(new URL(target, request.url), 308);
 }
-export const config = { matcher: ["/", "/projects/:path*", "/admin"] };
+export const config = { matcher: ["/", "/projects/:slug", "/admin"] };

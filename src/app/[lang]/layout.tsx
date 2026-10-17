@@ -30,7 +30,7 @@ export default async function RootLayout({ children, params }: Props) {
   const t = dict[lang];
   return (
     <html lang={lang} dir={t.dir} className={`${display.variable} ${sans.variable} ${arabic.variable}`}>
-      <body className="min-h-dvh antialiased"><Smooth>{children}</Smooth></body>
+      <body className="min-h-dvh antialiased" suppressHydrationWarning><Smooth>{children}</Smooth></body>
     </html>
   );
 }

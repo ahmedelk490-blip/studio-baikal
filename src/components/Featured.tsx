@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "./Reveal";
+import { MaskReveal } from "./MaskReveal";
 import type { Project } from "@/data/projects";
 import type { Dict, Lang } from "@/data/i18n";
 
@@ -28,7 +29,7 @@ export function Featured({ projects, t, lang }: { projects: Project[]; t: Dict; 
         <div className="mt-12 grid gap-5 md:grid-cols-12">
           <Reveal className="md:col-span-7" delay={1}>
             <Link href={`/${lang}/projects/${pick[0].slug}`} className="group block">
-              <span className="relative block aspect-[16/10] overflow-hidden"><Image src={pick[0].cover} alt={pick[0].name} fill sizes="(min-width:768px) 58vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.03]" /></span>
+              <MaskReveal className="relative aspect-[16/9] overflow-hidden"><Image src={pick[0].cover} alt={pick[0].name} fill sizes="(min-width:768px) 58vw, 100vw" className="object-cover" /></MaskReveal>
               <span className="mt-4 flex items-baseline justify-between gap-4"><span className="display text-3xl">{pick[0].name}</span><span className={`${u} text-[var(--muted)]`}>{pick[0].location}</span></span>
               <Spec p={pick[0]} />
             </Link>
@@ -44,7 +45,7 @@ export function Featured({ projects, t, lang }: { projects: Project[]; t: Dict; 
           {pick.slice(1).map((p, k) => (
             <Reveal key={p.slug} className="md:col-span-6" delay={(k + 1) as 1 | 2}>
               <Link href={`/${lang}/projects/${p.slug}`} className="group block">
-                <span className="relative block aspect-[4/3] overflow-hidden"><Image src={p.cover} alt={p.name} fill sizes="(min-width:768px) 50vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.03]" /></span>
+                <MaskReveal className="relative aspect-[16/9] overflow-hidden"><Image src={p.cover} alt={p.name} fill sizes="(min-width:768px) 50vw, 100vw" className="object-cover" /></MaskReveal>
                 <span className="mt-4 flex items-baseline justify-between gap-4"><span className="display text-3xl">{p.name}</span><span className={`${u} text-[var(--muted)]`}>{p.location}</span></span>
                 <Spec p={p} />
               </Link>

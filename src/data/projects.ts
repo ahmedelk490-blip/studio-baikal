@@ -1,7 +1,7 @@
 import images from "./images.json";
 import type { Lang } from "./i18n";
 
-export type Img = { src: string; room: string };
+export type Img = { src: string; room: string; w: number; h: number };
 export type Project = {
   slug: string; name: string; type: string; area: string; location: string; style: string; year: string; scope: string;
   blurb: string; story: string; materials: string[]; cover: string; images: Img[];
@@ -51,9 +51,9 @@ const raw: (Omit<Project, "images"> & { ar: Ar })[] = [
     ar: { name: "عيادة CA للأسنان", type: "عيادة", location: "الشيخ زايد", style: "طبي هادئ", scope: "تصميم وتنفيذ كامل", blurb: "ريسبشن وعيادات وغرفة أشعة وتعقيم صُممت لتشعر بالدفء لا بالبرود.", story: "يجب أن يرتاح المريض قبل أن يجلس على الكرسي. الريسبشن بكوة مقوّسة وجلسة ناعمة وخضرة؛ وغرفتا العلاج مشرقتان ونظيفتان بتخزين خشبي دافئ. الأشعة والتعقيم وركن قهوة للفريق يكملون مسقطًا مدمجًا وفعّالًا.", materials: ["لامينيت بلوط", "كاونترات سوليد سيرفس", "دهان مضاد للبكتيريا", "إضاءة بيضاء دافئة", "خضرة"] } },
 ];
 
-const fixEn: Record<string, string> = { "coffe corner": "Coffee corner", "main bathrrom": "Main bathroom", "Msterbedroom": "Master bedroom", "mainbathroom": "Main bathroom", "Salams bedroom": "Second bedroom", "reception 1": "Reception", "reception 2": "Second reception", "clinic 2": "Treatment room 2", "main clinic 1": "Main treatment room", "reception and dining": "Reception & dining", "Bathroom2": "Guest bathroom", "livingroom": "Living room" };
-const roomAr: Record<string, string> = { "Coffee corner": "ركن القهوة", "Main bathroom": "الحمّام الرئيسي", "Master bedroom": "غرفة النوم الرئيسية", "Second bedroom": "غرفة نوم ثانية", "Reception": "الريسبشن", "Second reception": "ريسبشن ثانٍ", "Treatment room 2": "غرفة علاج 2", "Main treatment room": "غرفة العلاج الرئيسية", "Reception & dining": "ريسبشن وسفرة", "Guest bathroom": "حمّام الضيوف", "Living room": "المعيشة", "Dining": "السفرة", "Entrance": "المدخل", "Guest bedroom": "غرفة الضيوف", "Hall": "الصالة", "Kitchen": "المطبخ", "Office": "المكتب", "Bathroom": "الحمّام", "X-ray room": "غرفة الأشعة", "Sterilization room": "غرفة التعقيم", "Kids bedroom": "غرفة الأطفال", "Dressing room": "غرفة الملابس", "Tv wall": "حائط التلفزيون", "Livingroom": "المعيشة" };
-const roomEn = (r: string) => { const f = fixEn[r] ?? r; return f.charAt(0).toUpperCase() + f.slice(1); };
+const fixEn: Record<string, string> = { "coffe corner": "Coffee corner", "main bathrrom": "Main bathroom", "Msterbedroom": "Master bedroom", "mainbathroom": "Main bathroom", "Salams bedroom": "Second bedroom", "reception 1": "Reception", "reception 2": "Second reception", "clinic 2": "Treatment room 2", "main clinic 1": "Main treatment room", "reception and dining": "Reception & dining", "Bathroom2": "Guest bathroom", "livingroom": "Living room", "master beroom": "Master bedroom", "Master Bedroom": "Master bedroom", "entrance and coffee corner": "Entrance & coffee corner", "sterilization room": "Sterilisation room" };
+const roomAr: Record<string, string> = { "Coffee corner": "ركن القهوة", "Main bathroom": "الحمّام الرئيسي", "Master bedroom": "غرفة النوم الرئيسية", "Second bedroom": "غرفة نوم ثانية", "Reception": "الريسبشن", "Second reception": "ريسبشن ثانٍ", "Treatment room 2": "غرفة علاج 2", "Main treatment room": "غرفة العلاج الرئيسية", "Reception & dining": "ريسبشن وسفرة", "Guest bathroom": "حمّام الضيوف", "Living room": "المعيشة", "Dining": "السفرة", "Entrance": "المدخل", "Guest bedroom": "غرفة الضيوف", "Hall": "الصالة", "Kitchen": "المطبخ", "Office": "المكتب", "Bathroom": "الحمّام", "X-ray room": "غرفة الأشعة", "Sterilization room": "غرفة التعقيم", "Kids bedroom": "غرفة الأطفال", "Dressing room": "غرفة الملابس", "Tv wall": "حائط التلفزيون", "Livingroom": "المعيشة", "Entrance & coffee corner": "المدخل وركن القهوة", "Sterilisation room": "غرفة التعقيم" };
+const roomEn = (r: string) => { const f = fixEn[r] ?? r; return f.charAt(0).toUpperCase() + f.slice(1).toLowerCase().replace("x-ray", "X-ray"); };
 
 export const projects: Project[] = raw.map(({ ar: _ar, ...p }) => ({ ...p, images: ((images as Record<string, Img[]>)[p.slug] ?? []).map((i) => ({ ...i, room: roomEn(i.room) })) }));
 export const getProject = (slug: string) => projects.find((p) => p.slug === slug);

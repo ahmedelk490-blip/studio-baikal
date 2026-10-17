@@ -25,7 +25,7 @@ export function Gallery({ images, name, t }: { images: Img[]; name: string; t: D
   const u = "text-xs uppercase tracking-[0.14em] rtl:tracking-normal";
   return (
     <div className="grid gap-8 md:grid-cols-12">
-      <div className="md:col-span-4">
+      <div className="md:col-span-3">
         <div className="md:sticky md:top-28">
           <p className={`${u} text-[var(--bronze)]`}>{p.diveLog}</p>
           <p className="display mt-3 text-4xl md:text-6xl">{images[cur]?.room}</p>
@@ -35,11 +35,11 @@ export function Gallery({ images, name, t }: { images: Img[]; name: string; t: D
           </ol>
         </div>
       </div>
-      <ul ref={list} className="grid gap-6 md:col-span-8">
+      <ul ref={list} className="grid gap-10 md:col-span-9">
         {images.map((im, k) => (
           <li key={im.src} data-k={k}>
-            <button onClick={() => setOpen(k)} className={`relative block w-full overflow-hidden ${k % 3 === 1 ? "aspect-[4/3] md:ms-auto md:w-4/5" : "aspect-[16/10]"}`} aria-label={`${p.open} ${im.room} ${p.full}`}>
-              <Image src={im.src} alt={`${name}, ${im.room}`} fill sizes="(min-width:768px) 60vw, 100vw" className="object-cover transition-transform duration-700 hover:scale-[1.03]" />
+            <button onClick={() => setOpen(k)} className="block w-full" aria-label={`${p.open} ${im.room} ${p.full}`}>
+              <Image src={im.src} alt={`${name}, ${im.room}`} width={im.w} height={im.h} sizes="(min-width:768px) 75vw, 100vw" className="mx-auto h-auto max-h-[90vh] w-auto max-w-full" />
             </button>
             <p className={`${u} mt-2 text-[var(--muted)]`}>{im.room}</p>
           </li>
@@ -47,7 +47,7 @@ export function Gallery({ images, name, t }: { images: Img[]; name: string; t: D
       </ul>
       {open !== null && (
         <div role="dialog" aria-modal aria-label={`${name} ${p.gallery}`} className="fixed inset-0 z-[80] grid place-items-center bg-[var(--deeper)]/95 p-4" onClick={() => setOpen(null)}>
-          <div className="relative aspect-[16/9] w-full max-w-6xl" onClick={(e) => e.stopPropagation()}>
+          <div className="relative h-[86vh] w-full max-w-[96vw]" onClick={(e) => e.stopPropagation()}>
             <Image src={images[open].src} alt={`${name}, ${images[open].room}`} fill sizes="100vw" className="object-contain" priority />
           </div>
           <p className={`${u} absolute bottom-6 left-1/2 -translate-x-1/2 text-[var(--surface)]/80`}>{images[open].room} · {open + 1} / {images.length}</p>

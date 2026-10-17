@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Credit } from "./Credit";
+import { Wordmark } from "./Wordmark";
 import { contact } from "@/data/projects";
 import type { Dict, Lang } from "@/data/i18n";
 
@@ -35,7 +36,7 @@ export function Footer({ t, lang }: { t: Dict; lang: Lang }) {
           <Link href={other} hrefLang={t.other} className={`${u} mt-4 inline-block border-b border-[var(--surface)]/40 py-2`}>{t.footer.lang}</Link>
         </div>
       </div>
-      <p aria-hidden className="display pointer-events-none -mb-[0.28em] select-none whitespace-nowrap px-5 text-[22vw] leading-none text-[var(--surface)]/[.06] md:px-10" dir="ltr">BAIKAL</p>
+      <Wordmark />
       <div className="relative flex flex-wrap items-center justify-between gap-3 border-t border-[var(--surface)]/10 px-5 py-5 text-xs text-[var(--surface)]/60 md:px-10">
         <span>© 2026 {t.footer.rights}</span>
         <Credit />

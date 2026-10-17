@@ -16,7 +16,7 @@ export function Rooms({ t }: { t: Dict }) {
       const items = gsap.utils.toArray<HTMLElement>(".rt-item");
       const tl = gsap.timeline({ scrollTrigger: { trigger: sec.current, start: "top top", end: "+=" + scenes.length * 85 + "%", pin: true, scrub: 0.6, anticipatePin: 1,
         onUpdate: (st) => { const k = Math.min(scenes.length - 1, Math.floor(st.progress * scenes.length)); items.forEach((el, j) => el.classList.toggle("is-on", j === k)); } } });
-      imgs.forEach((el, k) => { if (k) tl.fromTo(el, { autoAlpha: 0, scale: 1.08 }, { autoAlpha: 1, scale: 1, duration: 1, ease: "none" }, k - 0.35); });
+      imgs.forEach((el, k) => { if (k) tl.fromTo(el, { clipPath: "circle(0% at 68% 50%)", scale: 1.15 }, { clipPath: "circle(150% at 68% 50%)", scale: 1, duration: 1, ease: "none" }, k - 0.35); });
       items[0].classList.add("is-on");
     });
   }, { scope: sec });
@@ -24,7 +24,7 @@ export function Rooms({ t }: { t: Dict }) {
     <section ref={sec} id="rooms" data-depth={t.gauge.rooms} data-meters="300 m" data-deep="1" className="relative bg-[var(--deeper)] text-[var(--surface)] lg:h-[100svh] lg:overflow-hidden">
       <div className="hidden lg:block">
         {srcs.map((s, k) => (
-          <div key={s} className="rt-scene absolute inset-0" style={{ opacity: k ? 0 : 1 }}>
+          <div key={s} className="rt-scene absolute inset-0" style={{ clipPath: k ? "circle(0% at 68% 50%)" : undefined }}>
             <Image src={s} alt={scenes[k][0]} fill sizes="100vw" className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--deeper)]/90 via-[var(--deeper)]/25 to-transparent rtl:bg-gradient-to-l" />
           </div>

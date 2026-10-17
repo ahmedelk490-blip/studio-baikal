@@ -24,5 +24,8 @@ Preloader -> Hero "Surface" 0 m -> Statement 20 m -> Projects strata 80 m (deep)
 ## Project page
 Full-bleed cover + title -> spec row (type / area / rooms / year / style / scope) -> story + materials list -> dive-log gallery (sticky room index, lightbox) -> next project.
 
+## v6 (2026-10-17)
+EN default (/ -> /en), AR at /ar (RTL, Alexandria). Signature effects per section: porthole statement, blinds strata, featured mask reveals, circle-change rooms, expanding service panels (light), sample lens materials, travelling-dot approach (light), lit studio, lamp contact, rising wordmark footer, page curtain. Project photos uncropped at natural ratio.
+
 ## Never
 Text over photos with text/logos · stats counters · marquee · custom cursor · backdrop-blur on fixed bars · letter-spaced Arabic · lorem · starter favicon.

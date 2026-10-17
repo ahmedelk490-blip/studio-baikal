@@ -17,7 +17,7 @@ export function Header({ t, lang, dark = false }: { t: Dict; lang: Lang; dark?: 
   const on = (h: string) => (h === `/${lang}` ? path === h : path.startsWith(h));
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   return (
-    <header className={`absolute inset-x-0 top-0 z-50 ${dark ? "text-[var(--surface)] bg-gradient-to-b from-[var(--deep)]/70 to-transparent" : "text-[var(--ink)]"} ${open ? "bg-[var(--surface)] text-[var(--ink)]" : ""}`}>
+    <header className={`absolute inset-x-0 top-0 z-50 ${open ? "bg-[var(--surface)] text-[var(--ink)] shadow-lg" : dark ? "bg-gradient-to-b from-[var(--deep)]/70 to-transparent text-[var(--surface)]" : "text-[var(--ink)]"}`}>
       <div className="flex h-16 items-center justify-between px-5 md:h-20 md:px-10">
         <Link href={`/${lang}`} aria-label={t.nav.home} className="flex items-center gap-3">
           <Image src="/brand/logo.png" alt="Studio Baikal" width={36} height={36} priority className="h-9 w-9 bg-[var(--surface)] p-0.5" />

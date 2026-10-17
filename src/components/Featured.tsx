@@ -1,57 +1,58 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { Reveal } from "./Reveal";
-import { MaskReveal } from "./MaskReveal";
-import { Tilt } from "./Tilt";
+import { projectVideo } from "@/data/media";
 import type { Project } from "@/data/projects";
 import type { Dict, Lang } from "@/data/i18n";
 
-/* 150 m: featured homes as a photo bento with spec rows + one text card (the Zenith Realty shape). */
-export function Featured({ projects, t, lang }: { projects: Project[]; t: Dict; lang: Lang }) {
-  const pick = ["el-nakhil-villa", "maadi-285", "tagamo3-115"].map((s) => projects.find((p) => p.slug === s)!);
+/* Plays only while on screen (preload none until then), so three clips cost nothing up front. */
+function Tile({ p, lang, big = false }: { p: Project; lang: Lang; big?: boolean }) {
+  const v = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const el = v.current; if (!el) return;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { el.preload = "auto"; el.play().catch(() => {}); } else el.pause(); }, { threshold: 0.25 });
+    io.observe(el); return () => io.disconnect();
+  }, []);
   const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
-  const Spec = ({ p }: { p: Project }) => (
-    <dl className="mt-3 grid grid-cols-4 gap-2 border-t border-[var(--ink)]/15 pt-3">
-      {[[t.featured.specs.type, p.type], [t.featured.specs.area, p.area], [t.featured.specs.rooms, String(p.images.length)], [t.featured.specs.year, p.year]].map(([k, v]) => (
-        <div key={k}><dt className={`${u} text-[var(--muted)]`}>{k}</dt><dd className="mt-0.5 text-sm">{v}</dd></div>
-      ))}
-    </dl>
+  return (
+    <Link href={`/${lang}/projects/${p.slug}`} className="group block">
+      <span className={`relative block overflow-hidden rounded-2xl bg-[var(--deep)] ${big ? "aspect-[16/10]" : "aspect-[16/9]"}`}>
+        <Image src={p.cover} alt={`${p.name}, ${p.location}`} fill sizes={big ? "(min-width:1024px) 58vw, 100vw" : "(min-width:1024px) 38vw, 100vw"} className="object-cover" />
+        <video ref={v} className="absolute inset-0 h-full w-full object-cover" muted loop playsInline preload="none" poster={p.cover} aria-hidden><source src={projectVideo[p.slug]} type="video/mp4" /></video>
+        <span className={`${u} absolute start-3 top-3 flex items-center gap-2 rounded-full bg-[var(--deep)]/70 px-3 py-1.5 text-[var(--surface)]`}><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--bronze)]" />{lang === "ar" ? "مشهد حي" : "In motion"}</span>
+      </span>
+      <span className="mt-3 flex items-baseline justify-between gap-4">
+        <span className="display text-2xl transition-colors group-hover:text-[var(--bronze)] md:text-3xl">{p.name}</span>
+        <span className={`${u} shrink-0 text-[var(--muted)]`}><span dir="ltr">{p.area}</span> · {p.type}</span>
+      </span>
+      <span className="mt-1 block text-sm text-[var(--muted)]">{p.location}</span>
+    </Link>
   );
+}
+
+/* 150 m — three homes in motion: one large clip and two stacked, on a light room.
+   Real walkthrough clips of our own projects, so the section moves by itself. */
+export function Featured({ projects, t, lang }: { projects: Project[]; t: Dict; lang: Lang }) {
+  const pick = ["el-nakhil-villa", "october-250", "tagamo3-115"].map((s) => projects.find((p) => p.slug === s)!).filter(Boolean);
+  const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
   return (
     <section data-depth={t.gauge.featured} data-meters="150 m" className="bg-[var(--mist)] text-[var(--ink)]">
       <div className="px-5 py-16 md:px-10 md:py-24">
         <Reveal className="grid gap-6 md:grid-cols-12 md:items-end">
           <div className="md:col-span-7">
             <p className={`${u} text-[var(--bronze)]`}>{t.featured.eyebrow}</p>
-            <h2 className="display mt-3 text-5xl md:text-7xl">{t.featured.title}</h2>
+            <h2 className="display mt-3 text-4xl md:text-6xl">{t.featured.title}</h2>
           </div>
           <p className="max-w-sm text-sm text-[var(--muted)] md:col-span-5">{t.featured.intro}</p>
         </Reveal>
-        <div className="mt-10 grid gap-5 md:grid-cols-12">
-          <Reveal className="md:col-span-7" delay={1}>
-            <Link href={`/${lang}/projects/${pick[0].slug}`} className="group block">
-              <Tilt><MaskReveal className="relative aspect-[16/9] overflow-hidden"><Image src={pick[0].cover} alt={pick[0].name} fill sizes="(min-width:768px) 58vw, 100vw" className="object-cover" /></MaskReveal></Tilt>
-              <span className="mt-4 flex items-baseline justify-between gap-4"><span className="display text-3xl">{pick[0].name}</span><span className={`${u} text-[var(--muted)]`}>{pick[0].location}</span></span>
-              <Spec p={pick[0]} />
-            </Link>
-          </Reveal>
-          <Reveal className="flex flex-col justify-between bg-[var(--deep)] p-7 text-[var(--surface)] md:col-span-5 md:p-10" delay={2}>
-            <div>
-              <p className={`${u} text-[var(--bronze)]`}>{t.featured.card.eyebrow}</p>
-              <p className="display mt-4 text-3xl md:text-4xl">{t.featured.card.title}</p>
-              <p className="mt-4 max-w-sm text-sm text-[var(--surface)]/70">{t.featured.card.text}</p>
-            </div>
-            <a href={`/${lang}/services`} className={`${u} mt-10 inline-block w-fit border-b border-[var(--bronze)] py-2`}>{t.featured.card.link}</a>
-          </Reveal>
-          {pick.slice(1).map((p, k) => (
-            <Reveal key={p.slug} className="md:col-span-6" delay={(k + 1) as 1 | 2}>
-              <Link href={`/${lang}/projects/${p.slug}`} className="group block">
-                <Tilt float={k + 1.5}><MaskReveal className="relative aspect-[16/9] overflow-hidden"><Image src={p.cover} alt={p.name} fill sizes="(min-width:768px) 50vw, 100vw" className="object-cover" /></MaskReveal></Tilt>
-                <span className="mt-4 flex items-baseline justify-between gap-4"><span className="display text-3xl">{p.name}</span><span className={`${u} text-[var(--muted)]`}>{p.location}</span></span>
-                <Spec p={p} />
-              </Link>
-            </Reveal>
-          ))}
+        <div className="mt-10 grid gap-8 lg:grid-cols-12 lg:gap-6">
+          <Reveal className="lg:col-span-7"><Tile p={pick[0]} lang={lang} big /></Reveal>
+          <div className="grid gap-8 lg:col-span-5 lg:gap-6">
+            <Reveal delay={1}><Tile p={pick[1]} lang={lang} /></Reveal>
+            <Reveal delay={2}><Tile p={pick[2]} lang={lang} /></Reveal>
+          </div>
         </div>
       </div>
     </section>

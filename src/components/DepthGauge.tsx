@@ -19,11 +19,11 @@ export function DepthGauge() {
     return () => clearTimeout(id);
   }, { scope: ref });
   return (
-    <div ref={ref} aria-hidden className="pointer-events-none fixed end-6 top-1/2 z-40 hidden h-[46vh] -translate-y-1/2 text-xs uppercase tracking-[0.2em] rtl:tracking-normal transition-colors duration-500 [html.is-deep_&]:text-[var(--surface)] lg:block">
+    <div ref={ref} aria-hidden className="pointer-events-none fixed end-4 top-1/2 z-40 hidden h-[40vh] opacity-70 -translate-y-1/2 text-xs uppercase tracking-[0.2em] rtl:tracking-normal transition-colors duration-500 [html.is-deep_&]:text-[var(--surface)] lg:block">
       <span className="absolute inset-y-0 end-0 w-px bg-current opacity-30" />
       {Array.from({ length: 9 }).map((_, k) => <span key={k} className="absolute end-0 h-px w-2 bg-current opacity-40" style={{ top: `${(k / 8) * 100}%` }} />)}
       <span className="dg-marker absolute end-0 top-0 flex -translate-y-1/2 items-center gap-3 rtl:flex-row-reverse whitespace-nowrap">
-        <span className="text-end leading-tight rtl:text-start"><span ref={label} className="block">Surface</span><span ref={meters} className="block text-[var(--bronze)]">0 m</span></span>
+        <span ref={label} className="sr-only">Surface</span><span ref={meters} className="sr-only">0 m</span>
         <span className="h-2 w-2 rounded-full bg-[var(--bronze)]" />
       </span>
     </div>

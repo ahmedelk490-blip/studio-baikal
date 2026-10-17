@@ -9,8 +9,8 @@ import type { Dict, Lang } from "@/data/i18n";
 
 const SLICES = 7;
 
-/* 80 m: project strata. The page stops here and the wheel walks through every project; each one
-   drops in behind the list as vertical blinds. Fits one screen on phone and desktop. */
+/* 80 m: project strata. Split, no text on photos: a clean list on solid deep, and a framed photo
+   that drops in as vertical blinds. The page stops here while the wheel walks every project. */
 export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; lang: Lang }) {
   const [a, setA] = useState(0);
   const [prev, setPrev] = useState(0);
@@ -25,36 +25,46 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
   const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
   return (
     <section ref={sec} id="projects" data-depth={t.gauge.projects} data-meters="80 m" data-deep="1" className="relative h-[100svh] overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
-      <div className="absolute inset-0 opacity-60">
-        <Image src={projects[prev].cover} alt="" fill sizes="100vw" className="object-cover" />
-        <div key={a} dir="ltr" className="absolute inset-0 flex">
-          {Array.from({ length: SLICES }).map((_, k) => (
-            <span key={k} className="blind relative h-full flex-1 overflow-hidden" style={{ animationDelay: `${k * 0.05}s` }}>
-              <span className="absolute inset-y-0 bg-cover bg-center" style={{ width: `${SLICES * 100}%`, left: `-${k * 100}%`, backgroundImage: `url(${p.cover}?v=2)` }} />
-            </span>
-          ))}
+      <div className="grid h-full content-center gap-5 px-5 pb-6 pt-20 md:px-10 lg:grid-cols-12 lg:items-center lg:gap-12 lg:py-16">
+        <div className="lg:col-span-5">
+          <div className="flex items-end justify-between gap-4">
+            <h2 className="display text-3xl md:text-5xl">{t.strata.title}</h2>
+            <p className="text-xs text-[var(--surface)]/60" dir="ltr">{a + 1} / {projects.length}</p>
+          </div>
+          <ol className="mt-4 md:mt-6">
+            {projects.map((x, k) => (
+              <li key={x.slug} className="strata-row">
+                <Link href={`/${lang}/projects/${x.slug}`} onMouseEnter={() => go(k)} onFocus={() => go(k)}
+                  className={`flex items-baseline justify-between gap-4 py-1 transition-colors duration-500 md:py-1.5 ${k === a ? "text-[var(--surface)]" : "text-[var(--surface)]/40 hover:text-[var(--surface)]/70"}`}>
+                  <span className="flex items-baseline gap-3">
+                    <span className={`h-1.5 w-1.5 shrink-0 rounded-full transition-colors ${k === a ? "bg-[var(--bronze)]" : "bg-transparent"}`} aria-hidden />
+                    <span className="text-base font-medium md:text-xl">{x.name}</span>
+                  </span>
+                  <span className="text-xs" dir="ltr">{x.area}</span>
+                </Link>
+              </li>
+            ))}
+          </ol>
         </div>
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-r from-[var(--deep)] via-[var(--deep)]/75 to-[var(--deep)]/35 rtl:bg-gradient-to-l" />
-      <div className="relative grid h-full content-center gap-6 px-5 py-20 md:px-10 lg:grid-cols-12 lg:items-center lg:gap-12">
-        <div className="lg:col-span-4">
-          <div className="flex items-center justify-between"><p className={`${u} text-[var(--bronze)]`}>{t.gauge.projects}</p><p className="text-xs text-[var(--surface)]/60" dir="ltr">{a + 1} / {projects.length}</p></div>
-          <h2 className="display mt-3 text-4xl md:text-6xl">{t.strata.title}</h2>
-          <p key={a} className="hero-in mt-4 hidden max-w-sm text-sm text-[var(--surface)]/80 md:block"><span>{p.blurb}</span></p>
-          <div className="mt-6 hidden lg:block"><Btn href={`/${lang}/projects/${p.slug}`}>{p.name}</Btn></div>
+        <div className="lg:col-span-7">
+          <div className="relative h-[22svh] overflow-hidden rounded-2xl bg-[var(--deeper)] md:h-auto md:aspect-[16/10]">
+            <Image src={projects[prev].cover} alt="" fill sizes="(min-width:1024px) 55vw, 100vw" className="object-cover" />
+            <div key={a} dir="ltr" className="absolute inset-0 flex">
+              {Array.from({ length: SLICES }).map((_, k) => (
+                <span key={k} className="blind relative h-full flex-1 overflow-hidden" style={{ animationDelay: `${k * 0.05}s` }}>
+                  <span className="absolute inset-y-0 bg-cover bg-center" style={{ width: `${SLICES * 100}%`, left: `-${k * 100}%`, backgroundImage: `url(${p.cover}?v=2)` }} />
+                </span>
+              ))}
+            </div>
+          </div>
+          <div key={`c${a}`} className="hero-in mt-4 flex flex-wrap items-end justify-between gap-4">
+            <div className="min-w-0">
+              <p className={`${u} text-[var(--bronze)]`}>{p.type} · {p.location}</p>
+              <p className="mt-2 hidden max-w-xl text-sm text-[var(--surface)]/75 md:block">{p.blurb}</p>
+            </div>
+            <div className="hidden lg:block"><Btn href={`/${lang}/projects/${p.slug}`}>{t.strata.open}</Btn></div>
+          </div>
         </div>
-        <ol className="lg:col-span-8">
-          {projects.map((x, k) => (
-            <li key={x.slug} className="strata-row">
-              <Link href={`/${lang}/projects/${x.slug}`} onMouseEnter={() => go(k)} onFocus={() => go(k)}
-                className={`grid grid-cols-[1fr_auto] items-baseline gap-x-6 py-1.5 transition-colors duration-500 md:grid-cols-12 md:py-2 ${k === a ? "text-[var(--surface)]" : "text-[var(--surface)]/40"}`}>
-                <span className="display block text-xl transition-transform duration-500 md:col-span-6 md:text-3xl" style={{ transform: k === a ? "translateX(0.35em)" : "none" }}>{x.name}</span>
-                <span className={`${u} hidden md:col-span-4 md:block`}>{x.location}</span>
-                <span className={`${u} text-end md:col-span-2`}>{x.area}</span>
-              </Link>
-            </li>
-          ))}
-        </ol>
       </div>
     </section>
   );

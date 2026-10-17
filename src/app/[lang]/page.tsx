@@ -28,7 +28,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
     <>
       <Preloader label={t.preloader} />
       <DepthGauge />
-      <Header t={t} lang={lang} />
+      <Header t={t} lang={lang} dark />
       <main>
         <Hero t={t} lang={lang} />
         <Manifesto t={t} />

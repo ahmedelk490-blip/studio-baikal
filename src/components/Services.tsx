@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Magnetic } from "./Magnetic";
+import { Btn } from "./Btn";
 import type { Dict, Lang } from "@/data/i18n";
 
 const srcs = ["/projects/october-250/05.webp", "/projects/el-nakhil-villa/01.webp", "/projects/tagamo3-115/04.webp"];
@@ -45,7 +45,7 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
             );
           })}
         </div>
-        <Magnetic className="mt-10"><a href={`/${lang}#contact`} className="inline-block bg-[var(--ink)] px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] rtl:tracking-normal text-[var(--surface)]">{t.nav.book}</a></Magnetic>
+        <div className="mt-10"><Btn href={`/${lang}#contact`} variant="dark">{t.nav.book}</Btn></div>
       </div>
     </section>
   );

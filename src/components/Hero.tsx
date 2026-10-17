@@ -3,7 +3,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import type { Dict, Lang } from "@/data/i18n";
-import { Magnetic } from "./Magnetic";
+import { Btn } from "./Btn";
+import { Contours } from "./Contours";
 
 const srcs = ["/projects/october-250/01.webp", "/projects/el-nakhil-villa/01.webp", "/projects/maadi-285/01.webp", "/projects/maadi-180/05.webp"];
 const EVERY = 4200;
@@ -38,13 +39,14 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
   const words = (s: string) => s.split(" ").map((w, k) => <span key={k} className="inline-block overflow-hidden px-[0.06em] -mx-[0.06em] py-[0.22em] -my-[0.22em] align-bottom"><span className="h-word inline-block will-change-transform">{w}&nbsp;</span></span>);
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   return (
-    <section ref={ref} data-depth={t.gauge.surface} data-meters="0 m" className="relative min-h-[100svh] overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
+    <section ref={ref} data-depth={t.gauge.surface} data-meters="0 m" data-deep="1" className="relative min-h-[100svh] overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
       <div className="h-stage absolute -inset-[6%]">
         {srcs.map((s, k) => <Image key={s} src={s} alt={t.hero.rooms[k]} fill priority={k === 0} sizes="100vw" className={`object-cover transition-opacity duration-[1600ms] ease-out ${k === i ? "ken opacity-100" : "opacity-0"}`} />)}
       </div>
       <div className="caustic caustic-a" aria-hidden /><div className="caustic caustic-b" aria-hidden />
       <div className="absolute inset-0 bg-gradient-to-t from-[var(--deep)] via-[var(--deep)]/35 to-[var(--deep)]/20" />
       <div className="absolute inset-0 bg-gradient-to-r from-[var(--deep)]/70 via-transparent to-transparent rtl:bg-gradient-to-l" />
+      <Contours className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%] opacity-70" />
       <div className="h-veil pointer-events-none absolute inset-0 bg-[var(--deep)] opacity-0" />
       <ul className="bubbles pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
         {bubbles.map((b, k) => <li key={k} style={{ left: `${b.x}%`, width: b.s, height: b.s, animationDuration: `${b.d}s`, animationDelay: `-${b.delay}s` }} />)}
@@ -60,8 +62,8 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
         <div className="mt-6 grid gap-6 md:grid-cols-12 md:items-end">
           <p className="h-fade max-w-md text-sm leading-relaxed text-[var(--surface)]/80 md:col-span-6">{t.hero.intro}</p>
           <div className={`h-fade flex flex-wrap items-center gap-x-6 gap-y-3 ${u} md:col-span-6 md:justify-end`}>
-            <Magnetic><a href={`/${lang}#contact`} className="inline-block bg-[var(--bronze)] px-6 py-3.5 font-semibold text-[var(--deep)]">{t.hero.cta1}</a></Magnetic>
-            <a href={`/${lang}#projects`} className="inline-block border-b border-transparent py-2 text-[var(--surface)]/70">{t.hero.cta2}</a>
+            <Btn href={`/${lang}#contact`}>{t.hero.cta1}</Btn>
+            <Btn href={`/${lang}#projects`} variant="ghost">{t.hero.cta2}</Btn>
           </div>
         </div>
       </div>

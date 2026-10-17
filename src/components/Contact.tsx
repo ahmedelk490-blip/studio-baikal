@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { contact } from "@/data/projects";
 import type { Dict } from "@/data/i18n";
+import { Contours } from "./Contours";
 
 /* 1,642 m: the floor of the lake. A single bronze lamp breathes; the form is flat rows with hairlines. */
 export function Contact({ t }: { t: Dict }) {
@@ -22,6 +23,7 @@ export function Contact({ t }: { t: Dict }) {
   return (
     <section id="contact" data-depth={t.gauge.contact} data-meters="1,642 m" data-deep="1" className="relative overflow-hidden bg-[var(--deeper)] text-[var(--surface)]">
       <div className="glow pointer-events-none absolute -top-40 left-1/2 h-[60vh] w-[60vh] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(196,154,92,.55),transparent_60%)]" aria-hidden />
+      <Contours className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 opacity-35" />
       <div className="relative grid gap-12 px-5 py-24 md:grid-cols-12 md:px-10 md:py-36">
         <div className="md:col-span-6">
           <p className={lab}>{c.eyebrow}</p>

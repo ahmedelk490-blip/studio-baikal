@@ -15,14 +15,14 @@ export function Header({ t, lang, dark = false }: { t: Dict; lang: Lang; dark?: 
   useEffect(() => { const f = () => setSolid(window.scrollY > 40); f(); addEventListener("scroll", f, { passive: true }); return () => removeEventListener("scroll", f); }, []);
   useEffect(() => {
     const el = document.documentElement;
-    const sync = () => setDeep(dark || el.classList.contains("is-deep"));
+    const sync = () => setDeep(el.classList.contains("is-deep") || (dark && window.scrollY < 80));
     sync();
     const obs = new MutationObserver(sync);
     obs.observe(el, { attributes: true, attributeFilter: ["class"] });
     return () => obs.disconnect();
   }, [dark]);
   const light = deep && !open;
-  const bg = open ? "bg-[var(--surface)]" : solid ? (light ? "bg-[var(--deep)]" : "bg-[var(--surface)] shadow-[0_1px_0_rgba(16,22,26,.08)]") : "";
+  const bg = open ? "bg-[var(--surface)]" : solid ? (light ? "bg-[var(--deep)]" : "bg-[var(--surface)] shadow-[0_1px_0_rgba(16,22,26,.08)]") : light ? "bg-gradient-to-b from-[var(--deep)]/70 to-transparent" : "";
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   return (
     <header className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${light ? "text-[var(--surface)]" : "text-[var(--ink)]"} ${bg}`}>
@@ -32,7 +32,7 @@ export function Header({ t, lang, dark = false }: { t: Dict; lang: Lang; dark?: 
           <span className="text-xs font-semibold uppercase tracking-[0.28em] rtl:tracking-normal">{lang === "ar" ? "استوديو بايكال" : "Studio Baikal"}</span>
         </Link>
         <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
-          {nav.map(([l, h]) => <a key={h} href={h} className={`${u} opacity-75 transition-opacity hover:opacity-100`}>{l}</a>)}
+          {nav.map(([l, h]) => <a key={h} href={h} className={`${u} font-medium opacity-90 transition-opacity hover:opacity-100`}>{l}</a>)}
           <Link href={other} hrefLang={t.other} className={`${u} px-2 py-3 opacity-75 hover:opacity-100`}>{t.otherLabel}</Link>
           <a href={`/${lang}#contact`} className={`${u} border-b border-current pb-0.5`}>{t.nav.book}</a>
         </nav>

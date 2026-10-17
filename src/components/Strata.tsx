@@ -24,7 +24,7 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
         <div key={a} dir="ltr" className="absolute inset-0 flex">
           {Array.from({ length: SLICES }).map((_, k) => (
             <span key={k} className="blind relative h-full flex-1 overflow-hidden" style={{ animationDelay: `${k * 0.06}s` }}>
-              <span className="absolute inset-y-0 bg-cover bg-center" style={{ width: `${SLICES * 100}%`, left: `-${k * 100}%`, backgroundImage: `url(${projects[a].cover})` }} />
+              <span className="absolute inset-y-0 bg-cover bg-center" style={{ width: `${SLICES * 100}%`, left: `-${k * 100}%`, backgroundImage: `url(${projects[a].cover}?v=2)` }} />
             </span>
           ))}
         </div>

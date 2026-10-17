@@ -1,11 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-/* "/" -> "/en" (or "/ar" when the browser prefers Arabic). Everything else passes through. */
+/* English is the default: "/" -> "/en"; old un-prefixed paths -> "/en/...". */
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (pathname !== "/") return NextResponse.redirect(new URL(`/en${pathname}`, request.url), 308);
-  const al = request.headers.get("accept-language") ?? "";
-  const lang = /^ar\b|,\s*ar\b/i.test(al) ? "ar" : "en";
-  return NextResponse.redirect(new URL(`/${lang}`, request.url));
+  const target = pathname === "/" ? "/en" : `/en${pathname}`;
+  return NextResponse.redirect(new URL(target, request.url), 308);
 }
 export const config = { matcher: ["/", "/projects/:path*", "/admin"] };

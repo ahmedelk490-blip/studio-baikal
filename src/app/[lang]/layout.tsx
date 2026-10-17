@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { Fraunces, Manrope, Alexandria } from "next/font/google";
 import "../globals.css";
 import { Smooth } from "@/components/Smooth";
@@ -26,8 +25,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children, params }: Props) {
-  const { lang } = await params;
-  if (!isLang(lang)) notFound();
+  const { lang: raw } = await params;
+  const lang = isLang(raw) ? raw : "en"; // never throw from the root layout
   const t = dict[lang];
   return (
     <html lang={lang} dir={t.dir} className={`${display.variable} ${sans.variable} ${arabic.variable}`}>

@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { Dict } from "@/data/i18n";
+import { ScrollTrigger, useGSAP } from "@/lib/gsap";
 
 const srcs = ["/projects/tagamo3-115/04.webp", "/projects/october-250/05.webp", "/projects/hadayek-el-ahram-200/03.webp", "/projects/mountain-view-zayed-80/03.webp", "/projects/mountain-view-zayed-80/05.webp"];
 const EVERY = 4200;
@@ -15,9 +16,11 @@ export function Rooms({ t }: { t: Dict }) {
   const [hold, setHold] = useState(false);
   const cur = useRef(0);
   const go = (k: number) => { if (k === cur.current) return; setPrev(cur.current); cur.current = k; setA(k); };
+  const sec = useRef<HTMLElement>(null);
+  useGSAP(() => { ScrollTrigger.create({ trigger: sec.current, start: "top 60%", end: "bottom 40%", onUpdate: (st) => go(Math.min(scenes.length - 1, Math.floor(st.progress * scenes.length))) }); }, { scope: sec });
   useEffect(() => { if (hold) return; const x = setInterval(() => go((cur.current + 1) % scenes.length), EVERY); return () => clearInterval(x); }, [hold, scenes.length]);
   return (
-    <section id="rooms" data-depth={t.gauge.rooms} data-meters="300 m" data-deep="1" className="relative overflow-hidden bg-[var(--deeper)] text-[var(--surface)]" onMouseLeave={() => setHold(false)}>
+    <section ref={sec} id="rooms" data-depth={t.gauge.rooms} data-meters="300 m" data-deep="1" className="relative overflow-hidden bg-[var(--deeper)] text-[var(--surface)]" onMouseLeave={() => setHold(false)}>
       <div className="grid lg:min-h-[100svh] lg:grid-cols-12">
         <div className="relative aspect-[16/10] lg:order-2 lg:col-span-8 lg:aspect-auto">
           <Image src={srcs[prev]} alt="" fill sizes="(min-width:1024px) 66vw, 100vw" className="object-cover" />

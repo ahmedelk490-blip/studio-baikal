@@ -114,3 +114,13 @@ html.is-deep { color-scheme: dark; }
 .btn-dark .btn-ico { background: var(--bronze); color: var(--deep); }
 @media (hover: hover) { .btn:hover .btn-roll > span { transform: translateY(-100%); } .btn:hover .btn-ico { transform: rotate(-45deg); } [dir="rtl"] .btn:hover .btn-ico { transform: rotate(45deg); } }
 @media (prefers-reduced-motion: reduce) { .ct-line { animation: none; stroke-dashoffset: 0; } .ct-flow, .circle-in { animation: none; } }
+
+/* v8: tighter display headings (Latin only; Arabic keeps 1.3) */
+[lang="en"] :is(h1, h2, h3).display { line-height: 1.08; }
+
+/* WhatsApp button */
+.wa-ring { position: absolute; inset: 0; border-radius: 999px; border: 1.5px solid var(--bronze); pointer-events: none; animation: waRing 2.6s ease-out infinite; }
+@keyframes waRing { from { transform: scale(1); opacity: .8; } to { transform: scale(1.6); opacity: 0; } }
+.wa-label { transition: max-width .5s cubic-bezier(.76,0,.24,1), padding .5s; }
+@media (hover: hover) { .wa-fab:hover .wa-label { max-width: 140px; padding-inline-start: 20px; } }
+@media (prefers-reduced-motion: reduce) { .wa-ring { animation: none; opacity: 0; } }

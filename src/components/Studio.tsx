@@ -14,7 +14,7 @@ export function Studio({ t }: { t: Dict }) {
     gsap.from(".st-t", { opacity: 0, y: 26, duration: 0.9, stagger: 0.1, ease: "power3.out", scrollTrigger: st });
   }, { scope: ref });
   return (
-    <section ref={ref} id="studio" data-depth={t.gauge.studio} data-meters="1,400 m" data-deep="1" className="bg-[var(--deep)] px-5 py-24 text-[var(--surface)] md:px-10 md:py-32">
+    <section ref={ref} id="studio" data-depth={t.gauge.studio} data-meters="1,400 m" data-deep="1" className="bg-[var(--deep)] px-5 py-16 text-[var(--surface)] md:px-10 md:py-24">
       <div className="grid gap-0 bg-[var(--surface)] text-[var(--ink)] md:grid-cols-12">
         <div className="st-mask relative min-h-[50vw] overflow-hidden md:col-span-6 md:min-h-0">
           <Image src="/brand/hero-arch.webp" alt="" fill sizes="(min-width:768px) 50vw, 100vw" className="st-img object-cover" />

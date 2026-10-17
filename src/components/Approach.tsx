@@ -32,12 +32,12 @@ export function Approach({ t }: { t: Dict }) {
   const labels: [string, number, number][] = [[t.rooms.scenes[0][0], 110, 140], [t.rooms.scenes[1][0], 110, 178], [t.rooms.scenes[2][0], 245, 135], [t.rooms.scenes[4][0], 335, 82], [t.rooms.scenes[3][0], 335, 184]];
   return (
     <section ref={ref} id="approach" data-depth={t.gauge.approach} data-meters="1,100 m" className="relative bg-[var(--surface)] text-[var(--ink)]">
-      <div className="px-5 py-24 md:px-10 md:py-32">
+      <div className="px-5 py-16 md:px-10 md:py-24">
         <div className="grid gap-6 md:grid-cols-12 md:items-end">
           <h2 className="display text-5xl md:col-span-7 md:text-7xl">{t.approach.title}</h2>
           <p className="max-w-sm text-sm text-[var(--muted)] md:col-span-5">{t.approach.intro}</p>
         </div>
-        <div className="mt-14 grid gap-10 lg:grid-cols-12">
+        <div className="mt-10 grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-6">
             <div className="fp-box border border-[var(--ink)]/15 bg-[var(--mist)]/50 p-4 md:p-8 lg:sticky lg:top-24">
               <svg viewBox="0 0 410 310" className="h-auto w-full" aria-hidden>

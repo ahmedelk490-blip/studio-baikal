@@ -20,13 +20,13 @@ export function Manifesto({ t }: { t: Dict }) {
   return (
     <section ref={ref} data-depth={t.gauge.statement} data-meters="20 m" className="relative overflow-hidden bg-[var(--surface)] text-[var(--ink)]">
       <Contours className="pointer-events-none absolute inset-x-0 top-10 h-[46%] opacity-45" />
-      <div className="relative mx-auto max-w-5xl px-5 pt-28 text-center md:pt-40">
+      <div className="relative mx-auto max-w-5xl px-5 pt-20 text-center md:pt-28">
         <p className={`${u} text-[var(--bronze)]`}>{t.statement.a} · {t.statement.b}</p>
         <p className="m-text display mt-6 text-3xl leading-[1.22] rtl:leading-[1.5] md:text-5xl lg:text-[3.4rem]">
           {t.statement.text.split(" ").map((w, k) => <span key={k} className="w inline-block opacity-[.14]">{w}&nbsp;</span>)}
         </p>
       </div>
-      <div className="ph-wrap relative mt-16 h-[90svh] md:mt-24 md:h-[110svh]">
+      <div className="ph-wrap relative mt-10 h-[80svh] md:mt-14 md:h-[100svh]">
         <div className="ph absolute inset-0" style={{ clipPath: "circle(22% at 50% 50%)" }}>
           <Image src="/projects/el-nakhil-villa/01.webp" alt="" fill sizes="100vw" className="ph-img scale-[1.35] object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--deep)] via-[var(--deep)]/25 to-transparent" />

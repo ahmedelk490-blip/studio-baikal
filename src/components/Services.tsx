@@ -16,12 +16,12 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
   const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
   return (
     <section id="services" data-depth={t.gauge.services} data-meters="500 m" className="bg-[var(--surface)] text-[var(--ink)]" onMouseLeave={() => setHold(false)}>
-      <div className="px-5 py-24 md:px-10 md:py-32">
+      <div className="px-5 py-16 md:px-10 md:py-24">
         <div className="grid gap-6 md:grid-cols-12 md:items-end">
           <h2 className="display text-5xl md:col-span-7 md:text-7xl">{t.services.title}</h2>
           <p className="max-w-sm text-sm text-[var(--muted)] md:col-span-5">{t.services.intro}</p>
         </div>
-        <div className="mt-14 flex flex-col gap-3 lg:h-[36rem] lg:flex-row">
+        <div className="mt-10 flex flex-col gap-3 lg:h-[36rem] lg:flex-row">
           {items.map((it, k) => {
             const [title, d, list] = it as [string, string, string[]];
             const on = a === k;

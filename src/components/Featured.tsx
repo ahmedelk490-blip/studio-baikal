@@ -18,7 +18,7 @@ export function Featured({ projects, t, lang }: { projects: Project[]; t: Dict; 
   );
   return (
     <section data-depth={t.gauge.featured} data-meters="150 m" className="bg-[var(--mist)] text-[var(--ink)]">
-      <div className="px-5 py-24 md:px-10 md:py-32">
+      <div className="px-5 py-16 md:px-10 md:py-24">
         <Reveal className="grid gap-6 md:grid-cols-12 md:items-end">
           <div className="md:col-span-7">
             <p className={`${u} text-[var(--bronze)]`}>{t.featured.eyebrow}</p>
@@ -26,7 +26,7 @@ export function Featured({ projects, t, lang }: { projects: Project[]; t: Dict; 
           </div>
           <p className="max-w-sm text-sm text-[var(--muted)] md:col-span-5">{t.featured.intro}</p>
         </Reveal>
-        <div className="mt-12 grid gap-5 md:grid-cols-12">
+        <div className="mt-10 grid gap-5 md:grid-cols-12">
           <Reveal className="md:col-span-7" delay={1}>
             <Link href={`/${lang}/projects/${pick[0].slug}`} className="group block">
               <MaskReveal className="relative aspect-[16/9] overflow-hidden"><Image src={pick[0].cover} alt={pick[0].name} fill sizes="(min-width:768px) 58vw, 100vw" className="object-cover" /></MaskReveal>

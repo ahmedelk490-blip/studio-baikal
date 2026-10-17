@@ -30,7 +30,7 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
         </div>
       </div>
       <div className="absolute inset-0 bg-gradient-to-b from-[var(--deep)] via-[var(--deep)]/50 to-[var(--deep)]" />
-      <div className="relative px-5 pb-20 pt-24 md:px-10 md:pb-28 md:pt-32">
+      <div className="relative px-5 pb-16 pt-16 md:px-10 md:pb-20 md:pt-24">
         <div className="grid gap-6 md:grid-cols-12 md:items-end">
           <h2 className="display text-5xl md:col-span-7 md:text-7xl">{t.strata.title}</h2>
           <p className="max-w-sm text-sm text-[var(--surface)]/70 md:col-span-5">{t.strata.intro}</p>

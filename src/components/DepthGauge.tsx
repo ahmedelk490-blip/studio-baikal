@@ -12,6 +12,8 @@ export function DepthGauge() {
     const secs = Array.from(document.querySelectorAll<HTMLElement>("[data-depth]")); // outside the gauge scope on purpose
     secs.forEach((s) => ScrollTrigger.create({ trigger: s, start: "top 55%", end: "bottom 55%",
       onToggle: (st) => { if (!st.isActive) return; if (label.current) label.current.textContent = s.dataset.depth ?? ""; if (meters.current) meters.current.textContent = s.dataset.meters ?? ""; document.documentElement.classList.toggle("is-deep", s.dataset.deep === "1"); } }));
+    document.querySelectorAll<HTMLElement>("main section[data-depth]").forEach((s, i) => { if (i === 0) return; gsap.fromTo(s, { clipPath: "inset(3% 2.5% 0% 2.5% round 32px)" }, { clipPath: "inset(0% 0% 0% 0% round 0px)", ease: "none", scrollTrigger: { trigger: s, start: "top bottom", end: "top 30%", scrub: 0.4 } }); });
+    document.querySelectorAll<SVGElement>("svg.contours").forEach((el) => gsap.to(el, { yPercent: -22, ease: "none", scrollTrigger: { trigger: el.parentElement, start: "top bottom", end: "bottom top", scrub: 0.6 } }));
     gsap.to(".dg-marker", { top: "100%", ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.4 } });
   }, { scope: ref });
   return (

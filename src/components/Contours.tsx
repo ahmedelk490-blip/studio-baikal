@@ -14,7 +14,7 @@ const paths = Array.from({ length: 7 }, (_, i) => wave(i));
 
 export function Contours({ className = "" }: { className?: string }) {
   return (
-    <svg aria-hidden className={className} viewBox="0 0 1200 360" preserveAspectRatio="none">
+    <svg aria-hidden className={`contours ${className}`} viewBox="0 0 1200 360" preserveAspectRatio="none">
       <g className="ct-flow">{paths.map((d, i) => <path key={i} d={d} pathLength={1} className="ct-line" style={{ animationDelay: `${i * 0.15}s` }} />)}</g>
     </svg>
   );

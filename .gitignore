@@ -46,3 +46,6 @@ next-env.d.ts
 # QA output
 .site-qa/
 .ui-audit/
+
+# reference videos (never ship)
+public/refs/

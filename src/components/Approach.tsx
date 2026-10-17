@@ -9,10 +9,10 @@ const srcs = ["/projects/maadi-285/01.webp", "/projects/october-250/03.webp", "/
 
 /* Floor plan in four layers, drawn by scroll in step with the four steps:
    walls (listen) -> doors & windows (concept) -> furniture (visualise) -> dimensions & labels (build). */
-const L0 = ["M20 20 H380 V280 H20 Z", "M200 20 V120", "M200 160 V280", "M20 150 H90", "M130 150 H200", "M290 20 V90", "M290 130 V170 H380", "M200 205 H250"];
-const L1 = ["M90 150 V110 A40 40 0 0 1 130 150", "M200 120 H240 A40 40 0 0 1 200 160", "M290 90 H325 A35 35 0 0 1 290 130", "M60 16 H140", "M60 24 H140", "M384 190 V250", "M376 190 V250", "M230 284 H330", "M230 276 H330"];
-const L2 = ["M40 50 H160 V80 H40 Z", "M40 50 V40 H160 V50", "M75 95 H125 V120 H75 Z", "M82 215 a28 28 0 1 0 56 0 a28 28 0 1 0 -56 0", "M110 175 v8", "M110 247 v8", "M70 215 h8", "M142 215 h8", "M300 190 H370 V270 H300 Z", "M306 196 H332 V212 H306 Z", "M338 196 H364 V212 H338 Z", "M210 30 H280 V45 H225 V110 H210 Z", "M300 30 H370 V60 H300 Z", "M258 240 a14 14 0 1 0 28 0 a14 14 0 1 0 -28 0"];
-const L3 = ["M20 296 H380", "M20 291 V300", "M380 291 V300", "M394 20 V280", "M390 20 H398", "M390 280 H398"];
+const L0 = ["M20 20 H380 V280 H20 Z", "M200 20 V105", "M200 140 V280", "M290 20 V150", "M20 150 H105", "M155 150 H200", "M200 150 H218", "M254 150 H300", "M336 150 H380"];
+const L1 = ["M218 150 V186 A36 36 0 0 0 254 150", "M336 150 V186 A36 36 0 0 1 300 150", "M50 16 H160", "M50 24 H160", "M215 16 H275", "M215 24 H275", "M50 276 H160", "M50 284 H160", "M376 190 V262", "M384 190 V262"];
+const L2 = ["M45 34 H165 V58 H45 Z", "M45 44 H165", "M85 72 H125 V92 H85 Z", "M86 222 a24 24 0 1 0 48 0 a24 24 0 1 0 -48 0", "M110 190 v6", "M110 248 v6", "M78 222 h6", "M136 222 h6", "M208 28 H282 V42 H222 V100 H208 Z", "M236 66 H272 V88 H236 Z", "M300 30 H370 V58 H300 Z", "M352 96 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0", "M300 200 H370 V272 H300 Z", "M306 206 H332 V220 H306 Z", "M338 206 H364 V220 H338 Z", "M232 244 a13 13 0 1 0 26 0 a13 13 0 1 0 -26 0"];
+const L3 = ["M20 298 H380", "M20 293 V303", "M380 293 V303", "M396 20 V280", "M391 20 H401", "M391 280 H401"];
 
 export function Approach({ t }: { t: Dict }) {
   const ref = useRef<HTMLElement>(null);
@@ -29,7 +29,7 @@ export function Approach({ t }: { t: Dict }) {
     gsap.utils.toArray<HTMLElement>(".ap-step").forEach((el) => gsap.from(el, { opacity: 0, y: 36, duration: 0.9, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 82%" } }));
   }, { scope: ref });
   const P = (d: string, c: string, k: number) => <path key={c + k} d={d} pathLength={1} className={c} strokeDasharray="1" strokeDashoffset="1" />;
-  const labels: [string, number, number][] = [[t.rooms.scenes[0][0], 110, 140], [t.rooms.scenes[1][0], 110, 178], [t.rooms.scenes[2][0], 245, 135], [t.rooms.scenes[4][0], 335, 82], [t.rooms.scenes[3][0], 335, 184]];
+  const labels: [string, number, number][] = [[t.rooms.scenes[0][0], 110, 124], [t.rooms.scenes[1][0], 110, 180], [t.rooms.scenes[2][0], 245, 130], [t.rooms.scenes[4][0], 335, 132], [t.rooms.scenes[3][0], 248, 216]];
   return (
     <section ref={ref} id="approach" data-depth={t.gauge.approach} data-meters="1,100 m" className="relative bg-[var(--surface)] text-[var(--ink)]">
       <div className="px-5 py-16 md:px-10 md:py-24">
@@ -40,14 +40,14 @@ export function Approach({ t }: { t: Dict }) {
         <div className="mt-10 grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-6">
             <div className="fp-box border border-[var(--ink)]/15 bg-[var(--mist)]/50 p-4 md:p-8 lg:sticky lg:top-24">
-              <svg viewBox="0 0 410 310" className="h-auto w-full" aria-hidden>
+              <svg viewBox="0 0 410 318" className="h-auto w-full" aria-hidden>
                 <g fill="none" stroke="var(--ink)" strokeWidth="3" strokeLinecap="square">{L0.map((d, k) => P(d, "fp0", k))}</g>
                 <g fill="none" stroke="var(--muted)" strokeWidth="1.2">{L1.map((d, k) => P(d, "fp1", k))}</g>
                 <g fill="none" stroke="var(--bronze)" strokeWidth="1.4">{L2.map((d, k) => P(d, "fp2", k))}</g>
                 <g fill="none" stroke="var(--muted)" strokeWidth="1">{L3.map((d, k) => P(d, "fp3", k))}</g>
-                <g fill="var(--ink)" fontSize="13" textAnchor="middle" className="fp-labels">
+                <g fill="var(--ink)" fontSize="12" textAnchor="middle" className="fp-labels">
                   {labels.map(([s, x, y]) => <text key={s} x={x} y={y} className="fp-t" opacity="0">{s}</text>)}
-                  <text x="200" y="309" className="fp-t" opacity="0" fill="var(--muted)" fontSize="12">14.6 m</text>
+                  <text x="200" y="314" className="fp-t" opacity="0" fill="var(--muted)" fontSize="12">14.6 m</text>
                 </g>
               </svg>
             </div>

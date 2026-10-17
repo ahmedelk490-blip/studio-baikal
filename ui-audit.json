@@ -1,0 +1,39 @@
+{
+  "name": "studio-baikal",
+  "url": "http://localhost:3901",
+  "widths": [
+    336,
+    375,
+    414,
+    768,
+    1024,
+    1280
+  ],
+  "fullWidths": [
+    336
+  ],
+  "ignore": [
+    "#projects ul[aria-label=\"Projects\"] li",
+    ".dg-marker",
+    ".h-img",
+    ".ken",
+    ".sr-only",
+    ".st-img",
+    "[aria-hidden=\"true\"]"
+  ],
+  "pages": [
+    "/",
+    "/projects/el-nakhil-villa",
+    "/projects/ca-dental-clinic"
+  ],
+  "states": [
+    {
+      "page": "/",
+      "name": "menu",
+      "click": "button[aria-label=Menu]",
+      "maxWidth": 767
+    }
+  ],
+  "build": "npm run build",
+  "start": "npx next start -p 3901"
+}

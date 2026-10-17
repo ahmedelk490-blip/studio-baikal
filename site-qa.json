@@ -1,0 +1,43 @@
+{
+  "url": "http://localhost:3902",
+  "port": 3902,
+  "roles": [
+    {
+      "name": "guest",
+      "start": [
+        "/"
+      ]
+    }
+  ],
+  "widths": [
+    375,
+    1280
+  ],
+  "pages": [
+    "/",
+    "/projects/el-nakhil-villa",
+    "/projects/ca-dental-clinic"
+  ],
+  "routesFrom": "next",
+  "exclude": [
+    "/admin**"
+  ],
+  "safeWords": [
+    "Book",
+    "Send"
+  ],
+  "allowForms": true,
+  "api": {
+    "list": [
+      "POST /api/leads"
+    ]
+  },
+  "maxPages": 12,
+  "concurrency": 3,
+  "pageTimeoutSec": 60,
+  "perf": {
+    "loadMs": 8000,
+    "apiMs": 3000
+  },
+  "start": "npx next start -p 3902"
+}

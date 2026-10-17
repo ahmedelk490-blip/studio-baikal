@@ -1,0 +1,282 @@
+{
+ "el-nakhil-villa": [
+  {
+   "src": "/projects/el-nakhil-villa/01.webp",
+   "room": "dining"
+  },
+  {
+   "src": "/projects/el-nakhil-villa/02.webp",
+   "room": "entrance"
+  },
+  {
+   "src": "/projects/el-nakhil-villa/03.webp",
+   "room": "guest bathroom"
+  },
+  {
+   "src": "/projects/el-nakhil-villa/04.webp",
+   "room": "guest bedroom"
+  },
+  {
+   "src": "/projects/el-nakhil-villa/05.webp",
+   "room": "hall"
+  },
+  {
+   "src": "/projects/el-nakhil-villa/06.webp",
+   "room": "kitchen"
+  },
+  {
+   "src": "/projects/el-nakhil-villa/07.webp",
+   "room": "living room"
+  },
+  {
+   "src": "/projects/el-nakhil-villa/08.webp",
+   "room": "main bathroom"
+  },
+  {
+   "src": "/projects/el-nakhil-villa/09.webp",
+   "room": "master bedroom"
+  },
+  {
+   "src": "/projects/el-nakhil-villa/10.webp",
+   "room": "office"
+  }
+ ],
+ "maadi-285": [
+  {
+   "src": "/projects/maadi-285/01.webp",
+   "room": "entrance and coffee corner"
+  },
+  {
+   "src": "/projects/maadi-285/02.webp",
+   "room": "guest bathroom"
+  },
+  {
+   "src": "/projects/maadi-285/03.webp",
+   "room": "guest bedroom"
+  },
+  {
+   "src": "/projects/maadi-285/04.webp",
+   "room": "kids bedroom"
+  },
+  {
+   "src": "/projects/maadi-285/05.webp",
+   "room": "kitchen"
+  },
+  {
+   "src": "/projects/maadi-285/06.webp",
+   "room": "living room"
+  },
+  {
+   "src": "/projects/maadi-285/07.webp",
+   "room": "main bathroom"
+  },
+  {
+   "src": "/projects/maadi-285/08.webp",
+   "room": "master beroom"
+  }
+ ],
+ "october-250": [
+  {
+   "src": "/projects/october-250/01.webp",
+   "room": "dining"
+  },
+  {
+   "src": "/projects/october-250/02.webp",
+   "room": "guest bathroom"
+  },
+  {
+   "src": "/projects/october-250/03.webp",
+   "room": "livingroom"
+  },
+  {
+   "src": "/projects/october-250/04.webp",
+   "room": "reception"
+  },
+  {
+   "src": "/projects/october-250/05.webp",
+   "room": "dining"
+  },
+  {
+   "src": "/projects/october-250/06.webp",
+   "room": "livingroom"
+  },
+  {
+   "src": "/projects/october-250/07.webp",
+   "room": "reception"
+  },
+  {
+   "src": "/projects/october-250/08.webp",
+   "room": "dining"
+  }
+ ],
+ "maadi-180": [
+  {
+   "src": "/projects/maadi-180/01.webp",
+   "room": "guest bathroom"
+  },
+  {
+   "src": "/projects/maadi-180/02.webp",
+   "room": "kids bedroom"
+  },
+  {
+   "src": "/projects/maadi-180/03.webp",
+   "room": "kitchen"
+  },
+  {
+   "src": "/projects/maadi-180/04.webp",
+   "room": "living room"
+  },
+  {
+   "src": "/projects/maadi-180/05.webp",
+   "room": "main bathrrom"
+  },
+  {
+   "src": "/projects/maadi-180/06.webp",
+   "room": "master bedroom"
+  },
+  {
+   "src": "/projects/maadi-180/07.webp",
+   "room": "reception and dining"
+  },
+  {
+   "src": "/projects/maadi-180/08.webp",
+   "room": "guest bathroom"
+  }
+ ],
+ "hadayek-el-ahram-200": [
+  {
+   "src": "/projects/hadayek-el-ahram-200/01.webp",
+   "room": "dressing room"
+  },
+  {
+   "src": "/projects/hadayek-el-ahram-200/02.webp",
+   "room": "kids bedroom"
+  },
+  {
+   "src": "/projects/hadayek-el-ahram-200/03.webp",
+   "room": "kitchen"
+  },
+  {
+   "src": "/projects/hadayek-el-ahram-200/04.webp",
+   "room": "mainbathroom"
+  },
+  {
+   "src": "/projects/hadayek-el-ahram-200/05.webp",
+   "room": "Msterbedroom"
+  },
+  {
+   "src": "/projects/hadayek-el-ahram-200/06.webp",
+   "room": "reception"
+  },
+  {
+   "src": "/projects/hadayek-el-ahram-200/07.webp",
+   "room": "dressing room"
+  },
+  {
+   "src": "/projects/hadayek-el-ahram-200/08.webp",
+   "room": "kids bedroom"
+  }
+ ],
+ "tagamo3-115": [
+  {
+   "src": "/projects/tagamo3-115/01.webp",
+   "room": "living room"
+  },
+  {
+   "src": "/projects/tagamo3-115/02.webp",
+   "room": "main bathroom"
+  },
+  {
+   "src": "/projects/tagamo3-115/03.webp",
+   "room": "master bedroom"
+  },
+  {
+   "src": "/projects/tagamo3-115/04.webp",
+   "room": "reception"
+  },
+  {
+   "src": "/projects/tagamo3-115/05.webp",
+   "room": "living room"
+  },
+  {
+   "src": "/projects/tagamo3-115/06.webp",
+   "room": "main bathroom"
+  },
+  {
+   "src": "/projects/tagamo3-115/07.webp",
+   "room": "master bedroom"
+  },
+  {
+   "src": "/projects/tagamo3-115/08.webp",
+   "room": "reception"
+  }
+ ],
+ "mountain-view-zayed-80": [
+  {
+   "src": "/projects/mountain-view-zayed-80/01.webp",
+   "room": "Bathroom"
+  },
+  {
+   "src": "/projects/mountain-view-zayed-80/02.webp",
+   "room": "Bathroom2"
+  },
+  {
+   "src": "/projects/mountain-view-zayed-80/03.webp",
+   "room": "Master Bedroom"
+  },
+  {
+   "src": "/projects/mountain-view-zayed-80/04.webp",
+   "room": "Reception"
+  },
+  {
+   "src": "/projects/mountain-view-zayed-80/05.webp",
+   "room": "Bathroom"
+  },
+  {
+   "src": "/projects/mountain-view-zayed-80/06.webp",
+   "room": "Bathroom2"
+  },
+  {
+   "src": "/projects/mountain-view-zayed-80/07.webp",
+   "room": "Master Bedroom"
+  },
+  {
+   "src": "/projects/mountain-view-zayed-80/08.webp",
+   "room": "Reception"
+  }
+ ],
+ "ca-dental-clinic": [
+  {
+   "src": "/projects/ca-dental-clinic/01.webp",
+   "room": "clinic 2"
+  },
+  {
+   "src": "/projects/ca-dental-clinic/02.webp",
+   "room": "coffe corner"
+  },
+  {
+   "src": "/projects/ca-dental-clinic/03.webp",
+   "room": "main clinic 1"
+  },
+  {
+   "src": "/projects/ca-dental-clinic/04.webp",
+   "room": "reception"
+  },
+  {
+   "src": "/projects/ca-dental-clinic/05.webp",
+   "room": "sterilization room"
+  },
+  {
+   "src": "/projects/ca-dental-clinic/06.webp",
+   "room": "X-ray room"
+  },
+  {
+   "src": "/projects/ca-dental-clinic/07.webp",
+   "room": "clinic 2"
+  },
+  {
+   "src": "/projects/ca-dental-clinic/08.webp",
+   "room": "coffe corner"
+  }
+ ]
+}

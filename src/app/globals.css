@@ -148,3 +148,10 @@ html.is-deep { color-scheme: dark; }
 @keyframes cfgSwap { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 .cfg-swap { animation: cfgSwap .6s cubic-bezier(.2,.7,.2,1) both; }
 @media (prefers-reduced-motion: reduce) { .cfg-swap { animation: none; } }
+
+/* 3D tilt cards + sheen */
+@keyframes floatY { 0% { transform: translateY(0) rotateX(0) rotateY(0); } 50% { transform: translateY(-8px) rotateX(1.5deg) rotateY(-1.5deg); } 100% { transform: translateY(0) rotateX(0) rotateY(0); } }
+.tilt { position: relative; will-change: transform; animation: floatY 7s ease-in-out infinite; }
+@media (hover: hover) { .tilt-scene:hover .tilt { animation-play-state: paused; } }
+.tilt-sheen { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent calc(var(--gx) * 1% - 18%), rgba(196,154,92,.18) calc(var(--gx) * 1%), transparent calc(var(--gx) * 1% + 18%)); }
+@media (prefers-reduced-motion: reduce) { .tilt { animation: none; } .tilt-sheen { display: none; } }

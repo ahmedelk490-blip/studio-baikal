@@ -20,6 +20,8 @@
     ".caustic",
     ".cmp img",
     ".cmp-tag",
+    ".d2b-built",
+    ".d2b-drawn img",
     ".dg-marker",
     ".h-img",
     ".h-stage",
@@ -31,6 +33,7 @@
     ".rt-scene img",
     ".sr-only",
     ".st-img",
+    ".tilt",
     "[aria-hidden=\"true\"]"
   ],
   "pages": [

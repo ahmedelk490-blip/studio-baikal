@@ -14,7 +14,9 @@ export function DepthGauge() {
       onToggle: (st) => { if (!st.isActive) return; if (label.current) label.current.textContent = s.dataset.depth ?? ""; if (meters.current) meters.current.textContent = s.dataset.meters ?? ""; document.documentElement.classList.toggle("is-deep", s.dataset.deep === "1"); } }));
     document.querySelectorAll<HTMLElement>("main section[data-depth]").forEach((s, i) => { if (i === 0) return; gsap.fromTo(s, { clipPath: "inset(3% 2.5% 0% 2.5% round 32px)" }, { clipPath: "inset(0% 0% 0% 0% round 0px)", ease: "none", scrollTrigger: { trigger: s, start: "top bottom", end: "top 30%", scrub: 0.4 } }); });
     document.querySelectorAll<SVGElement>("svg.contours").forEach((el) => gsap.to(el, { yPercent: -22, ease: "none", scrollTrigger: { trigger: el.parentElement, start: "top bottom", end: "bottom top", scrub: 0.6 } }));
+    const id = setTimeout(() => { ScrollTrigger.sort(); ScrollTrigger.refresh(); }, 600);
     gsap.to(".dg-marker", { top: "100%", ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.4 } });
+    return () => clearTimeout(id);
   }, { scope: ref });
   return (
     <div ref={ref} aria-hidden className="pointer-events-none fixed end-6 top-1/2 z-40 hidden h-[46vh] -translate-y-1/2 text-xs uppercase tracking-[0.2em] rtl:tracking-normal transition-colors duration-500 [html.is-deep_&]:text-[var(--surface)] lg:block">

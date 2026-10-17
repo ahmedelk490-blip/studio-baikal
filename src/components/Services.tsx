@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { Btn } from "./Btn";
 import type { Dict, Lang } from "@/data/i18n";
 
@@ -12,16 +13,18 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
   const [a, setA] = useState(0);
   const [hold, setHold] = useState(false);
   const items = t.services.items;
-  useEffect(() => { if (hold) return; const x = setInterval(() => setA((k) => (k + 1) % items.length), 5000); return () => clearInterval(x); }, [hold, items.length]);
+  const sec = useRef<HTMLElement>(null);
+  useGSAP(() => { gsap.matchMedia().add("(min-width: 1024px)", () => { ScrollTrigger.create({ trigger: sec.current, start: "top top", end: "+=" + items.length * 45 + "%", pin: true, anticipatePin: 1, onUpdate: (st) => setA(Math.min(items.length - 1, Math.floor(st.progress * items.length))) }); }); }, { scope: sec });
+  useEffect(() => { if (hold || matchMedia("(min-width: 1024px)").matches) return; const x = setInterval(() => setA((k) => (k + 1) % items.length), 5000); return () => clearInterval(x); }, [hold, items.length]);
   const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
   return (
-    <section id="services" data-depth={t.gauge.services} data-meters="500 m" className="bg-[var(--surface)] text-[var(--ink)]" onMouseLeave={() => setHold(false)}>
-      <div className="px-5 py-16 md:px-10 md:py-24">
+    <section ref={sec} id="services" data-depth={t.gauge.services} data-meters="500 m" className="bg-[var(--surface)] text-[var(--ink)] lg:h-[100svh] lg:overflow-hidden" onMouseLeave={() => setHold(false)}>
+      <div className="px-5 py- md:px-10 md:py- lg:flex lg:h-full lg:flex-col lg:justify-center lg:py-10">
         <div className="grid gap-6 md:grid-cols-12 md:items-end">
-          <h2 className="display text-5xl md:col-span-7 md:text-7xl">{t.services.title}</h2>
+          <h2 className="display text-5xl md:col-span-7 md:text-6xl">{t.services.title}</h2>
           <p className="max-w-sm text-sm text-[var(--muted)] md:col-span-5">{t.services.intro}</p>
         </div>
-        <div className="mt-10 flex flex-col gap-3 lg:h-[36rem] lg:flex-row">
+        <div className="mt-10 flex flex-col gap-3 lg:h-[58vh] lg:flex-row">
           {items.map((it, k) => {
             const [title, d, list] = it as [string, string, string[]];
             const on = a === k;
@@ -45,7 +48,7 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
             );
           })}
         </div>
-        <div className="mt-10"><Btn href={`/${lang}#contact`} variant="dark">{t.nav.book}</Btn></div>
+        <div className="mt-8"><Btn href={`/${lang}#contact`} variant="dark">{t.nav.book}</Btn></div>
       </div>
     </section>
   );

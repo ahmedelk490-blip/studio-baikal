@@ -8,6 +8,8 @@ import { Strata } from "@/components/Strata";
 import { Featured } from "@/components/Featured";
 import { Rooms } from "@/components/Rooms";
 import { Services } from "@/components/Services";
+import { Configurator } from "@/components/Configurator";
+import { pages } from "@/data/pages";
 import { Materials } from "@/components/Materials";
 import { Approach } from "@/components/Approach";
 import { Studio } from "@/components/Studio";
@@ -39,6 +41,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
         <div className="grain">
           <Rooms t={t} />
           <Services t={t} lang={lang} />
+          <Configurator c={pages[lang].config} />
           <Materials t={t} />
           <Approach t={t} />
           <Studio t={t} />

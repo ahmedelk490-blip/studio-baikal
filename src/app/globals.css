@@ -143,3 +143,8 @@ html.is-deep { color-scheme: dark; }
 .val-c { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.8s cubic-bezier(.2,.7,.2,1); }
 .vals.in .val-c { stroke-dashoffset: 0; }
 @media (prefers-reduced-motion: reduce) { .ticks li { opacity: 1; transform: none; } .tick, .val-c { stroke-dashoffset: 0; transition: none; } }
+
+/* configurator value swap */
+@keyframes cfgSwap { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.cfg-swap { animation: cfgSwap .6s cubic-bezier(.2,.7,.2,1) both; }
+@media (prefers-reduced-motion: reduce) { .cfg-swap { animation: none; } }

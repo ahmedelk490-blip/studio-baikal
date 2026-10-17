@@ -31,6 +31,17 @@ const en = {
       ["Our values", "Timeless design, thoughtful details and a personal approach: interiors that stay elegant beyond trends, where every element is considered and tailored to the way you live."],
     ] as [string, string][],
   },
+  config: {
+    eyebrow: "Choose your palette", title: "One kitchen, your materials.", room: "Kitchen",
+    intro: "Pick a palette and watch cabinetry, stone and trim change together. Every Baikal project starts from a board like this.",
+    fields: ["Cabinetry", "Stone", "Trim", "Lighting"],
+    options: [
+      { name: "Walnut & Granite", spec: ["Walnut and matte white", "Black granite", "Black steel", "Linear LED"] },
+      { name: "Smoked Oak & Marble", spec: ["Smoked grey lacquer", "Marble-look porcelain", "Brushed brass", "Warm cove light"] },
+      { name: "Cream & Onyx", spec: ["Cream matte lacquer", "Black marble", "Matte black", "Recessed spots"] },
+      { name: "Light Oak & Quartz", spec: ["Light oak and white", "White quartz", "Brushed steel", "Soft pendants"] },
+    ],
+  },
   contact: { eyebrow: "Free consultation", title: "Three questions, then we call you.", intro: "It takes under a minute. We reply within one working day.", steps: ["Your space", "Your need", "Your details"], next: "Next", back: "Back" },
 };
 export type PagesDict = typeof en;
@@ -64,6 +75,17 @@ const ar: PagesDict = {
       ["حكايتنا", "يؤمن استوديو بايكال أن التصميم الجيد أكثر من مساحات جميلة؛ هو بيئات تعكس من يعيشون فيها، مستلهمة من عمق الطبيعة وتوازنها وسكينتها."],
       ["منهجنا", "نبدأ كل مشروع بتخطيط مدروس واهتمام بالتفاصيل وفهم عميق لرؤية العميل، لنصنع مساحات شخصية وراقية ومصممة لتدوم."],
       ["قيمنا", "تصميم لا يشيخ، وتفاصيل مدروسة، ونهج شخصي: مساحات تبقى أنيقة بعد انقضاء الموضة، وكل عنصر فيها محسوب ومفصّل على طريقة حياتك."],
+    ],
+  },
+  config: {
+    eyebrow: "اختر لوحتك", title: "مطبخ واحد، بخاماتك.", room: "المطبخ",
+    intro: "اختر لوحة خامات وشاهد الواجهات والحجر والتشطيبات تتغير معًا. كل مشروع من بايكال يبدأ بلوحة مثل هذه.",
+    fields: ["الواجهات", "الحجر", "التشطيب", "الإضاءة"],
+    options: [
+      { name: "جوز وجرانيت", spec: ["جوز وأبيض مطفي", "جرانيت أسود", "حديد أسود", "إضاءة LED خطية"] },
+      { name: "بلوط مدخن ورخام", spec: ["لاكيه رمادي مدخن", "بورسلين بمظهر الرخام", "نحاس مصقول", "إضاءة دافئة مخفية"] },
+      { name: "كريمي وأونيكس", spec: ["لاكيه كريمي مطفي", "رخام أسود", "أسود مطفي", "سبوتات مدفونة"] },
+      { name: "بلوط فاتح وكوارتز", spec: ["بلوط فاتح وأبيض", "كوارتز أبيض", "ستيل مصقول", "معلقات ناعمة"] },
     ],
   },
   contact: { eyebrow: "استشارة مجانية", title: "ثلاثة أسئلة، ثم نتصل بك.", intro: "يستغرق أقل من دقيقة، ونرد خلال يوم عمل.", steps: ["مساحتك", "احتياجك", "بياناتك"], next: "التالي", back: "رجوع" },

@@ -15,15 +15,19 @@
     336
   ],
   "ignore": [
-    ".ken",
-    ".sr-only",
-    "[aria-hidden=\"true\"]",
-    ".st-img",
+    ".bubbles",
+    ".caustic",
+    ".dg-marker",
     ".h-img",
     ".h-stage",
-    ".dg-marker",
-    ".caustic",
-    ".bubbles"
+    ".ken",
+    ".lens-pan",
+    ".ph-img",
+    ".rt-scene",
+    ".rt-scene img",
+    ".sr-only",
+    ".st-img",
+    "[aria-hidden=\"true\"]"
   ],
   "pages": [
     "/en",

@@ -5,6 +5,7 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import type { Dict, Lang } from "@/data/i18n";
 import { Btn } from "./Btn";
 import { Contours } from "./Contours";
+import { heroVideo } from "@/data/media";
 
 const srcs = ["/projects/october-250/01.webp", "/projects/el-nakhil-villa/01.webp", "/projects/maadi-285/01.webp", "/projects/maadi-180/05.webp"];
 const EVERY = 4200;
@@ -41,7 +42,12 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
   return (
     <section ref={ref} data-depth={t.gauge.surface} data-meters="0 m" data-deep="1" className="relative min-h-[100svh] overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
       <div className="h-stage absolute -inset-[6%]">
-        {srcs.map((s, k) => <Image key={s} src={s} alt={t.hero.rooms[k]} fill priority={k === 0} sizes="100vw" className={`object-cover transition-opacity duration-[1600ms] ease-out ${k === i ? "ken opacity-100" : "opacity-0"}`} />)}
+        {heroVideo.mp4 ? (
+          <video className="absolute inset-0 h-full w-full object-cover" autoPlay muted loop playsInline preload="metadata" poster={heroVideo.poster} aria-hidden>
+            {heroVideo.webm && <source src={heroVideo.webm} type="video/webm" />}
+            <source src={heroVideo.mp4} type="video/mp4" />
+          </video>
+        ) : srcs.map((s, k) => <Image key={s} src={s} alt={t.hero.rooms[k]} fill priority={k === 0} sizes="100vw" className={`object-cover transition-opacity duration-[1600ms] ease-out ${k === i ? "ken opacity-100" : "opacity-0"}`} />)}
       </div>
       <div className="caustic caustic-a" aria-hidden /><div className="caustic caustic-b" aria-hidden />
       <div className="absolute inset-0 bg-gradient-to-t from-[var(--deep)] via-[var(--deep)]/35 to-[var(--deep)]/20" />

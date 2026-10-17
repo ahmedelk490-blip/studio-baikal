@@ -3,8 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { PageShell } from "@/components/PageShell";
-import { Gallery } from "@/components/Gallery";
-import { FilmStrip } from "@/components/FilmStrip";
+import { ProjectGallery } from "@/components/ProjectGallery";
 import { MaskReveal } from "@/components/MaskReveal";
 import { Contours } from "@/components/Contours";
 import { Btn } from "@/components/Btn";
@@ -103,7 +102,7 @@ export default async function ProjectPage({ params }: Props) {
       </section>
 
       <section className="bg-[var(--surface)] px-5 pb-20 text-[var(--ink)] md:px-10 md:pb-24">
-        {v === 1 ? <FilmStrip images={p.images} name={p.name} t={t} /> : <Gallery images={p.images} name={p.name} t={t} />}
+        <ProjectGallery images={p.images} name={p.name} t={t} variant={v} />
       </section>
 
       <section className="relative overflow-hidden bg-[var(--deep)] text-[var(--surface)]">

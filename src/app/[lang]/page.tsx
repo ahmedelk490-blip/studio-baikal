@@ -10,7 +10,6 @@ import { Rooms } from "@/components/Rooms";
 import { Services } from "@/components/Services";
 import { Configurator } from "@/components/Configurator";
 import { DrawnToBuilt } from "@/components/DrawnToBuilt";
-import { LitByDegrees } from "@/components/LitByDegrees";
 import { pages } from "@/data/pages";
 import { Materials } from "@/components/Materials";
 import { Approach } from "@/components/Approach";
@@ -41,7 +40,6 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
         </div>
         <Featured projects={list} t={t} lang={lang} />
         <div className="grain">
-          <LitByDegrees t={t} />
           <Rooms t={t} />
           <Services t={t} lang={lang} />
           <Configurator c={pages[lang].config} />

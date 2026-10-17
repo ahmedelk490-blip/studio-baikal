@@ -21,13 +21,12 @@ export function Rooms({ t }: { t: Dict }) {
   }, { scope: sec });
   return (
     <section ref={sec} id="rooms" data-depth={t.gauge.rooms} data-meters="300 m" data-deep="1" className="relative h-[100svh] overflow-hidden bg-[var(--deeper)] text-[var(--surface)]">
-      <div className="grid h-full grid-rows-[42svh_1fr] lg:grid-cols-12 lg:grid-rows-1">
-        <div className="relative lg:order-2 lg:col-span-8">
+      <div className="absolute inset-0">
           <Image src={srcs[prev]} alt="" fill sizes="(min-width:1024px) 66vw, 100vw" className="object-cover" />
           <div key={a} className="circle-in absolute inset-0"><Image src={srcs[a]} alt={scenes[a][0]} fill sizes="(min-width:1024px) 66vw, 100vw" className="ken object-cover" /></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-[var(--deeper)]/60 to-transparent lg:bg-gradient-to-r rtl:lg:bg-gradient-to-l" />
-        </div>
-        <div className="flex flex-col justify-center px-5 py-5 md:px-10 lg:order-1 lg:col-span-4 lg:py-10">
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--deeper)] via-[var(--deeper)]/55 to-[var(--deeper)]/10 lg:bg-gradient-to-r lg:from-[var(--deeper)] lg:via-[var(--deeper)]/60 lg:to-transparent rtl:lg:bg-gradient-to-l" />
+      </div>
+      <div className="relative flex h-full flex-col justify-end px-5 pb-8 pt-24 md:px-10 lg:w-[46%] lg:justify-center lg:pb-10 lg:pt-28">
           <div className="flex items-center justify-between">
             <p className="text-xs uppercase tracking-[0.2em] rtl:tracking-normal text-[var(--bronze)]">{t.rooms.eyebrow}</p>
             <p className="text-xs text-[var(--surface)]/60" dir="ltr">{a + 1} / {scenes.length}</p>
@@ -43,7 +42,6 @@ export function Rooms({ t }: { t: Dict }) {
             ))}
           </ol>
           <div className="mt-4 h-px bg-[var(--surface)]/15"><div className="h-px bg-[var(--bronze)] transition-[width] duration-500" style={{ width: `${((a + 1) / scenes.length) * 100}%` }} /></div>
-        </div>
       </div>
     </section>
   );

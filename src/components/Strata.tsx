@@ -7,25 +7,24 @@ import { Btn } from "./Btn";
 import type { Project } from "@/data/projects";
 import type { Dict, Lang } from "@/data/i18n";
 
-const SLICES = 7;
-
-/* 80 m: project strata. Split, no text on photos: a clean list on solid deep, and a framed photo
-   that drops in as vertical blinds. The page stops here while the wheel walks every project. */
+/* 80 m: project strata. A clean list on solid deep; beside it three rooms of the active project
+   cascade in (big + two small), each from a different edge. The page stops here while the wheel walks every project. */
 export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; lang: Lang }) {
   const [a, setA] = useState(0);
-  const [prev, setPrev] = useState(0);
   const cur = useRef(0);
   const sec = useRef<HTMLElement>(null);
-  const go = (k: number) => { if (k === cur.current) return; setPrev(cur.current); cur.current = k; setA(k); };
+  const go = (k: number) => { if (k === cur.current) return; cur.current = k; setA(k); };
   useGSAP(() => {
     ScrollTrigger.create({ trigger: sec.current, start: "top top", end: "+=" + projects.length * 32 + "%", pin: true, anticipatePin: 1,
       onUpdate: (st) => go(Math.min(projects.length - 1, Math.floor(st.progress * projects.length))) });
   }, { scope: sec });
   const p = projects[a];
+  const land = p.images.filter((i) => i.w >= i.h);
+  const shots = [p.images.find((i) => i.src === p.cover) ?? land[0] ?? p.images[0], ...land.filter((i) => i.src !== p.cover)].filter(Boolean).slice(0, 3);
   const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
   return (
     <section ref={sec} id="projects" data-depth={t.gauge.projects} data-meters="80 m" data-deep="1" className="relative h-[100svh] overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
-      <div className="grid h-full content-center gap-5 px-5 pb-6 pt-20 md:px-10 lg:grid-cols-12 lg:items-center lg:gap-12 lg:py-16">
+      <div className="grid h-full content-center gap-5 px-5 pb-6 pt-24 md:px-10 md:pt-28 lg:grid-cols-12 lg:items-center lg:gap-12 lg:pb-10 lg:pt-28">
         <div className="lg:col-span-5">
           <div className="flex items-end justify-between gap-4">
             <h2 className="display text-3xl md:text-5xl">{t.strata.title}</h2>
@@ -47,15 +46,13 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
           </ol>
         </div>
         <div className="lg:col-span-7">
-          <div className="relative h-[22svh] overflow-hidden rounded-2xl bg-[var(--deeper)] md:h-auto md:aspect-[16/10]">
-            <Image src={projects[prev].cover} alt="" fill sizes="(min-width:1024px) 55vw, 100vw" className="object-cover" />
-            <div key={a} dir="ltr" className="absolute inset-0 flex">
-              {Array.from({ length: SLICES }).map((_, k) => (
-                <span key={k} className="blind relative h-full flex-1 overflow-hidden" style={{ animationDelay: `${k * 0.05}s` }}>
-                  <span className="absolute inset-y-0 bg-cover bg-center" style={{ width: `${SLICES * 100}%`, left: `-${k * 100}%`, backgroundImage: `url(${p.cover}?v=2)` }} />
-                </span>
-              ))}
-            </div>
+          <div key={a} className="cascade grid h-[22svh] grid-cols-3 grid-rows-2 gap-2 md:h-auto md:aspect-[16/10] md:gap-3">
+            {shots.map((im, i) => (
+              <div key={im.src} className={`relative overflow-hidden rounded-xl bg-[var(--deeper)] ${i === 0 ? "col-span-2 row-span-2" : ""}`} style={{ animationDelay: `${i * 0.12}s` }}>
+                <Image src={im.src} alt={`${p.name}, ${im.room}`} fill sizes={i === 0 ? "(min-width:1024px) 38vw, 66vw" : "(min-width:1024px) 18vw, 33vw"} className="object-cover" />
+                <span className="absolute bottom-2 start-2 rounded-full bg-[var(--deep)]/70 px-2.5 py-1 text-xs text-[var(--surface)]">{im.room}</span>
+              </div>
+            ))}
           </div>
           <div key={`c${a}`} className="hero-in mt-4 flex flex-wrap items-end justify-between gap-4">
             <div className="min-w-0">

@@ -82,13 +82,13 @@ html.is-deep { color-scheme: dark; }
 .blind { animation: blind .9s cubic-bezier(.76,0,.24,1) both; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .spin { animation: spin 60s linear infinite; }
-@keyframes lensPan { 0% { transform: scale(2.4) translate(-6%, -4%); } 100% { transform: scale(2.4) translate(6%, 4%); } }
+@keyframes lensPan { 0% { transform: scale(1.35) translate(-4%, -3%); } 100% { transform: scale(1.35) translate(4%, 3%); } }
 .lens-pan { animation: lensPan 14s ease-in-out infinite alternate; }
 .wm-l { transform: translateY(105%); transition: transform 1.2s cubic-bezier(.2,.7,.2,1); }
 .wordmark.in .wm-l { transform: none; }
 @keyframes curtainUp { from { transform: scaleY(1); } to { transform: scaleY(0); } }
 .page-curtain { position: fixed; inset: 0; z-index: 90; background: var(--deep); pointer-events: none; transform-origin: top; animation: curtainUp .9s cubic-bezier(.76,0,.24,1) .05s both; }
-@media (prefers-reduced-motion: reduce) { .mask, .mask img, .wm-l { clip-path: none; transform: none; transition: none; } .blind, .spin, .lens-pan { animation: none; } .lens-pan { transform: scale(2.4); } .page-curtain { display: none; } }
+@media (prefers-reduced-motion: reduce) { .mask, .mask img, .wm-l { clip-path: none; transform: none; transition: none; } .blind, .spin, .lens-pan { animation: none; } .lens-pan { transform: scale(1.35); } .page-curtain { display: none; } }
 
 /* v7: motion graphics + buttons */
 .ct-line { fill: none; stroke: var(--bronze); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-dasharray: 1; stroke-dashoffset: 1; animation: ctDraw 2.6s cubic-bezier(.2,.7,.2,1) forwards; }
@@ -155,3 +155,20 @@ html.is-deep { color-scheme: dark; }
 @media (hover: hover) { .tilt-scene:hover .tilt { animation-play-state: paused; } }
 .tilt-sheen { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent calc(var(--gx) * 1% - 18%), rgba(196,154,92,.18) calc(var(--gx) * 1%), transparent calc(var(--gx) * 1% + 18%)); }
 @media (prefers-reduced-motion: reduce) { .tilt { animation: none; } .tilt-sheen { display: none; } }
+
+/* projects cascade */
+@keyframes cascade { from { opacity: 0; clip-path: inset(100% 0 0 0); } to { opacity: 1; clip-path: inset(0); } }
+.cascade > div { animation: cascade .9s cubic-bezier(.76,0,.24,1) both; }
+.cascade > div:nth-child(2) { animation-name: cascadeX; } .cascade > div:nth-child(3) { animation-name: cascadeY; }
+@keyframes cascadeX { from { opacity: 0; clip-path: inset(0 0 0 100%); } to { opacity: 1; clip-path: inset(0); } }
+@keyframes cascadeY { from { opacity: 0; clip-path: inset(0 0 100% 0); } to { opacity: 1; clip-path: inset(0); } }
+@media (prefers-reduced-motion: reduce) { .cascade > div { animation: none; } }
+
+/* arch slider + popup */
+@keyframes archSlide { from { clip-path: inset(0 0 0 100%); transform: scale(1.06); } to { clip-path: inset(0); transform: none; } }
+[dir="rtl"] .arch-slide { animation-name: archSlideR; }
+@keyframes archSlideR { from { clip-path: inset(0 100% 0 0); transform: scale(1.06); } to { clip-path: inset(0); transform: none; } }
+.arch-slide { animation: archSlide 1s cubic-bezier(.76,0,.24,1) both; }
+@keyframes popIn { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+.popup { animation: pageIn .25s ease-out both; } .popup-img { animation: popIn .4s cubic-bezier(.2,.7,.2,1) both; }
+@media (prefers-reduced-motion: reduce) { .arch-slide, .popup, .popup-img { animation: none; } }

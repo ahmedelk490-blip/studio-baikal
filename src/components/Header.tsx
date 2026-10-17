@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import type { Dict, Lang } from "@/data/i18n";
 import { pages } from "@/data/pages";
 
+const Globe = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18" /></svg>;
+
 export function Header({ t, lang, dark = false }: { t: Dict; lang: Lang; dark?: boolean }) {
   const [deep, setDeep] = useState(dark);
   const [open, setOpen] = useState(false);
@@ -37,11 +39,11 @@ export function Header({ t, lang, dark = false }: { t: Dict; lang: Lang; dark?: 
         </Link>
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Main">
           {nav.slice(0, 4).map(([l, h]) => <Link key={h} href={h} aria-current={on(h) ? "page" : undefined} className={`${u} relative py-2 font-medium transition-opacity ${on(h) ? "opacity-100" : "opacity-80 hover:opacity-100"}`}>{l}{on(h) && <span className="absolute inset-x-0 -bottom-0.5 h-px bg-[var(--bronze)]" />}</Link>)}
-          <Link href={other} hrefLang={t.other} className={`${u} px-2 py-3 opacity-80 hover:opacity-100`}>{t.otherLabel}</Link>
+          <Link href={other} hrefLang={t.other} aria-label={t.otherLabel} title={t.otherLabel} className="grid h-11 w-11 place-items-center rounded-full border border-current/40 transition-colors hover:border-current"><Globe /><span className="sr-only">{t.otherLabel}</span></Link>
           <Link href={`/${lang}/contact`} className={`${u} rounded-full border border-current px-5 py-2.5`}>{t.nav.book}</Link>
         </nav>
         <div className="flex items-center gap-3 lg:hidden">
-          <Link href={other} hrefLang={t.other} className={`${u} inline-flex min-h-11 items-center px-2 opacity-80`}>{t.otherLabel}</Link>
+          <Link href={other} hrefLang={t.other} aria-label={t.otherLabel} className="grid h-11 w-11 place-items-center rounded-full border border-current/40"><Globe /></Link>
           <button onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label={t.nav.menu} className="grid h-11 w-11 place-items-center">
             <span className="relative block h-3 w-6">
               <span className={`absolute left-0 top-0 h-px w-6 bg-current transition ${open ? "translate-y-[6px] rotate-45" : ""}`} />

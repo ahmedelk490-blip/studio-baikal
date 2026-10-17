@@ -16,8 +16,10 @@
   ],
   "ignore": [
     ".arch-mask img",
+    ".arch-slide",
     ".asm",
     ".bubbles",
+    ".cascade > div",
     ".caustic",
     ".cmp img",
     ".cmp-tag",

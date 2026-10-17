@@ -45,7 +45,7 @@ export function Materials({ t }: { t: Dict }) {
             <div className="lens-disc absolute inset-[6%] overflow-hidden rounded-full bg-[var(--deep)]">
               {swatches.map(([src, pos], k) => (
                 <div key={src} className={`absolute inset-0 transition-opacity duration-700 ${a === k ? "opacity-100" : "opacity-0"}`}>
-                  <Image src={src} alt={t.materials.names[k]} fill sizes="560px" className="lens-pan object-cover" style={{ objectPosition: pos }} />
+                  <Image src={src} alt={t.materials.names[k]} fill sizes="(min-width:1024px) 60vw, 100vw" className="lens-pan object-cover" style={{ objectPosition: pos }} />
                 </div>
               ))}
               <div className="absolute inset-0 rounded-full shadow-[inset_0_0_80px_rgba(5,8,10,.7)]" />

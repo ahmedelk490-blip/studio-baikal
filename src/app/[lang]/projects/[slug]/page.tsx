@@ -5,6 +5,8 @@ import type { Metadata } from "next";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Gallery } from "@/components/Gallery";
+import { FilmStrip } from "@/components/FilmStrip";
+import { Lookbook } from "@/components/Lookbook";
 import { WhatsAppFab } from "@/components/WhatsAppFab";
 import { projects, getProject, localize } from "@/data/projects";
 import { dict, isLang, langs } from "@/data/i18n";
@@ -67,7 +69,7 @@ export default async function ProjectPage({ params }: Props) {
             </div>
           </div>
         </section>
-        <section className="px-5 pb-24 md:px-10 md:pb-32"><Gallery images={p.images} name={p.name} t={t} /></section>
+        <section className="px-5 pb-20 md:px-10 md:pb-24">{idx % 3 === 0 ? <Gallery images={p.images} name={p.name} t={t} /> : idx % 3 === 1 ? <FilmStrip images={p.images} name={p.name} t={t} /> : <Lookbook images={p.images} name={p.name} t={t} />}</section>
         <section className="bg-[var(--deep)] text-[var(--surface)]">
           <div className="flex flex-wrap items-center justify-between gap-6 px-5 py-14 md:px-10 md:py-20">
             <div>

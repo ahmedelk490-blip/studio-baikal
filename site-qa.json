@@ -14,9 +14,16 @@
     1280
   ],
   "pages": [
-    "/",
-    "/projects/el-nakhil-villa",
-    "/projects/ca-dental-clinic"
+    "/en",
+    "/ar",
+    "/en/projects",
+    "/en/services",
+    "/en/studio",
+    "/en/contact",
+    "/ar/services",
+    "/en/projects/el-nakhil-villa",
+    "/en/projects/maadi-285",
+    "/ar/projects/october-250"
   ],
   "routesFrom": "next",
   "exclude": [
@@ -32,7 +39,7 @@
       "POST /api/leads"
     ]
   },
-  "maxPages": 12,
+  "maxPages": 16,
   "concurrency": 3,
   "pageTimeoutSec": 60,
   "perf": {

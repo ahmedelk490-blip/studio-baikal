@@ -40,7 +40,7 @@ export function Featured({ projects, t, lang }: { projects: Project[]; t: Dict; 
               <p className="display mt-4 text-3xl md:text-4xl">{t.featured.card.title}</p>
               <p className="mt-4 max-w-sm text-sm text-[var(--surface)]/70">{t.featured.card.text}</p>
             </div>
-            <a href={`/${lang}#services`} className={`${u} mt-10 inline-block w-fit border-b border-[var(--bronze)] py-2`}>{t.featured.card.link}</a>
+            <a href={`/${lang}/services`} className={`${u} mt-10 inline-block w-fit border-b border-[var(--bronze)] py-2`}>{t.featured.card.link}</a>
           </Reveal>
           {pick.slice(1).map((p, k) => (
             <Reveal key={p.slug} className="md:col-span-6" delay={(k + 1) as 1 | 2}>

@@ -124,3 +124,22 @@ html.is-deep { color-scheme: dark; }
 .wa-label { transition: max-width .5s cubic-bezier(.76,0,.24,1), padding .5s; }
 @media (hover: hover) { .wa-fab:hover .wa-label { max-width: 140px; padding-inline-start: 20px; } }
 @media (prefers-reduced-motion: reduce) { .wa-ring { animation: none; opacity: 0; } }
+
+/* v9: page components */
+.cmp-top { clip-path: inset(0 calc(100% - var(--x)) 0 0); }
+.cmp-draw { filter: grayscale(1) contrast(1.6) brightness(1.18) sepia(.25); }
+.cmp-grid { background-image: linear-gradient(rgba(16,22,26,.14) 1px, transparent 1px), linear-gradient(90deg, rgba(16,22,26,.14) 1px, transparent 1px); background-size: 32px 32px; }
+.cmp-line { left: var(--x); width: 2px; background: var(--bronze); transform: translateX(-1px); pointer-events: none; }
+.cmp-knob { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 52px; height: 52px; border-radius: 999px; background: var(--bronze); color: var(--deep); display: grid; place-items: center; font-size: 20px; box-shadow: 0 0 0 8px rgba(196,154,92,.25); }
+.cmp-tag { position: absolute; top: 16px; padding: 6px 12px; border-radius: 999px; background: rgba(11,16,19,.7); color: var(--surface); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; pointer-events: none; }
+.ticks li { opacity: 0; transform: translateY(10px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1); }
+.ticks.in li { opacity: 1; transform: none; }
+.tick { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .6s ease; }
+.ticks.in .tick { stroke-dashoffset: 0; }
+.faq-x { position: relative; flex-shrink: 0; width: 40px; height: 40px; border-radius: 999px; border: 1px solid rgba(243,240,234,.35); transition: transform .5s cubic-bezier(.76,0,.24,1), background .3s; }
+.faq-x::before, .faq-x::after { content: ""; position: absolute; left: 50%; top: 50%; width: 14px; height: 1.5px; background: currentColor; transform: translate(-50%, -50%); }
+.faq-x::after { transform: translate(-50%, -50%) rotate(90deg); }
+.faq-x.on { transform: rotate(45deg); background: var(--bronze); color: var(--deep); border-color: var(--bronze); }
+.val-c { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.8s cubic-bezier(.2,.7,.2,1); }
+.vals.in .val-c { stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: reduce) { .ticks li { opacity: 1; transform: none; } .tick, .val-c { stroke-dashoffset: 0; transition: none; } }

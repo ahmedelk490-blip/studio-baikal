@@ -15,14 +15,18 @@
     336
   ],
   "ignore": [
+    ".arch-mask img",
     ".bubbles",
     ".caustic",
+    ".cmp img",
+    ".cmp-tag",
     ".dg-marker",
     ".h-img",
     ".h-stage",
     ".ken",
     ".lens-pan",
     ".ph-img",
+    ".room-tag",
     ".rt-scene",
     ".rt-scene img",
     ".sr-only",
@@ -32,22 +36,27 @@
   "pages": [
     "/en",
     "/ar",
+    "/en/projects",
+    "/en/services",
+    "/en/studio",
+    "/en/contact",
+    "/ar/services",
     "/en/projects/el-nakhil-villa",
-    "/ar/projects/el-nakhil-villa",
-    "/en/projects/ca-dental-clinic"
+    "/en/projects/maadi-285",
+    "/ar/projects/october-250"
   ],
   "states": [
     {
       "page": "/en",
       "name": "menu",
       "click": "button[aria-label=Menu]",
-      "maxWidth": 767
+      "maxWidth": 1023
     },
     {
       "page": "/ar",
       "name": "menu-ar",
       "click": "header button[aria-expanded]",
-      "maxWidth": 767
+      "maxWidth": 1023
     }
   ]
 }

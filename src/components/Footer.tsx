@@ -4,10 +4,12 @@ import { Credit } from "./Credit";
 import { Wordmark } from "./Wordmark";
 import { contact } from "@/data/projects";
 import type { Dict, Lang } from "@/data/i18n";
+import { pages } from "@/data/pages";
 
 /* Lake-floor footer: a huge wordmark bleeding off the bottom, four columns above it, bronze hairlines. */
 export function Footer({ t, lang }: { t: Dict; lang: Lang }) {
-  const links = [[t.nav.projects, `/${lang}#projects`], [t.nav.rooms, `/${lang}#rooms`], [t.nav.services, `/${lang}#services`], [t.nav.studio, `/${lang}#studio`], [t.nav.contact, `/${lang}#contact`]];
+  const n = pages[lang].nav;
+  const links = [[n.home, `/${lang}`], [n.projects, `/${lang}/projects`], [n.services, `/${lang}/services`], [n.studio, `/${lang}/studio`], [n.contact, `/${lang}/contact`]];
   const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
   const other = `/${t.other}`;
   return (

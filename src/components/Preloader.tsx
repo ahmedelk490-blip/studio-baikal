@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-export function Preloader() {
+export function Preloader({ label }: { label: string }) {
   const [gone, setGone] = useState(false);
   useEffect(() => {
     let seen = false;
@@ -16,7 +16,7 @@ export function Preloader() {
     <div className="preloader" aria-hidden>
       <div className="preloader-mark text-[var(--surface)]">
         <Image src="/brand/logo.png" alt="" width={96} height={96} priority className="h-20 w-20 md:h-24 md:w-24" />
-        <p className="mt-5 text-xs uppercase tracking-[0.3em] rtl:tracking-normal opacity-70">Descending</p>
+        <p className="mt-5 text-xs uppercase tracking-[0.3em] rtl:tracking-normal opacity-70">{label}</p>
       </div>
     </div>
   );

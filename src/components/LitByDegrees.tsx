@@ -25,9 +25,9 @@ export function LitByDegrees({ t }: { t: Dict }) {
   return (
     <section ref={sec} data-depth={t.lit.eyebrow} data-meters="220 m" data-deep="1" className="relative h-[100svh] overflow-hidden bg-[var(--deeper)] text-[var(--surface)]">
       <Image src={SRC} alt={t.lit.t2} fill sizes="100vw" className="object-cover" />
-      <div className="cold absolute inset-0" style={{ filter: "grayscale(.7) brightness(.5) contrast(1.1)" }}><Image src={SRC} alt="" fill sizes="100vw" className="object-cover" /><div className="absolute inset-0 bg-[#0b1620]/55" /></div>
-      <div className="asm absolute inset-0 flex" dir="ltr" style={{ filter: "grayscale(.7) brightness(.5) contrast(1.1)" }}>
-        {Array.from({ length: N }).map((_, i) => <span key={i} className="relative h-full flex-1 overflow-hidden"><span className="absolute inset-y-0 bg-cover bg-center" style={{ width: `${N * 100}%`, left: `-${i * 100}%`, backgroundImage: `url(${SRC}?v=2)` }} /><span className="absolute inset-0 bg-[#0b1620]/55" /></span>)}
+      <div className="cold absolute inset-0" style={{ filter: "grayscale(.45) brightness(.78) contrast(1.05)" }}><Image src={SRC} alt="" fill sizes="100vw" className="object-cover" /><div className="absolute inset-0 bg-[#0b1620]/25" /></div>
+      <div className="asm absolute inset-0 flex" dir="ltr" style={{ filter: "grayscale(.45) brightness(.78) contrast(1.05)" }}>
+        {Array.from({ length: N }).map((_, i) => <span key={i} className="relative h-full flex-1 overflow-hidden"><span className="absolute inset-y-0 bg-cover bg-center" style={{ width: `${N * 100}%`, left: `-${i * 100}%`, backgroundImage: `url(${SRC}?v=2)` }} /><span className="absolute inset-0 bg-[#0b1620]/25" /></span>)}
       </div>
       {[[30, 28], [62, 24], [78, 40]].map(([x, y], i) => <span key={i} className="glow-lamp pointer-events-none absolute h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(196,154,92,.45),transparent_60%)]" style={{ left: `${x}%`, top: `${y}%`, opacity: 0 }} aria-hidden />)}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[var(--deeper)] to-transparent" />

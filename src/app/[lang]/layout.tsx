@@ -3,6 +3,7 @@ import { Fraunces, Manrope, Alexandria } from "next/font/google";
 import "../globals.css";
 import { Smooth } from "@/components/Smooth";
 import { dict, isLang, langs } from "@/data/i18n";
+import { JsonLd } from "@/components/JsonLd";
 
 const display = Fraunces({ subsets: ["latin"], axes: ["opsz", "SOFT", "WONK"], style: ["normal", "italic"], variable: "--font-display", display: "swap" });
 const sans = Manrope({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-sans", display: "swap" });
@@ -19,7 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     metadataBase: new URL("https://baikalstudio.com"),
     title: { default: ar ? "استوديو بايكال | تصميم داخلي في مصر" : "Studio Baikal | Interior Design Studio in Egypt", template: ar ? "%s | استوديو بايكال" : "%s | Studio Baikal" },
     description: ar ? "استوديو بايكال يصمم مساحات داخلية وخارجية مستوحاة من الطبيعة ومبنية على الهيكل: فيلات وشقق وعيادات، باقات ثري دي وتنفيذ كامل في مصر." : "Studio Baikal designs interior and exterior spaces inspired by nature, rooted in structure. Residential, villa and clinic design, 3D packages and full execution across Egypt.",
-    alternates: { languages: { en: "/en", ar: "/ar" } },
+    alternates: { canonical: `/${lang}`, languages: { en: "/en", ar: "/ar", "x-default": "/en" } },
+    keywords: ar ? ["تصميم داخلي", "مصمم ديكور", "تشطيب فيلات", "تصميم شقق", "القاهرة", "الشيخ زايد", "استوديو بايكال"] : ["interior design Egypt", "interior designer Cairo", "villa interior design", "apartment design", "3D interior rendering", "Sheikh Zayed", "Studio Baikal"],
     openGraph: { title: ar ? "استوديو بايكال | حيث يلتقي التصميم بالعمق" : "Studio Baikal | Where design meets depth", images: ["/projects/october-250/01.webp"] },
   };
 }
@@ -30,7 +32,7 @@ export default async function RootLayout({ children, params }: Props) {
   const t = dict[lang];
   return (
     <html lang={lang} dir={t.dir} className={`${display.variable} ${sans.variable} ${arabic.variable}`}>
-      <body className="min-h-dvh antialiased" suppressHydrationWarning><Smooth>{children}</Smooth></body>
+      <body className="min-h-dvh antialiased" suppressHydrationWarning><JsonLd lang={lang} /><Smooth>{children}</Smooth></body>
     </html>
   );
 }

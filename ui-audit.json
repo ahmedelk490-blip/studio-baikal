@@ -15,6 +15,7 @@
     336
   ],
   "ignore": [
+    ".ap-hero",
     ".arch-mask img",
     ".arch-slide",
     ".asm",

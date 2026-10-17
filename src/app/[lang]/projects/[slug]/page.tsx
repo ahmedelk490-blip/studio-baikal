@@ -7,6 +7,9 @@ import { ProjectGallery } from "@/components/ProjectGallery";
 import { MaskReveal } from "@/components/MaskReveal";
 import { Contours } from "@/components/Contours";
 import { Btn } from "@/components/Btn";
+import { Clip } from "@/components/Clip";
+import { JsonLd } from "@/components/JsonLd";
+import { projectVideo } from "@/data/media";
 import { projects, getProject, localize } from "@/data/projects";
 import { dict, isLang, langs } from "@/data/i18n";
 
@@ -20,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const base = getProject(slug);
   if (!base || !isLang(lang)) return {};
   const p = localize(base, lang);
-  return { title: `${p.name}, ${p.location}`, description: p.blurb, openGraph: { images: [p.cover] } };
+  return { title: `${p.name}, ${p.location}`, description: `${p.blurb} ${p.type} · ${p.area} · ${p.style}.`, alternates: { canonical: `/${lang}/projects/${slug}`, languages: { en: `/en/projects/${slug}`, ar: `/ar/projects/${slug}` } }, openGraph: { images: [p.cover] } };
 }
 
 /* Three hero treatments rotate by project (full-bleed / split / centred over a contained cover);
@@ -37,13 +40,16 @@ export default async function ProjectPage({ params }: Props) {
   const f = t.project.facts;
   const facts = [[f.type, p.type], [f.area, p.area], [f.rooms, `${p.images.length}`], [f.year, p.year], [f.style, p.style], [f.scope, p.scope]];
   const cover = p.images.find((i) => i.src === p.cover && i.w >= i.h) ?? p.images.find((i) => i.w >= i.h) ?? p.images[0];
+  const video = projectVideo[p.slug];
+  const crumbs = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Studio Baikal", item: `https://baikalstudio.com/${lang}` }, { "@type": "ListItem", position: 2, name: t.project.all, item: `https://baikalstudio.com/${lang}/projects` }, { "@type": "ListItem", position: 3, name: p.name, item: `https://baikalstudio.com/${lang}/projects/${p.slug}` }] };
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   const back = <Link href={`/${lang}/projects`} className={`${u} inline-block py-3 opacity-70`}>{t.project.all}</Link>;
   return (
     <PageShell lang={lang} dark={v !== 1}>
+      <JsonLd lang={lang} extra={[crumbs]} />
       {v === 0 && (
         <section className="relative h-[92svh] overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
-          <Image src={p.cover} alt={`${p.name}, ${p.location}`} fill priority sizes="100vw" className="ken object-cover" />
+          <Clip src={video} poster={p.cover} alt={`${p.name}, ${p.location}`} priority className={`absolute inset-0 ${video ? "" : "ken"}`} />
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--deep)] via-[var(--deep)]/30 to-transparent" />
           <div className="hero-in absolute inset-x-0 bottom-0 px-5 pb-10 md:px-10 md:pb-14">
             {back}
@@ -75,7 +81,7 @@ export default async function ProjectPage({ params }: Props) {
             <h1 className="display mx-auto max-w-5xl text-6xl leading-[1.02] rtl:leading-[1.3] md:text-9xl">{p.name}</h1>
             <p className="mt-4 text-sm uppercase tracking-[0.18em] rtl:tracking-normal text-[var(--surface)]/75">{p.location} · {p.style}</p>
           </div>
-          <MaskReveal className="relative mx-auto mt-12 max-w-6xl translate-y-16"><Image src={cover.src} alt={`${p.name}, ${cover.room}`} width={cover.w} height={cover.h} priority sizes="(min-width:1024px) 72rem, 100vw" className="h-auto w-full" /></MaskReveal>
+          <MaskReveal className="relative mx-auto mt-12 max-w-6xl translate-y-16">{video ? <Clip src={video} poster={cover.src} alt={`${p.name}, ${cover.room}`} priority className="aspect-[16/9] w-full" /> : <Image src={cover.src} alt={`${p.name}, ${cover.room}`} width={cover.w} height={cover.h} priority sizes="(min-width:1024px) 72rem, 100vw" className="h-auto w-full" />}</MaskReveal>
         </section>
       )}
 

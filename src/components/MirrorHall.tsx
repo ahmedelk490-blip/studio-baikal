@@ -41,9 +41,8 @@ export function MirrorHall({ projects, t, lang }: { projects: Project[]; t: Dict
   const cur = projects[a];
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   return (
-    <section ref={sec} id="projects" data-depth={t.gauge.projects} data-meters="80 m" data-deep="1" className="relative overflow-hidden bg-[radial-gradient(ellipse_at_50%_30%,#17252c,#05080A_72%)] px-5 py-16 text-[var(--surface)] md:px-10 md:py-24">
+    <section ref={sec} id="projects" aria-label={t.strata.title} data-depth={t.gauge.projects} data-meters="80 m" data-deep="1" className="relative overflow-hidden bg-[radial-gradient(ellipse_at_50%_30%,#17252c,#05080A_72%)] px-5 py-16 text-[var(--surface)] md:px-10 md:py-24">
       {/* no heading: the hall itself opens the section; only the way to every project stays, small */}
-      <h2 className="sr-only">{t.strata.title}</h2>
       <div className="flex justify-end">
         <Link href={`/${lang}/projects`} className="inline-flex min-h-11 items-center gap-2 text-sm text-[var(--surface)]/75 transition-colors [@media(hover:hover)]:hover:text-[var(--surface)]">{t.project.all} <span aria-hidden>{lang === "ar" ? "←" : "→"}</span></Link>
       </div>

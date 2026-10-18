@@ -5,12 +5,12 @@ import { db } from "@/lib/db";
 import { can } from "@/lib/perm";
 import { adminDict } from "@/lib/admin-i18n";
 import { createProject } from "../../actions";
-import { Notice, btn, btnGhost, card, inp, fmtDate } from "@/components/admin/ui";
+import { Notice, btn, btnGhost, card, inp, fmtDate, PageHead } from "@/components/admin/ui";
 
 // Per-request admin page (session + live data): block on the server, no prerendered shell.
 export const instant = false;
 
-type Props = { params: Promise<{ lang: string }>; searchParams: Promise<{ msg?: string; q?: string; st?: string }> };
+type Props = { params: Promise<{ lang: string }>; searchParams: Promise<{ msg?: string; q?: string; st?: string; new?: string }> };
 type Row = { id: number; slug: string; status: string; featured: number; category: string; en: string; ar: string; updated_at: string; thumb: string | null; n: number };
 
 /* Projects: one card per project (main image, status, photo count) with direct buttons to its
@@ -31,10 +31,9 @@ export default async function Projects({ params, searchParams }: Props) {
   return (
     <>
       <Notice msg={sp.msg} a={a} lang={lang} />
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <h1 className="display text-4xl">{a.projects}</h1>
+      <PageHead title={a.projects} desc={a.d_projects}>
         {can(u.role, "projects.edit") && (
-          <details id="new" className="group relative">
+          <details id="new" open={sp.new === "1"} className="group relative">
             <summary className={`${btn} cursor-pointer list-none`}>+ {a.newProject}</summary>
             <form action={createProject} className={`${card} absolute end-0 z-20 mt-2 grid w-[min(92vw,26rem)] gap-3 shadow-xl`}>
               <input type="hidden" name="lang" value={lang} />
@@ -44,8 +43,8 @@ export default async function Projects({ params, searchParams }: Props) {
             </form>
           </details>
         )}
-      </div>
-      <div className="mt-6 flex flex-wrap items-center gap-2">
+      </PageHead>
+      <div className="flex flex-wrap items-center gap-2">
         {chip("", a.all, all.length)}
         {chip("published", a.published, all.filter((r) => r.status === "published").length)}
         {chip("draft", a.drafts, all.filter((r) => r.status === "draft").length)}

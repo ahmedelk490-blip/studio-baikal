@@ -26,3 +26,28 @@ export function Notice({ msg, a, lang }: { msg?: string; a: AdminDict; lang: str
 }
 export const fmtDate = (iso: string | null, lang: string) => (iso ? new Date(iso).toLocaleString(lang === "ar" ? "ar-EG" : "en-GB", { dateStyle: "medium", timeStyle: "short" }) : "—");
 export const fmtSize = (b: number) => (b > 1e6 ? `${(b / 1e6).toFixed(1)} MB` : `${Math.round(b / 1e3)} KB`);
+
+/* One header for every admin page: title, what the page is for, and its main actions. */
+export function PageHead({ title, desc, children }: { title: string; desc?: string; children?: React.ReactNode }) {
+  return (
+    <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[var(--ink)]/10 pb-5">
+      <div className="min-w-0">
+        <h1 className="display text-3xl md:text-4xl">{title}</h1>
+        {desc && <p className="mt-1.5 text-sm text-[var(--muted)]">{desc}</p>}
+      </div>
+      {children && <div className="flex flex-wrap items-center gap-2">{children}</div>}
+    </div>
+  );
+}
+
+/* Audit actions in plain words for the activity list. */
+const acts: Record<string, [string, string]> = {
+  "login": ["signed in", "سجّل الدخول"], "login.fail": ["failed sign-in", "محاولة دخول فاشلة"], "logout": ["signed out", "سجّل الخروج"], "logout.all": ["signed out everywhere", "خرج من كل الأجهزة"],
+  "project.create": ["created a project", "أضاف مشروعًا"], "project.save": ["edited a project", "عدّل مشروعًا"], "project.delete": ["deleted a project", "حذف مشروعًا"], "project.cover": ["changed a main image", "غيّر الصورة الرئيسية"], "project.seo": ["edited project SEO", "عدّل SEO مشروع"],
+  "gallery.add": ["added photos", "أضاف صورًا"], "gallery.upload": ["uploaded a photo to a project", "رفع صورة لمشروع"], "gallery.up": ["reordered photos", "رتّب الصور"], "gallery.down": ["reordered photos", "رتّب الصور"], "gallery.remove": ["removed a photo", "أزال صورة"], "gallery.save": ["renamed a photo", "عدّل اسم صورة"],
+  "media.upload": ["uploaded a file", "رفع ملفًا"], "media.update": ["edited a file", "عدّل ملفًا"], "media.delete": ["deleted a file", "حذف ملفًا"],
+  "inquiry.update": ["updated an inquiry", "حدّث استفسارًا"], "inquiries.export": ["exported inquiries", "صدّر الاستفسارات"],
+  "user.create": ["added a user", "أضاف مستخدمًا"], "user.update": ["edited a user", "عدّل مستخدمًا"], "user.password": ["changed password", "غيّر كلمة المرور"], "user.bootstrap": ["created the first admin", "أنشأ أول مدير"],
+  "settings.save": ["edited site settings", "عدّل إعدادات الموقع"], "seo.save": ["edited page SEO", "عدّل SEO صفحة"], "redirect.create": ["added a redirect", "أضاف تحويلًا"], "redirect.delete": ["removed a redirect", "حذف تحويلًا"], "revision.restore": ["restored a version", "استرجع نسخة"],
+};
+export const actLabel = (k: string, lang: string) => acts[k]?.[lang === "ar" ? 1 : 0] ?? k;

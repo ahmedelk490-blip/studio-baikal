@@ -3,7 +3,7 @@ import { readSettings } from "@/lib/site";
 import { adminDict } from "@/lib/admin-i18n";
 import { saveSettings } from "../../actions";
 import { Revisions } from "@/components/admin/Revisions";
-import { Notice, btn, card, inp } from "@/components/admin/ui";
+import { Notice, btn, card, inp, PageHead } from "@/components/admin/ui";
 
 // Per-request admin page (session + live data): block on the server, no prerendered shell.
 export const instant = false;
@@ -24,8 +24,8 @@ export default async function Settings({ params, searchParams }: Props) {
   return (
     <>
       <Notice msg={msg} a={a} lang={lang} />
-      <h1 className="display text-4xl">{a.settings}</h1>
-      <form key={JSON.stringify(s)} action={saveSettings} className="mt-6 grid gap-6">
+      <PageHead title={a.settings} desc={a.d_settings} />
+      <form key={JSON.stringify(s)} action={saveSettings} className="grid gap-6">
         <input type="hidden" name="lang" value={lang} />
         <fieldset className={`${card} grid gap-4 sm:grid-cols-2`}>
           {f(a.phone, "phone", s.phone, { required: true, dir: "ltr", maxLength: 40 })}

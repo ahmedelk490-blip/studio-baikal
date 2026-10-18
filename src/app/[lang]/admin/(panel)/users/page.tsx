@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { roles } from "@/lib/perm";
 import { adminDict } from "@/lib/admin-i18n";
 import { createUser, updateUser } from "../../actions";
-import { Notice, btn, btnGhost, card, inp, fmtDate } from "@/components/admin/ui";
+import { Notice, btn, btnGhost, card, inp, fmtDate, PageHead } from "@/components/admin/ui";
 
 // Per-request admin page (session + live data): block on the server, no prerendered shell.
 export const instant = false;
@@ -23,8 +23,8 @@ export default async function Users({ params, searchParams }: Props) {
   return (
     <>
       <Notice msg={msg} a={a} lang={lang} />
-      <h1 className="display text-4xl">{a.users}</h1>
-      <ul className="mt-6 grid gap-3">
+      <PageHead title={a.users} desc={a.d_users} />
+      <ul className="grid gap-3">
         {rows.map((r) => (
           <li key={r.id} className={card}>
             <form key={`${r.role}|${r.active}`} action={updateUser} className="grid items-end gap-3 md:grid-cols-[1.4fr_1fr_auto_1fr_auto]">

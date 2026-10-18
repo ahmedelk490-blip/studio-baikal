@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { seoPages } from "@/lib/site";
 import { adminDict } from "@/lib/admin-i18n";
 import { savePageSeo } from "../../actions";
-import { Notice, btn, card, inp } from "@/components/admin/ui";
+import { Notice, btn, card, inp, PageHead } from "@/components/admin/ui";
 
 // Per-request admin page (session + live data): block on the server, no prerendered shell.
 export const instant = false;
@@ -23,9 +23,8 @@ export default async function Seo({ params, searchParams }: Props) {
   return (
     <>
       <Notice msg={msg} a={a} lang={lang} />
-      <h1 className="display text-4xl">{a.seo}</h1>
-      <p className="mt-2 text-sm text-[var(--muted)]">{a.keepEmpty}</p>
-      <div className="mt-6 grid gap-6">
+      <PageHead title={a.seo} desc={`${a.d_seo} ${a.keepEmpty}`} />
+      <div className="grid gap-6">
         {seoPages.map((page) => (
           <form key={page + rows.filter((r) => r.page === page).map((r) => r.title + r.description + r.image + r.noindex).join("|")} id={page} action={savePageSeo} className={`${card} grid gap-4`}>
             <input type="hidden" name="lang" value={lang} /><input type="hidden" name="page" value={page} />

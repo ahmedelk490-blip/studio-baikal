@@ -5,7 +5,7 @@ import { can } from "@/lib/perm";
 import { adminDict } from "@/lib/admin-i18n";
 import { deleteMedia, updateMedia } from "../../actions";
 import { ConfirmButton, Uploader } from "@/components/admin/client";
-import { Notice, btn, btnGhost, card, inp, fmtDate, fmtSize } from "@/components/admin/ui";
+import { Notice, btn, btnGhost, card, inp, fmtDate, fmtSize, PageHead } from "@/components/admin/ui";
 
 // Per-request admin page (session + live data): block on the server, no prerendered shell.
 export const instant = false;
@@ -26,8 +26,8 @@ export default async function Media({ params, searchParams }: Props) {
   return (
     <>
       <Notice msg={sp.msg} a={a} lang={lang} />
-      <h1 className="display text-4xl">{a.media} <span className="text-base text-[var(--muted)]" dir="ltr">({rows.length})</span></h1>
-      {edit && <div className="mt-6"><Uploader a={a} /></div>}
+      <PageHead title={a.media} desc={a.d_media} />
+      {edit && <div><Uploader a={a} /></div>}
       <form className="mt-6 flex gap-3"><input name="q" defaultValue={q} placeholder={a.search} aria-label={a.search} className={`${inp} max-w-xs`} /><button className={btn}>{a.search}</button></form>
       {rows.length === 0 ? <p className="mt-8 text-sm text-[var(--muted)]">{a.none}</p> : (
         <ul className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

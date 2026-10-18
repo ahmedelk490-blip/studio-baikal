@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { adminDict } from "@/lib/admin-i18n";
 import { createRedirect, deleteRedirect } from "../../actions";
 import { ConfirmButton } from "@/components/admin/client";
-import { Notice, btn, card, inp, fmtDate } from "@/components/admin/ui";
+import { Notice, btn, card, inp, fmtDate, PageHead } from "@/components/admin/ui";
 
 // Per-request admin page (session + live data): block on the server, no prerendered shell.
 export const instant = false;
@@ -22,8 +22,8 @@ export default async function Redirects({ params, searchParams }: Props) {
   return (
     <>
       <Notice msg={msg} a={a} lang={lang} />
-      <h1 className="display text-4xl">{a.redirects}</h1>
-      <form action={createRedirect} className={`${card} mt-6 grid gap-4 md:grid-cols-[1fr_1fr_auto_auto] md:items-end`}>
+      <PageHead title={a.redirects} desc={a.d_redirects} />
+      <form action={createRedirect} className={`${card} grid gap-4 md:grid-cols-[1fr_1fr_auto_auto] md:items-end`}>
         <input type="hidden" name="lang" value={lang} />
         <label className="grid gap-1.5 text-sm">{a.from}<input name="src" required placeholder="/old-page" dir="ltr" className={inp} /></label>
         <label className="grid gap-1.5 text-sm">{a.to}<input name="dest" required placeholder="/en/projects" dir="ltr" className={inp} /></label>

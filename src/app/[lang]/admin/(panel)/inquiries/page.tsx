@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { can } from "@/lib/perm";
 import { adminDict } from "@/lib/admin-i18n";
 import { updateInquiry } from "../../actions";
-import { Notice, btn, btnGhost, card, inp, fmtDate } from "@/components/admin/ui";
+import { Notice, btn, btnGhost, card, inp, fmtDate, PageHead } from "@/components/admin/ui";
 
 // Per-request admin page (session + live data): block on the server, no prerendered shell.
 export const instant = false;
@@ -36,11 +36,10 @@ export default async function Inquiries({ params, searchParams }: Props) {
   return (
     <>
       <Notice msg={sp.msg} a={a} lang={lang} />
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <h1 className="display text-4xl">{a.inquiries} <span className="text-base text-[var(--muted)]" dir="ltr">({total})</span></h1>
-        {can(u.role, "inquiries.export") && <a href={`/api/admin/inquiries${qs({})}`} className={btnGhost}>{a.exportCsv}</a>}
-      </div>
-      <form className="mt-6 flex flex-wrap gap-3">
+      <PageHead title={a.inquiries} desc={a.d_inquiries}>
+        {can(u.role, "inquiries.export") && <a href={`/api/admin/inquiries${qs({})}`} className={btnGhost}>{a.exportCsv} <span className="ms-1 opacity-60" dir="ltr">({total})</span></a>}
+      </PageHead>
+      <form className="flex flex-wrap gap-3">
         <input name="q" defaultValue={q} placeholder={a.search} aria-label={a.search} className={`${inp} max-w-xs`} />
         <select name="st" defaultValue={st} aria-label={a.status} className={`${inp} max-w-[12rem]`}><option value="">{a.all}</option>{STATUSES.map((s) => <option key={s} value={s}>{a[`st_${s}`]}</option>)}</select>
         <button className={btn}>{a.search}</button>

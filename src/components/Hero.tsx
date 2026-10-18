@@ -82,7 +82,7 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
       </div>
 
       {/* the film names no room, so only the descend cue sits on the bottom edge */}
-      <p className={`absolute inset-x-5 bottom-6 hidden items-center justify-end gap-2 opacity-70 ${u} md:inset-x-10 md:flex`} aria-hidden><span className="sink inline-block">&#8595;</span> {t.hero.descend}</p>
+      <p className={`absolute inset-x-5 bottom-6 hidden items-center justify-end gap-2 opacity-70 ${u} md:inset-x-10 md:flex md:pe-20`} aria-hidden><span className="sink inline-block">&#8595;</span> {t.hero.descend}</p>
     </section>
   );
 }

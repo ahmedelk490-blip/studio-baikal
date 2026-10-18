@@ -1,6 +1,29 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "studio-baikal", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev", "--", "-p", "3900"], "port": 3900 }
+    {
+      "name": "studio-baikal",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "-p",
+        "3900"
+      ],
+      "port": 3900
+    },
+    {
+      "name": "studio-baikal-light",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev:light"
+      ],
+      "port": 3902,
+      "env": {
+        "NEXT_PUBLIC_HERO": "light"
+      }
+    }
   ]
 }

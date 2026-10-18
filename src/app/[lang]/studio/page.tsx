@@ -5,6 +5,10 @@ import { PageShell } from "@/components/PageShell";
 import { StudioStory } from "@/components/StudioStory";
 import { ShapeCycle } from "@/components/ShapeCycle";
 import { Btn } from "@/components/Btn";
+import { Materials } from "@/components/Materials";
+import { Rooms } from "@/components/Rooms";
+import { GrowFrame } from "@/components/GrowFrame";
+import { extras } from "@/data/extras";
 import { dict, isLang } from "@/data/i18n";
 import { pages } from "@/data/pages";
 import { withSeo } from "@/lib/site";
@@ -29,6 +33,10 @@ export default async function Page({ params }: Props) {
         </div>
       </section>
       <StudioStory s={s} t={t} />
+      {/* the studio's taste: its materials, the rooms it returns to, then one room opening to full screen */}
+      <Materials t={t} />
+      <Rooms t={t} />
+      <GrowFrame c={extras[lang].grow} src="/projects/el-nakhil-villa/01.webp" />
       {/* two-column close: the invitation on one side, a Baikal arch cycling finished rooms on the other */}
       <section className="bg-[var(--surface)] px-5 py-16 text-[var(--ink)] md:px-10 md:py-24">
         <div className="grid items-center gap-10 md:grid-cols-12">

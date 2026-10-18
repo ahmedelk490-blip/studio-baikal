@@ -44,13 +44,14 @@ export default async function Page({ params }: Props) {
       <BuildLayers c={extras[lang].layers} />
       <section className="bg-[var(--deep)] px-5 py-16 text-[var(--surface)] md:px-10 md:py-24">
         <div className="grid gap-10 md:grid-cols-12">
-          <div className="md:col-span-4">
-            <h2 className="display text-4xl md:text-6xl">{s.faqTitle}</h2>
-            <ShapeCycle imgs={faqRooms} every={4200} sizes="(min-width:768px) 30vw, 70vw" className="mt-10 hidden aspect-square w-full max-w-xs rounded-full ring-1 ring-[var(--bronze)]/40 md:block" />
+          {/* the title and its round window stay beside the questions while they are read */}
+          <div className="self-start md:sticky md:top-28 md:col-span-4">
+            <h2 className="display text-4xl md:text-5xl">{s.faqTitle}</h2>
+            <ShapeCycle imgs={faqRooms} every={4200} sizes="(min-width:768px) 22vw, 70vw" className="mt-8 hidden aspect-square w-full max-w-[240px] rounded-full ring-1 ring-[var(--bronze)]/40 md:block" />
           </div>
           <div className="md:col-span-8"><Faq items={s.faq} /></div>
         </div>
-        <div className="mt-12"><Btn href={`/${lang}/contact`}>{s.cta}</Btn></div>
+        <div className="mt-16 border-t border-[var(--surface)]/10 pt-10"><Btn href={`/${lang}/contact`}>{s.cta}</Btn></div>
       </section>
     </PageShell>
   );

@@ -31,9 +31,9 @@ export function LitByDegrees({ t }: { t: Dict }) {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[var(--deeper)] to-transparent" />
       <div className="absolute inset-x-5 bottom-10 md:inset-x-10 md:bottom-14">
         <p className={`${u} text-[var(--bronze)]`}>{t.lit.eyebrow}</p>
-        <div className="relative mt-3 h-[2.4em] text-4xl md:text-6xl">
-          <h2 className="t-a display absolute inset-x-0 top-0">{t.lit.t1}</h2>
-          <h2 className="t-b display absolute inset-x-0 top-0 opacity-0">{t.lit.t2}</h2>
+        <div className="relative mt-3 grid text-4xl md:text-6xl">
+          <h2 className="t-a display col-start-1 row-start-1">{t.lit.t1}</h2>
+          <h2 className="t-b display col-start-1 row-start-1 opacity-0">{t.lit.t2}</h2>
         </div>
         <div className="mt-4 flex items-end justify-between gap-6">
           <p className="max-w-md text-sm text-[var(--surface)]/75">{t.lit.note}</p>

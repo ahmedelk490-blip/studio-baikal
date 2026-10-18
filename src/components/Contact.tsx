@@ -74,8 +74,8 @@ export function Contact({ t }: { t: Dict }) {
           ) : (
             <form onSubmit={submit}>
               <p className={`${lab} text-[var(--bronze)]`}>{t.nav.book}</p>
-              <label className="mt-6 block border-b border-[var(--ink)]/15 pb-3"><span className={`${lab} text-[var(--muted)]`}>{c.name}</span><input name="name" required autoComplete="name" className="mt-2 w-full bg-transparent text-xl font-medium outline-none" /></label>
-              <label className="mt-6 block border-b border-[var(--ink)]/15 pb-3"><span className={`${lab} text-[var(--muted)]`}>{c.whatsapp}</span><input name="whatsapp" required inputMode="tel" autoComplete="tel" dir="ltr" className="mt-2 w-full bg-transparent text-xl font-medium outline-none rtl:text-right" /></label>
+              <label className="mt-6 block border-b border-[var(--ink)]/15 pb-3"><span className={`${lab} text-[var(--muted)]`}>{c.name}</span><input name="name" required autoComplete="name" className="mt-2 min-h-11 w-full bg-transparent text-xl font-medium outline-none" /></label>
+              <label className="mt-6 block border-b border-[var(--ink)]/15 pb-3"><span className={`${lab} text-[var(--muted)]`}>{c.whatsapp}</span><input name="whatsapp" required inputMode="tel" autoComplete="tel" dir="ltr" className="mt-2 min-h-11 w-full bg-transparent text-xl font-medium outline-none rtl:text-right" /></label>
               <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
               <fieldset className="mt-6"><legend className={`${lab} text-[var(--muted)]`}>{c.size}</legend>
                 <div className="mt-3 flex flex-wrap gap-2">{c.sizes.map((s) => <button type="button" key={s} onClick={() => setSize(s)} aria-pressed={size === s} className={chip(size === s)}>{s}</button>)}</div>

@@ -61,8 +61,8 @@ export function ContactWizard({ t, p }: { t: Dict; p: PagesDict["contact"] }) {
                     </button>))}</div></>)}
                   {step === 2 && (<>
                     <p className="flex flex-wrap gap-2 text-sm"><span className="rounded-full bg-[var(--mist)] px-3 py-1.5">{size}</span><span className="rounded-full bg-[var(--mist)] px-3 py-1.5">{need}</span></p>
-                    <label className="mt-6 block border-b border-[var(--ink)]/15 pb-3"><span className={`${u} text-[var(--muted)]`}>{c.name}</span><input name="name" required autoComplete="name" className="mt-2 w-full bg-transparent text-xl font-medium outline-none" /></label>
-                    <label className="mt-6 block border-b border-[var(--ink)]/15 pb-3"><span className={`${u} text-[var(--muted)]`}>{c.whatsapp}</span><input name="whatsapp" required inputMode="tel" autoComplete="tel" dir="ltr" className="mt-2 w-full bg-transparent text-xl font-medium outline-none rtl:text-right" /></label>
+                    <label className="mt-6 block border-b border-[var(--ink)]/15 pb-3"><span className={`${u} text-[var(--muted)]`}>{c.name}</span><input name="name" required autoComplete="name" className="mt-2 min-h-11 w-full bg-transparent text-xl font-medium outline-none" /></label>
+                    <label className="mt-6 block border-b border-[var(--ink)]/15 pb-3"><span className={`${u} text-[var(--muted)]`}>{c.whatsapp}</span><input name="whatsapp" required inputMode="tel" autoComplete="tel" dir="ltr" className="mt-2 min-h-11 w-full bg-transparent text-xl font-medium outline-none rtl:text-right" /></label>
                     <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
                     <button disabled={state === "sending"} className="btn btn-primary mt-8 w-full justify-between disabled:opacity-60"><span className="btn-roll"><span>{state === "sending" ? c.sending : c.send}</span><span aria-hidden>{state === "sending" ? c.sending : c.send}</span></span><span className="btn-ico" aria-hidden /></button>
                     {state === "error" && <p className="mt-3 text-sm text-[#9a4a2a]">{c.error}</p>}

@@ -180,3 +180,9 @@ html.is-deep { color-scheme: dark; }
 @keyframes popIn { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
 .popup { animation: pageIn .25s ease-out both; } .popup-img { animation: popIn .4s cubic-bezier(.2,.7,.2,1) both; }
 @media (prefers-reduced-motion: reduce) { .arch-slide, .popup, .popup-img { animation: none; } }
+/* mobile menu: the sheet wipes down from the header and the links rise one after another; reversed on close */
+.mnav { clip-path: inset(0 0 100% 0); visibility: hidden; transition: clip-path .7s cubic-bezier(.76,0,.24,1), visibility 0s .7s; }
+.mnav.is-open { clip-path: inset(0 0 0 0); visibility: visible; transition: clip-path .7s cubic-bezier(.76,0,.24,1), visibility 0s; }
+.mnav-link { opacity: 0; transform: translateY(24px); transition: opacity .5s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+.mnav.is-open .mnav-link { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .mnav, .mnav-link { transition: none !important; } }

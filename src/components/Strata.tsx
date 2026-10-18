@@ -13,7 +13,9 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
   const root = useRef<HTMLElement>(null);
   const track = useRef<HTMLDivElement>(null);
   const [f, setF] = useState(0);
-  const pick = (p: Project) => p.images.find((i) => i.h > i.w) ?? p.images.find((i) => i.src === p.cover) ?? p.images[0];
+  const step = useRef<(d: number) => void>(() => {});
+  // portrait renders only when they are sharp enough (some are 559px wide); else the 1920px cover
+  const pick = (p: Project) => p.images.find((i) => i.h > i.w && i.w >= 1000) ?? p.images.find((i) => i.src === p.cover) ?? p.images[0];
 
   useGSAP(() => {
     const el = track.current!;
@@ -21,9 +23,19 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
     const focus = (b: number) => { frames.forEach((fr, k) => fr.classList.toggle("is-focus", k === b)); setF(b); };
     gsap.matchMedia().add({ desk: "(min-width: 768px) and (prefers-reduced-motion: no-preference)", phone: "(max-width: 767px)" }, (ctx) => {
       if (ctx.conditions!.phone) {
-        const mark = () => { const c = innerWidth / 2; let b = 0, d = 1e9; frames.forEach((fr, i) => { const r = fr.getBoundingClientRect(); const x = Math.abs((r.left + r.right) / 2 - c); if (x < d) { d = x; b = i; } }); focus(b); };
-        el.addEventListener("scroll", mark, { passive: true }); mark();
-        return () => el.removeEventListener("scroll", mark);
+        // phones: swipe row that also plays by itself; a touch or an arrow pauses the autoplay for 6 s
+        let cur = 0, hold = 0;
+        const mark = () => { const c = innerWidth / 2; let b = 0, d = 1e9; frames.forEach((fr, i) => { const r = fr.getBoundingClientRect(); const x = Math.abs((r.left + r.right) / 2 - c); if (x < d) { d = x; b = i; } }); if (b !== cur || !frames[b].classList.contains("is-focus")) { cur = b; focus(b); } };
+        const go = (i: number) => { const r = frames[i].getBoundingClientRect(), e = el.getBoundingClientRect(); el.scrollTo({ left: el.scrollLeft + (r.left + r.width / 2) - (e.left + e.width / 2), behavior: "smooth" }); };
+        const pause = () => { hold = Date.now() + 6000; };
+        step.current = (d) => { pause(); go((cur + d + frames.length) % frames.length); };
+        const auto = matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : window.setInterval(() => {
+          const r = el.getBoundingClientRect();
+          if (Date.now() < hold || document.hidden || r.bottom < 0 || r.top > innerHeight) return;
+          go((cur + 1) % frames.length);
+        }, 3800);
+        el.addEventListener("scroll", mark, { passive: true }); el.addEventListener("touchstart", pause, { passive: true }); el.addEventListener("pointerdown", pause); mark();
+        return () => { clearInterval(auto); step.current = () => {}; el.removeEventListener("scroll", mark); el.removeEventListener("touchstart", pause); el.removeEventListener("pointerdown", pause); };
       }
       if (!ctx.conditions!.desk) return;
       const FAN = 28, STEP_Z = 30;
@@ -80,11 +92,15 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
             })}
           </div>
         </div>
-        <Link href={`/${lang}/projects/${p.slug}`} className="group relative z-[3] mx-auto block px-5 pb-8 text-center md:pb-10" aria-live="polite">
+        <div dir="ltr" className="relative z-[3] flex items-start justify-center gap-2 px-3 pb-8 md:px-5 md:pb-10">
+        <button type="button" onClick={() => step.current(-1)} aria-label={lang === "ar" ? "المشروع السابق" : "Previous project"} className="mt-8 grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--surface)]/30 md:hidden"><span aria-hidden>&#8592;</span></button>
+        <Link href={`/${lang}/projects/${p.slug}`} dir={t.dir} className="group block min-w-0 text-center" aria-live="polite">
           <span key={f} className="hero-in block"><h3 className="display text-2xl transition-colors group-hover:text-[var(--bronze)] md:text-3xl">{p.name}</h3>
           <p className={`${u} mt-1 text-[var(--bronze)]`}>{p.type} · <span dir="ltr">{p.area}</span> · {p.location}</p></span>
           <span className={`${u} mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--bronze)]/70 px-5 transition-colors group-hover:bg-[var(--bronze)] group-hover:text-[#15130F]`}>{t.project.open} {lang === "ar" ? "المشروع" : "project"} <span aria-hidden className="rtl:-scale-x-100">&#8594;</span></span>
         </Link>
+        <button type="button" onClick={() => step.current(1)} aria-label={lang === "ar" ? "المشروع التالي" : "Next project"} className="mt-8 grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--surface)]/30 md:hidden"><span aria-hidden>&#8594;</span></button>
+        </div>
       </div>
     </section>
   );

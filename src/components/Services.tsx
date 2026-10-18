@@ -1,27 +1,39 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { Btn } from "./Btn";
 import type { Dict, Lang } from "@/data/i18n";
 
 const srcs = ["/projects/october-250/05.webp", "/projects/el-nakhil-villa/01.webp", "/projects/tagamo3-115/04.webp"];
 
-/* 500 m — expanding panels (light room). Three photo panels; the active one widens to 3x,
-   its copy fades in and a bronze timer runs. Autoplays; hover or tap takes over. */
+/* 500 m — expanding panels on desktop (the active one widens to 3x, its copy fades in, a bronze timer runs);
+   phones get a pinned slide through one shape-changing window instead. */
 export function Services({ t, lang }: { t: Dict; lang: Lang }) {
   const [a, setA] = useState(0);
   const [hold, setHold] = useState(false);
-  const [prev, setPrev] = useState(0);
-  const until = useRef(0);
-  // phones/tablets: one card at a time; a tap or swipe takes over for 8 s, then it plays on
-  const go = (k: number) => { const n = items.length, to = ((k % n) + n) % n; setA((cur) => { if (cur !== to) setPrev(cur); return to; }); };
-  const take = (k: number) => { until.current = Date.now() + 8000; go(k); };
-  const down = useRef<number | null>(null);
   const items = t.services.items;
   const sec = useRef<HTMLElement>(null);
-  useGSAP(() => { gsap.matchMedia().add("(min-width: 1024px)", () => { ScrollTrigger.create({ trigger: sec.current, start: "top top", end: "+=" + items.length * 45 + "%", pin: true, anticipatePin: 1, onUpdate: (st) => setA(Math.min(items.length - 1, Math.floor(st.progress * items.length))) }); }); }, { scope: sec });
-  useEffect(() => { if (matchMedia("(min-width: 1024px)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return; const x = setInterval(() => { if (Date.now() > until.current && !document.hidden) setA((k) => { setPrev(k); return (k + 1) % items.length; }); }, 4400); return () => clearInterval(x); }, [items.length]);
+  const tl = useRef<gsap.core.Timeline | null>(null);
+  // phones/tablets: a tap on a name scrolls the pinned slide to that service
+  const take = (k: number) => { const st = tl.current?.scrollTrigger; if (st) window.scrollTo({ top: st.start + ((st.end - st.start) * k) / (items.length - 1) + 2, behavior: "smooth" }); };
+  useGSAP(() => {
+    // phones/tablets: the block pins under the header; scrolling slides the three rooms through one window
+    // whose shape turns arch -> circle -> rounded frame, with a light parallax inside each room
+    gsap.matchMedia().add("(max-width: 1023px) and (prefers-reduced-motion: no-preference)", () => {
+      const win = sec.current!.querySelector<HTMLElement>(".svc-win")!;
+      const shapes = () => { const W = win.offsetWidth, H = win.offsetHeight, D = Math.min(W, H) * 0.92, y = (H - D) / 2, x = (W - D) / 2;
+        return [`inset(0px 0px 0px 0px round ${W / 2}px ${W / 2}px 14px 14px)`, `inset(${y}px ${x}px ${y}px ${x}px round ${D / 2}px ${D / 2}px ${D / 2}px ${D / 2}px)`, `inset(${H * 0.06}px 0px ${H * 0.06}px 0px round 22px 22px 22px 22px)`]; };
+      const n = items.length - 1;
+      tl.current = gsap.timeline({ scrollTrigger: { trigger: ".svc-phone", start: "top 72px", end: "+=" + n * 110 + "%", pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true, onUpdate: (st) => setA(Math.round(st.progress * n)) } })
+        .fromTo(win, { clipPath: () => shapes()[0] }, { clipPath: () => shapes()[1], ease: "power2.inOut", duration: 1 }, 0)
+        .to(win, { clipPath: () => shapes()[2], ease: "power2.inOut", duration: 1 }, 1)
+        .fromTo(".svc-strip", { xPercent: 0 }, { xPercent: -100 * (n / (n + 1)), ease: "power2.inOut", duration: n }, 0)
+        .fromTo(".svc-par", { xPercent: -10 }, { xPercent: 10, ease: "none", duration: n }, 0);
+      return () => { tl.current = null; };
+    });
+    gsap.matchMedia().add("(min-width: 1024px)", () => { ScrollTrigger.create({ trigger: sec.current, start: "top top", end: "+=" + items.length * 45 + "%", pin: true, anticipatePin: 1, onUpdate: (st) => setA(Math.min(items.length - 1, Math.floor(st.progress * items.length))) }); }); 
+  }, { scope: sec });
   const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
   return (
     <section ref={sec} id="services" data-depth={t.gauge.services} data-meters="500 m" className="bg-[var(--surface)] text-[var(--ink)] lg:h-[100svh] lg:overflow-hidden" onMouseLeave={() => setHold(false)}>
@@ -30,29 +42,28 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
           <div className="md:col-span-7"><p className="eyebrow text-xs uppercase tracking-[0.2em] rtl:tracking-normal text-[var(--bronze)]">{t.gauge.services}</p><h2 className="display mt-3 text-4xl md:text-6xl">{t.services.title}</h2></div>
           <p className="max-w-sm text-sm text-[var(--muted)] md:col-span-5">{t.services.intro}</p>
         </div>
-        {/* phones/tablets: the three names on top with a filling timer, one card below that opens
-            each service through a Baikal shape; swipe or tap to change */}
-        <div className="mt-8 lg:hidden">
+        {/* phones/tablets: names on top, one window the rooms slide through (its shape changes per
+            service), the words under it; the 3D package room is drawn first and swept into the render */}
+        <div className="svc-phone mt-8 bg-[var(--surface)] pb-2 lg:hidden">
           <div className="flex gap-2">
             {items.map((it, k) => (
-              <button key={k} onClick={() => take(k)} aria-current={a === k} className={`relative min-h-11 flex-1 overflow-hidden rounded-full border px-2 text-xs transition-colors duration-500 ${a === k ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--surface)]" : "border-[var(--ink)]/20 text-[var(--ink)]/70"}`}>
-                {t.services.labels[k]}
-                {a === k && <span key={a} className="svc-progress absolute inset-x-3 bottom-1 block h-px bg-[var(--bronze)]" aria-hidden />}
-              </button>
+              <button key={k} onClick={() => take(k)} aria-current={a === k} className={`min-h-11 flex-1 rounded-full border px-2 text-xs transition-colors duration-500 ${a === k ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--surface)]" : "border-[var(--ink)]/20 text-[var(--ink)]/70"}`}>{t.services.labels[k]}</button>
             ))}
           </div>
-          <div className="relative mt-4 h-[30rem] touch-pan-y overflow-hidden rounded-2xl bg-[var(--deep)] text-[var(--surface)]"
-            onPointerDown={(e) => { down.current = e.clientX; }}
-            onPointerUp={(e) => { const x = down.current; down.current = null; if (x === null || Math.abs(e.clientX - x) < 40) return; const fwd = (e.clientX - x < 0) !== (t.dir === "rtl"); take(a + (fwd ? 1 : -1)); }}>
-            <Image src={srcs[prev]} alt="" fill sizes="100vw" className="object-cover" />
-            <div key={a} className={`rv rv-${(a + 2) % 5} absolute inset-0`}><Image src={srcs[a]} alt="" fill sizes="100vw" className="ken object-cover" /></div>
-            <span className="absolute inset-0 bg-gradient-to-t from-[var(--deep)] via-[var(--deep)]/45 to-[var(--deep)]/10" />
-            <div key={`c${a}`} className="hero-in relative flex h-full flex-col justify-end p-6">
-              <span className={`${u} text-[var(--bronze)]`}>{t.services.labels[a]}</span>
-              <span className="display mt-2 block text-3xl">{(items[a] as [string, string, string[]])[0]}</span>
-              <span className="mt-3 block text-sm opacity-90">{(items[a] as [string, string, string[]])[1]}</span>
-              <span className={`${u} mt-4 flex flex-wrap gap-x-4 gap-y-1 opacity-80`}>{(items[a] as [string, string, string[]])[2].map((l) => <span key={l}>{l}</span>)}</span>
+          <div className="svc-win relative mx-auto mt-5 h-[44svh] max-h-[460px] w-full max-w-[560px] overflow-hidden rounded-t-full bg-[var(--deep)]">
+            <div className="svc-strip absolute inset-y-0 left-0 flex" style={{ width: `${items.length * 100}%` }} dir="ltr">
+              {srcs.map((src, k) => (
+                <div key={src} className="relative h-full overflow-hidden" style={{ width: `${100 / items.length}%` }}>
+                  <div className="svc-par absolute -inset-x-[12%] inset-y-0"><Image src={src} alt="" fill sizes="100vw" className="object-cover" /></div>
+                  {k === 0 && <div className="draw-sweep absolute inset-0"><Image src="/brand/drawing-october.webp" alt="" fill sizes="100vw" className="object-cover" /></div>}
+                </div>
+              ))}
             </div>
+          </div>
+          <div key={a} className="hero-in mt-5 min-h-[11rem]">
+            <span className={`${u} text-[var(--bronze)]`}>{t.services.labels[a]}</span>
+            <span className="display mt-1 block text-3xl">{(items[a] as [string, string, string[]])[0]}</span>
+            <span className="mt-2 block text-sm text-[var(--muted)]">{(items[a] as [string, string, string[]])[1]}</span>
           </div>
         </div>
         <div className="mt-10 hidden gap-3 lg:flex lg:h-[58vh] lg:flex-row">

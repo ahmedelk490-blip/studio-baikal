@@ -14,7 +14,7 @@
   "fullWidths": [
     336
   ],
-  "ignore": [
+  "ignore": [".bk-frame", ".bk-fig", ".bk-meta",
     "#projects [dir=ltr] > div > a",
     "#projects [dir=ltr] > div > a *",
     ".ap-hero",

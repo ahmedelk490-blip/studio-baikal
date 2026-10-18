@@ -2,65 +2,88 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { gsap, useGSAP } from "@/lib/gsap";
-import { Btn } from "./Btn";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import type { Project } from "@/data/projects";
 import type { Dict, Lang } from "@/data/i18n";
 
-/* 80 m — project gallery. The page pins and the wheel slides a row of big project photos
-   sideways; the one in front is full size and lit, the others sit back, smaller and dimmer.
-   Each card uses the project's first landscape render, so 16:9 shows the whole room. */
+/* 80 m — the stand: project frames stand one behind the other at an angle; the page pins and the
+   wheel walks them past the centre, where each turns upright, steps forward and lights up while its
+   name changes below. Phones: a native swipe row. Portrait renders first so 3:4 frames keep the room. */
 export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; lang: Lang }) {
-  const sec = useRef<HTMLElement>(null);
+  const root = useRef<HTMLElement>(null);
   const track = useRef<HTMLDivElement>(null);
-  const [a, setA] = useState(0);
-  const n = projects.length;
+  const [f, setF] = useState(0);
+  const pick = (p: Project) => p.images.find((i) => i.h > i.w) ?? p.images.find((i) => i.src === p.cover) ?? p.images[0];
+
   useGSAP(() => {
-    const tr = track.current!, s = sec.current!;
-    const card = () => tr.children[0] as HTMLElement;
-    const step = () => (tr.children[1] as HTMLElement).offsetLeft - card().offsetLeft;
-    const center = () => (s.clientWidth - card().offsetWidth) / 2 - card().offsetLeft;
-    gsap.matchMedia().add("(min-width: 1024px)", () => { gsap.fromTo(tr, { x: () => center() }, { x: () => center() - (n - 1) * step(), ease: "none", immediateRender: true, scrollTrigger: { trigger: s, start: "top top", end: () => "+=" + n * 45 + "%", pin: true, scrub: 0.7, invalidateOnRefresh: true, anticipatePin: 1,
-      onUpdate: (st) => setA(Math.min(n - 1, Math.round(st.progress * (n - 1)))) } }); });
-  }, { scope: sec });
-  const pick = (p: Project) => p.images.find((i) => i.src === p.cover && i.w / i.h > 1.6) ?? p.images.find((i) => i.w / i.h > 1.6) ?? p.images[0];
-  const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
+    const el = track.current!;
+    const frames = gsap.utils.toArray<HTMLElement>(".bk-frame");
+    const focus = (b: number) => { frames.forEach((fr, k) => fr.classList.toggle("is-focus", k === b)); setF(b); };
+    gsap.matchMedia().add({ desk: "(min-width: 768px) and (prefers-reduced-motion: no-preference)", phone: "(max-width: 767px)" }, (ctx) => {
+      if (ctx.conditions!.phone) {
+        const mark = () => { const c = innerWidth / 2; let b = 0, d = 1e9; frames.forEach((fr, i) => { const r = fr.getBoundingClientRect(); const x = Math.abs((r.left + r.right) / 2 - c); if (x < d) { d = x; b = i; } }); focus(b); };
+        el.addEventListener("scroll", mark, { passive: true }); mark();
+        return () => el.removeEventListener("scroll", mark);
+      }
+      if (!ctx.conditions!.desk) return;
+      const FAN = 28, STEP_Z = 30;
+      const mid = (fr: HTMLElement) => fr.offsetLeft + fr.offsetWidth / 2;
+      const span = () => { const c = el.parentElement!.clientWidth / 2; return { from: c - mid(frames[0]), to: c - mid(frames[frames.length - 1]) }; };
+      let focused = -1;
+      const curve = () => {
+        const w = el.parentElement!.clientWidth, x = Number(gsap.getProperty(el, "x")) || 0;
+        let best = 0, bf = -1;
+        frames.forEach((fr, i) => {
+          const n = ((mid(fr) + x) / w) * 2 - 1;
+          const fo = gsap.utils.clamp(0, 1, 1 - Math.abs(n) * 2.1);
+          gsap.set(fr, { rotationY: FAN - fo * (FAN - 4), z: -i * STEP_Z + fo * 120, scale: 1 + fo * 0.06, opacity: 0.72 + fo * 0.28 });
+          if (fo > bf) { bf = fo; best = i; }
+        });
+        if (best !== focused) { focused = best; focus(best); }
+      };
+      gsap.fromTo(el, { x: () => span().from }, { x: () => span().to, ease: "none", immediateRender: true, onUpdate: curve,
+        scrollTrigger: { trigger: root.current, start: "top top", end: () => "+=" + Math.max(900, Math.abs(span().to - span().from) * 1.3), pin: true, scrub: 1, invalidateOnRefresh: true, onRefresh: curve, anticipatePin: 1 } });
+      gsap.from(".bk-fig", { y: 120, opacity: 0, stagger: 0.05, duration: 0.9, ease: "power3.out", scrollTrigger: { trigger: root.current, start: "top 70%" } });
+      curve();
+      const id = setTimeout(() => ScrollTrigger.refresh(), 300);
+      return () => clearTimeout(id);
+    });
+  }, { scope: root });
+
+  const p = projects[f];
+  const u = "text-xs uppercase tracking-[0.18em] rtl:tracking-normal";
   return (
-    <section ref={sec} id="projects" data-depth={t.gauge.projects} data-meters="80 m" data-deep="1" className="relative h-[100svh] overflow-hidden bg-[#15130F] text-[var(--surface)]">
-      <div className="flex h-full flex-col pb-8 pt-24 md:pt-28">
+    <section ref={root} id="projects" data-depth={t.gauge.projects} data-meters="80 m" data-deep="1" className="bk-stage relative overflow-hidden bg-[#15130F] text-[var(--surface)] md:h-[100svh]">
+      <div className="relative z-[1] flex h-full flex-col pt-24 md:pt-28">
         <div className="flex flex-wrap items-end justify-between gap-4 px-5 md:px-10">
           <div>
-            <p className={`${u} text-[var(--bronze)]`}>{t.gauge.projects}</p>
+            <p className={`${u} flex items-center gap-3 text-[var(--bronze)]`}><span className="h-px w-8 bg-[var(--bronze)]" />{t.gauge.projects}</p>
             <h2 className="display mt-2 text-4xl md:text-6xl">{t.strata.title}</h2>
           </div>
-          <div className="flex items-center gap-5">
-            <span className="text-sm text-[var(--surface)]/60" dir="ltr">{a + 1} / {n}</span>
-            <span className="hidden md:block"><Btn href={`/${lang}/projects`} variant="ghost">{t.project.all}</Btn></span>
-          </div>
+          <p className="max-w-sm text-sm text-[var(--surface)]/65">{t.strata.intro}</p>
         </div>
-        <div dir="ltr" className="relative mt-6 flex flex-1 items-center md:mt-8">
-          <div ref={track} dir="ltr" className="flex items-start gap-5 px-5 will-change-transform md:gap-8 md:px-10 max-lg:w-full max-lg:snap-x max-lg:snap-mandatory max-lg:overflow-x-auto max-lg:pb-2">
-            {projects.map((p, k) => {
-              const im = pick(p);
-              const on = k === a;
+        <div className="relative flex flex-1 items-center py-8 md:py-0" style={{ perspective: "1350px", perspectiveOrigin: "50% 42%" }}>
+          <div ref={track} dir="ltr" className="bk-track flex items-center max-md:w-full max-md:snap-x max-md:snap-mandatory max-md:gap-4 max-md:overflow-x-auto max-md:px-[15vw] max-md:pb-2" style={{ transformStyle: "preserve-3d" }}>
+            {projects.map((pr) => {
+              const im = pick(pr);
               return (
-                <Link key={p.slug} href={`/${lang}/projects/${p.slug}`} className={`group block w-[80vw] shrink-0 transition-[transform,opacity] duration-700 ease-out sm:w-[62vw] lg:w-[min(58vw,110vh)] ${on ? "scale-100 opacity-100" : "lg:scale-[.9] lg:opacity-45"} max-lg:snap-center`} style={{ transformOrigin: "50% 60%" }}>
-                  <span className="relative block aspect-[16/9] overflow-hidden rounded-2xl bg-[var(--deeper)]">
-                    <Image src={im.src} alt={`${p.name}, ${im.room}`} fill sizes="(min-width:1024px) 58vw, 80vw" className={`object-cover transition-transform duration-[1600ms] ${on ? "scale-100" : "scale-110"}`} />
-                  </span>
-                  <span dir={t.dir} className="mt-4 flex items-end justify-between gap-6">
-                    <span className="min-w-0">
-                      <span className="display block truncate text-2xl md:text-4xl">{p.name}</span>
-                      <span className={`${u} mt-1 block truncate text-[var(--surface)]/60`}>{p.type} · <span dir="ltr">{p.area}</span> · {p.location}</span>
+                <Link key={pr.slug} href={`/${lang}/projects/${pr.slug}`} className="bk-frame group relative shrink-0 max-md:snap-center">
+                  <span className="bk-fig relative block overflow-hidden">
+                    <Image src={im.src} alt={`${pr.name}, ${im.room}`} fill sizes="(min-width:768px) 330px, 70vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <span dir={t.dir} className="bk-meta absolute inset-x-0 bottom-0 z-[2] block px-4 pb-3 pt-12">
+                      <span className="block text-sm font-semibold">{pr.name}</span>
+                      <span className={`${u} block text-[var(--bronze)]`}>{pr.type}</span>
                     </span>
-                    <span className={`${u} shrink-0 border-b border-[var(--bronze)] pb-1 text-[var(--bronze)] transition-opacity ${on ? "opacity-100" : "opacity-0"}`}>{t.strata.open}</span>
                   </span>
                 </Link>
               );
             })}
           </div>
         </div>
-        <div className="mx-5 mt-4 h-px bg-[var(--surface)]/15 md:mx-10"><div className="h-px origin-left bg-[var(--bronze)] transition-transform duration-500 rtl:origin-right" style={{ transform: `scaleX(${(a + 1) / n})` }} /></div>
+        <div key={f} className="hero-in px-5 pb-8 text-center md:pb-10" aria-live="polite">
+          <h3 className="display text-2xl md:text-3xl">{p.name}</h3>
+          <p className={`${u} mt-1 text-[var(--bronze)]`}>{p.type} · <span dir="ltr">{p.area}</span> · {p.location}</p>
+        </div>
       </div>
     </section>
   );

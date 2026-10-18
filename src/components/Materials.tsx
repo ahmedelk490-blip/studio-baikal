@@ -60,8 +60,6 @@ export function Materials({ t }: { t: Dict }) {
             <div className="lens-ring pointer-events-none absolute inset-0" aria-hidden><svg viewBox="0 0 100 100" className="spin h-full w-full"><circle cx="50" cy="50" r="49" fill="none" stroke="var(--bronze)" strokeWidth=".35" strokeDasharray="0.6 2.4" /></svg></div>
             <div className="lens-ring2 pointer-events-none absolute -inset-[7%]" aria-hidden><svg viewBox="0 0 100 100" className="h-full w-full"><circle cx="50" cy="50" r="49.5" fill="none" stroke="var(--surface)" strokeOpacity=".18" strokeWidth=".25" strokeDasharray="8 3 1 3" /></svg></div>
           </div>
-          {/* the material's name sits under the lens, never on the photo */}
-          <p key={a} className="hero-in mt-14 text-center"><span className="text-xs uppercase tracking-[0.2em] rtl:tracking-normal text-[var(--bronze)]">{t.materials.names[a]}</span></p>
         </div>
       </div>
     </section>

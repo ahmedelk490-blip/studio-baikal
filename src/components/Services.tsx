@@ -21,21 +21,18 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
     // phones/tablets: the block pins under the header; scrolling slides the three rooms through one window
     // whose shape turns arch -> circle -> rounded frame, with a light parallax inside each room
     gsap.matchMedia().add("(max-width: 1023px) and (prefers-reduced-motion: no-preference)", () => {
-      const win = sec.current!.querySelector<HTMLElement>(".svc-win")!;
-      // same box throughout, only the four corner radii change (tweened one by one so nothing is misread):
-      // arch (half-round top) -> stadium -> soft frame
-      const corners = (tl: number, bl: number) => ({ borderTopLeftRadius: tl, borderTopRightRadius: tl, borderBottomLeftRadius: bl, borderBottomRightRadius: bl });
-      const arch = () => corners(Math.min(win.offsetWidth / 2, win.offsetHeight), 16);
-      const pill = () => { const P = Math.min(win.offsetWidth, win.offsetHeight) / 2; return corners(P, P); };
-      const n = items.length - 1;
-      tl.current = gsap.timeline({ scrollTrigger: { trigger: ".svc-phone", start: "top 72px", end: "+=" + n * 110 + "%", pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true, onUpdate: (st) => setA(Math.round(st.progress * n)) } })
-        // each change happens around the moment the name switches (0.5, 1.5) and holds in between
-        .fromTo(win, { ...arch() }, { ...pill(), ease: "power2.inOut", duration: 0.3, immediateRender: true }, 0.35)
-        .to(win, { ...corners(24, 24), ease: "power2.inOut", duration: 0.3 }, 1.35)
-        // each next room wipes in over the last one (nothing waits outside the window)
-        .fromTo(".svc-pane-1", { clipPath: "inset(0% 0% 0% 100%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.inOut", duration: 0.4 }, 0.3)
-        .fromTo(".svc-pane-2", { clipPath: "inset(0% 0% 0% 100%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.inOut", duration: 0.4 }, 1.3)
-        .fromTo(".svc-par img", { objectPosition: "30% 50%" }, { objectPosition: "70% 50%", ease: "none", duration: n }, 0);
+      // three openings of one arched double door: open on a room, close, the next room waits behind,
+      // open again. The name changes while the doors are shut, so the switch is never seen half-done.
+      const n = items.length;
+      const leaves = (deg: number) => [{ target: ".svc-leaf-l", rotationY: -deg }, { target: ".svc-leaf-r", rotationY: deg }];
+      const t2 = gsap.timeline({ scrollTrigger: { trigger: ".svc-phone", start: "top 72px", end: "+=" + n * 90 + "%", pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true, onUpdate: (st) => setA(Math.min(n - 1, Math.floor(st.progress * n))) } });
+      for (let k = 0; k < n; k++) {
+        if (k) { t2.set(`.svc-pane-${k}`, { opacity: 1 }, k); }
+        for (const l of leaves(108)) t2.to(l.target, { rotationY: l.rotationY, ease: "power2.inOut", duration: 0.45 }, k);
+        if (k < n - 1) for (const l of leaves(0)) t2.to(l.target, { rotationY: 0, ease: "power2.inOut", duration: 0.2 }, k + 0.8);
+      }
+      t2.fromTo(".svc-par img", { objectPosition: "35% 50%" }, { objectPosition: "65% 50%", ease: "none", duration: n }, 0);
+      tl.current = t2;
       return () => { tl.current = null; };
     });
     gsap.matchMedia().add("(min-width: 1024px)", () => { ScrollTrigger.create({ trigger: sec.current, start: "top top", end: "+=" + items.length * 45 + "%", pin: true, anticipatePin: 1, onUpdate: (st) => setA(Math.min(items.length - 1, Math.floor(st.progress * items.length))) }); }); 
@@ -56,15 +53,19 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
               <button key={k} onClick={() => take(k)} aria-current={a === k} className={`min-h-11 flex-1 rounded-full border px-2 text-xs transition-colors duration-500 ${a === k ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--surface)]" : "border-[var(--ink)]/20 text-[var(--ink)]/70"}`}>{t.services.labels[k]}</button>
             ))}
           </div>
-          <div className="svc-win relative mx-auto mt-5 h-[44svh] max-h-[460px] w-full max-w-[560px] overflow-hidden bg-[var(--deep)]" style={{ borderRadius: "999px 999px 16px 16px" }}>
-            <div className="absolute inset-0" dir="ltr">
-              {srcs.map((src, k) => (
-                <div key={src} className={`svc-pane-${k} absolute inset-0 overflow-hidden`} style={k ? { clipPath: "inset(0% 0% 0% 100%)" } : undefined}>
-                  <div className="svc-par absolute inset-0"><Image src={src} alt="" fill sizes="100vw" className="object-cover" /></div>
-                  {k === 0 && <div className="draw-sweep absolute inset-0"><Image src="/brand/drawing-october.webp" alt="" fill sizes="100vw" className="object-cover" /></div>}
-                </div>
-              ))}
-            </div>
+          {/* one Baikal arch with a walnut double door; each room waits behind it */}
+          <div className="svc-win relative mx-auto mt-5 h-[44svh] max-h-[460px] w-full max-w-[420px] overflow-hidden bg-[var(--deep)]" style={{ borderRadius: "999px 999px 18px 18px", boxShadow: "0 0 0 2px rgba(196,154,92,.75)", perspective: "1100px" }}>
+            {srcs.map((src, k) => (
+              <div key={src} className={`svc-pane-${k} absolute inset-0`} style={k ? { opacity: 0 } : undefined}>
+                <div className="svc-par absolute inset-0"><Image src={src} alt="" fill sizes="100vw" className="object-cover" /></div>
+                {k === 0 && <div className="draw-sweep absolute inset-0"><Image src="/brand/drawing-october.webp" alt="" fill sizes="100vw" className="object-cover" /></div>}
+              </div>
+            ))}
+            {(["l", "r"] as const).map((side) => (
+              <div key={side} className={`svc-leaf-${side} absolute inset-y-0 w-1/2 ${side === "l" ? "left-0 origin-left" : "right-0 origin-right"}`} style={{ backfaceVisibility: "hidden", background: "repeating-linear-gradient(90deg,#6b4a2f 0 22px,#5c3e26 22px 23px),linear-gradient(180deg,rgba(255,255,255,.08),rgba(0,0,0,.25))", boxShadow: "inset 0 0 0 10px rgba(0,0,0,.12), inset 0 0 0 11px rgba(196,154,92,.35)" }} aria-hidden>
+                <span className={`absolute top-1/2 h-16 w-[3px] -translate-y-1/2 rounded-full bg-[var(--bronze)] ${side === "l" ? "right-3" : "left-3"}`} />
+              </div>
+            ))}
           </div>
           <div key={a} className="hero-in mt-5 min-h-[11rem]">
             <span className={`${u} text-[var(--bronze)]`}>{t.services.labels[a]}</span>

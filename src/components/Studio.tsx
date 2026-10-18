@@ -20,7 +20,7 @@ export function Studio({ t }: { t: Dict }) {
           <Image src="/brand/hero-arch.webp" alt="" fill sizes="(min-width:768px) 50vw, 100vw" className="st-img object-cover" />
         </div>
         <div className="p-7 md:col-span-6 md:p-14">
-          <p className="st-t text-xs uppercase tracking-[0.2em] rtl:tracking-normal text-[var(--bronze)]">{t.studio.eyebrow}</p>
+          <p className="st-t eyebrow text-xs uppercase tracking-[0.2em] rtl:tracking-normal text-[var(--bronze)]">{t.studio.eyebrow}</p>
           <h2 className="st-t display mt-4 text-4xl md:text-6xl">{t.studio.title}</h2>
           <p className="st-t mt-6 text-base text-[var(--muted)] md:text-lg">{t.studio.text}</p>
           <dl className="mt-10 grid gap-5 sm:grid-cols-3">

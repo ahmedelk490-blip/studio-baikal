@@ -19,9 +19,9 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
   const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
   return (
     <section ref={sec} id="services" data-depth={t.gauge.services} data-meters="500 m" className="bg-[var(--surface)] text-[var(--ink)] lg:h-[100svh] lg:overflow-hidden" onMouseLeave={() => setHold(false)}>
-      <div className="px-5 py- md:px-10 md:py- lg:flex lg:h-full lg:flex-col lg:justify-center lg:py-10">
+      <div className="px-5 py-16 md:px-10 md:py-24 lg:flex lg:h-full lg:flex-col lg:justify-center lg:py-10">
         <div className="grid gap-6 md:grid-cols-12 md:items-end">
-          <h2 className="display text-5xl md:col-span-7 md:text-6xl">{t.services.title}</h2>
+          <div className="md:col-span-7"><p className="eyebrow text-xs uppercase tracking-[0.2em] rtl:tracking-normal text-[var(--bronze)]">{t.gauge.services}</p><h2 className="display mt-3 text-4xl md:text-6xl">{t.services.title}</h2></div>
           <p className="max-w-sm text-sm text-[var(--muted)] md:col-span-5">{t.services.intro}</p>
         </div>
         <div className="mt-10 flex flex-col gap-3 lg:h-[58vh] lg:flex-row">

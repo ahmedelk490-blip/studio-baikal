@@ -27,7 +27,7 @@ export function Header({ t, lang, dark = false }: { t: Dict; lang: Lang; dark?: 
     return () => { lenis?.start(); document.documentElement.style.overflow = ""; removeEventListener("keydown", esc); };
   }, [open, lenis]);
   return (
-    <header className={`${open ? "fixed" : "absolute"} inset-x-0 top-0 z-50 ${open ? "bg-[var(--surface)] text-[var(--ink)] shadow-lg" : dark ? "bg-gradient-to-b from-[var(--deep)]/70 to-transparent text-[var(--surface)]" : "text-[var(--ink)]"}`}>
+    <header id="top" className={`${open ? "fixed" : "absolute"} inset-x-0 top-0 z-50 ${open ? "bg-[var(--surface)] text-[var(--ink)] shadow-lg" : dark ? "bg-gradient-to-b from-[var(--deep)]/70 to-transparent text-[var(--surface)]" : "text-[var(--ink)]"}`}>
       <div className="flex h-16 items-center justify-between px-5 md:h-20 md:px-10">
         <Link href={`/${lang}`} aria-label={t.nav.home} className="flex items-center gap-3">
           <Image src="/brand/logo.png" alt="Studio Baikal" width={36} height={36} priority className="h-9 w-9 bg-[var(--surface)] p-0.5" />

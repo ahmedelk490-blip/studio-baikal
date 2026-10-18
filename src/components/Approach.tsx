@@ -30,8 +30,8 @@ export function Approach({ t }: { t: Dict }) {
           </div>
         </div>
         <div className="lg:order-1 lg:col-span-5">
-          <p className={`${u} text-[var(--bronze)]`}>{t.gauge.approach}</p>
-          <h2 className="display mt-2 text-3xl md:text-4xl lg:text-5xl">{t.approach.title}</h2>
+          <p className={`${u} eyebrow text-[var(--bronze)]`}>{t.gauge.approach}</p>
+          <h2 className="display mt-2 text-4xl md:text-5xl lg:text-6xl">{t.approach.title}</h2>
           <ol className="mt-5 md:mt-7">
             {t.approach.steps.map(([title, d], k) => (
               <li key={title} className="border-t border-[var(--surface)]/15">

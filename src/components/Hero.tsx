@@ -56,7 +56,7 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
       </ul>
 
       <div className="h-copy relative flex min-h-[100svh] flex-col justify-end px-5 pb-28 pt-28 md:px-10 md:pb-24">
-        <p className={`h-eyebrow ${u} text-[var(--bronze)]`}>{t.hero.eyebrow}</p>
+        <p className={`h-eyebrow eyebrow ${u} text-[var(--bronze)]`}>{t.hero.eyebrow}</p>
         <h1 className="display mt-5 max-w-[14ch] text-[14vw] leading-[1.02] rtl:leading-[1.3] rtl:text-[11vw] md:text-[8vw] lg:text-[7vw] md:rtl:text-[6.4vw] lg:rtl:text-[5.4vw]" style={{ perspective: "900px" }}>
           <span className="block">{words(t.hero.t1)}</span>
           <span className="block italic text-[var(--bronze)]">{words(t.hero.t2)}</span>

@@ -46,7 +46,7 @@ export function Contact({ t }: { t: Dict }) {
           <Contours className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 opacity-40" />
           <div className="relative flex h-full flex-col justify-end gap-8 px-5 py-16 md:px-12 md:py-20">
             <div>
-              <p className={`${lab} text-[var(--bronze)]`}>{c.eyebrow}</p>
+              <p className={`${lab} eyebrow text-[var(--bronze)]`}>{c.eyebrow}</p>
               <h2 className="display mt-4 text-4xl md:text-6xl">{c.t1} <span className="italic text-[var(--bronze)]">{c.t2}</span></h2>
               <p className="mt-4 max-w-md text-sm text-[var(--surface)]/75">{c.intro}</p>
             </div>

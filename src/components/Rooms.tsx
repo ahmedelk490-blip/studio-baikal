@@ -29,7 +29,7 @@ export function Rooms({ t }: { t: Dict }) {
           <div className="pointer-events-none absolute inset-0 rounded-b-2xl rounded-t-full ring-1 ring-inset ring-[var(--bronze)]/40" />
         </div>
         <div className="lg:order-1 lg:col-span-5">
-          <p className="text-xs uppercase tracking-[0.2em] rtl:tracking-normal text-[var(--bronze)]">{t.rooms.eyebrow}</p>
+          <p className="eyebrow text-xs uppercase tracking-[0.2em] rtl:tracking-normal text-[var(--bronze)]">{t.rooms.eyebrow}</p>
           <ol className="mt-3">
             {scenes.map(([room, line], k) => (
               <li key={room} className="border-t border-[var(--surface)]/15">

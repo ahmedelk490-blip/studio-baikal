@@ -30,7 +30,7 @@ export function LitByDegrees({ t }: { t: Dict }) {
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[var(--deeper)] to-transparent" />
       <div className="absolute inset-x-5 bottom-10 md:inset-x-10 md:bottom-14">
-        <p className={`${u} text-[var(--bronze)]`}>{t.lit.eyebrow}</p>
+        <p className={`${u} eyebrow text-[var(--bronze)]`}>{t.lit.eyebrow}</p>
         <div className="relative mt-3 grid text-4xl md:text-6xl">
           <h2 className="t-a display col-start-1 row-start-1">{t.lit.t1}</h2>
           <h2 className="t-b display col-start-1 row-start-1 opacity-0">{t.lit.t2}</h2>

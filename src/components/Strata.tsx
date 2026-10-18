@@ -80,7 +80,7 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
       <div className="relative z-[1] flex h-full flex-col pt-24 md:pt-28">
         <div className="flex flex-wrap items-end justify-between gap-4 px-5 md:px-10">
           <div>
-            <p className={`${u} flex items-center gap-3 text-[var(--bronze)]`}><span className="h-px w-8 bg-[var(--bronze)]" />{t.gauge.projects}</p>
+            <p className={`${u} eyebrow text-[var(--bronze)]`}>{t.gauge.projects}</p>
             <h2 className="display mt-2 text-4xl md:text-6xl">{t.strata.title}</h2>
           </div>
           <p className="max-w-sm text-sm text-[var(--surface)]/65">{t.strata.intro}</p>

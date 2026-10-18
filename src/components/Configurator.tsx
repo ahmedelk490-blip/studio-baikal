@@ -22,7 +22,7 @@ export function Configurator({ c }: { c: PagesDict["config"] }) {
     <section data-depth={c.eyebrow} data-meters="650 m" data-deep="1" className="bg-[var(--deep)] text-[var(--surface)]">
       <div className="grid gap-10 px-5 py-16 md:px-10 md:py-24 lg:grid-cols-12 lg:items-center">
         <div className="lg:col-span-5">
-          <p className={`${u} text-[var(--bronze)]`}>{c.eyebrow}</p>
+          <p className={`${u} eyebrow text-[var(--bronze)]`}>{c.eyebrow}</p>
           <h2 className="display mt-3 text-4xl md:text-6xl">{c.title}</h2>
           <p className="mt-4 max-w-md text-sm text-[var(--surface)]/75">{c.intro}</p>
           <div role="radiogroup" aria-label={c.eyebrow} className="mt-8 grid gap-2">

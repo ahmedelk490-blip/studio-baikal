@@ -45,7 +45,7 @@ export function Featured({ projects, t, lang }: { projects: Project[]; t: Dict; 
       <div className="px-5 py-16 md:px-10 md:py-24">
         <Reveal className="grid gap-6 md:grid-cols-12 md:items-end">
           <div className="md:col-span-7">
-            <p className={`${u} text-[var(--bronze)]`}>{t.featured.eyebrow}</p>
+            <p className={`${u} eyebrow text-[var(--bronze)]`}>{t.featured.eyebrow}</p>
             <h2 className="display mt-3 text-4xl md:text-6xl">{t.featured.title}</h2>
           </div>
           <p className="max-w-sm text-sm text-[var(--muted)] md:col-span-5">{t.featured.intro}</p>

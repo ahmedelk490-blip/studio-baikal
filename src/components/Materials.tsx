@@ -28,7 +28,7 @@ export function Materials({ t }: { t: Dict }) {
     <section data-depth={t.gauge.materials} data-meters="800 m" data-deep="1" className="overflow-hidden bg-[#0F1A1E] text-[var(--surface)] lg:h-[100svh]" ref={ref}>
       <div className="grid gap-10 px-5 py-16 md:grid-cols-12 md:items-center md:px-10 md:py-24 lg:h-full lg:py-10">
         <div className="md:col-span-5">
-          <h2 className="display text-5xl md:text-6xl">{t.materials.title}</h2>
+          <p className="eyebrow text-xs uppercase tracking-[0.2em] rtl:tracking-normal text-[var(--bronze)]">{t.gauge.materials}</p><h2 className="display mt-3 text-4xl md:text-6xl">{t.materials.title}</h2>
           <p className="mt-5 max-w-sm text-sm text-[var(--surface)]/70">{t.materials.intro}</p>
           <ol className="mt-10">
             {t.materials.names.map((n, k) => (

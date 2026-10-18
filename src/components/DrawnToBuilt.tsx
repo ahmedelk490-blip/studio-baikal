@@ -35,12 +35,12 @@ export function DrawnToBuilt({ t }: { t: Dict }) {
       <div className="absolute inset-0" style={{ clipPath: "url(#baikal-arch)" }}><Image src={SRC} alt="" fill sizes="100vw" className="object-cover" /></div>
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#05080a]/80 to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-[#05080a]/90 to-transparent" />
-      <div className="absolute inset-x-0 top-0 px-5 pt-24 md:px-10 md:pt-28"><p className={`${u} text-[var(--bronze)]`}>{t.drawn.eyebrow}</p></div>
+      <div className="absolute inset-x-0 top-0 px-5 pt-24 md:px-10 md:pt-28"><p className={`${u} eyebrow text-[var(--bronze)]`}>{t.drawn.eyebrow}</p></div>
       <div className="absolute inset-x-5 bottom-8 md:inset-x-10 md:bottom-12">
-        <div className="relative h-[3.2em] text-3xl md:text-5xl">
-          <h2 className="cap-1 display absolute inset-x-0 bottom-0 max-w-3xl">{t.drawn.title}</h2>
-          <h2 className="cap-2 display absolute inset-x-0 bottom-0 max-w-3xl opacity-0">{t.drawn.diptych}</h2>
-          <h2 className="cap-3 display absolute inset-x-0 bottom-0 flex max-w-3xl items-end justify-between gap-6 opacity-0"><span>{t.drawn.b}</span><span className="text-[var(--bronze)]" dir="ltr"><span ref={pct}>0%</span></span></h2>
+        <div className="relative grid text-3xl md:text-5xl">
+          <h2 className="cap-1 display col-start-1 row-start-1 max-w-3xl self-end">{t.drawn.title}</h2>
+          <h2 className="cap-2 display col-start-1 row-start-1 max-w-3xl self-end opacity-0">{t.drawn.diptych}</h2>
+          <h2 className="cap-3 display col-start-1 row-start-1 flex max-w-3xl items-end justify-between gap-6 self-end opacity-0"><span>{t.drawn.b}</span><span className="text-[var(--bronze)]" dir="ltr"><span ref={pct}>0%</span></span></h2>
         </div>
         <p className="mt-3 max-w-md text-sm text-[var(--surface)]/70">{t.drawn.note}</p>
       </div>

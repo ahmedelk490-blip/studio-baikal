@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Project } from "@/data/projects";
 import type { Dict, Lang } from "@/data/i18n";
-import { extras } from "@/data/extras";
 
 /* Projects — the mirror hall. Every home stands in a Baikal arch along a gentle curve over a dark,
    still floor that reflects it like the lake. The hall turns by itself; the one in front lights up
@@ -43,16 +42,11 @@ export function MirrorHall({ projects, t, lang }: { projects: Project[]; t: Dict
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   return (
     <section ref={sec} id="projects" data-depth={t.gauge.projects} data-meters="80 m" data-deep="1" className="relative overflow-hidden bg-[radial-gradient(ellipse_at_50%_30%,#17252c,#05080A_72%)] px-5 py-16 text-[var(--surface)] md:px-10 md:py-24">
-      {/* section head: tag, title and line on one side, the way to every project on the other */}
-      <div className="flex flex-wrap items-end justify-between gap-6">
-        <div>
-          <p className={`${u} eyebrow text-[var(--bronze)]`}>{t.gauge.projects}</p>
-          <h2 className="display mt-4 text-4xl md:text-6xl">{t.strata.title}</h2>
-          <p className="mt-4 max-w-md text-sm text-[var(--surface)]/65">{t.strata.intro}</p>
-        </div>
+      {/* no heading: the hall itself opens the section; only the way to every project stays, small */}
+      <h2 className="sr-only">{t.strata.title}</h2>
+      <div className="flex justify-end">
         <Link href={`/${lang}/projects`} className="inline-flex min-h-11 items-center gap-2 text-sm text-[var(--surface)]/75 transition-colors [@media(hover:hover)]:hover:text-[var(--surface)]">{t.project.all} <span aria-hidden>{lang === "ar" ? "←" : "→"}</span></Link>
       </div>
-
       <div
         className="relative mx-auto mt-10 h-[clamp(300px,calc(72vw+24px),530px)] max-w-[1600px] touch-pan-y select-none overflow-x-clip [--step:31vw] md:[--step:min(19vw,300px)] md:mt-12 md:h-[clamp(300px,calc(32vw+24px),530px)]"
         style={{ perspective: "1500px" }}
@@ -63,6 +57,13 @@ export function MirrorHall({ projects, t, lang }: { projects: Project[]; t: Dict
         {/* the still floor: a horizon line, slow ripples and the dark water the arches reflect in */}
         <div className="absolute inset-x-0 bottom-0 h-[28%] border-t border-[var(--bronze)]/20 bg-gradient-to-b from-[#0b151a]/40 to-[#05080A]" aria-hidden>
           <div className="ripples absolute inset-0 opacity-30" />
+        </div>
+        {/* the front home's name and kind, on the floor right under its arch */}
+        <div key={a} className="hero-in pointer-events-none absolute inset-x-0 bottom-[28%] z-30 flex translate-y-full justify-center pt-3 text-center">
+          <span className="rounded-2xl bg-[#05080A]/70 px-4 py-2">
+            <span className="display block text-xl md:text-2xl">{cur.name}</span>
+            <span className={`${u} mt-1 block text-[var(--bronze)]`}>{cur.type} · {cur.location}</span>
+          </span>
         </div>
         {projects.map((p, k) => {
           const d = rel(k), ad = Math.abs(d), im = pick(p), front = d === 0;
@@ -84,14 +85,6 @@ export function MirrorHall({ projects, t, lang }: { projects: Project[]; t: Dict
         })}
       </div>
 
-      {/* the front home's name, under the floor (never on the photo) */}
-      <div key={a} className="hero-in mt-6 text-center md:mt-8">
-        <p className="display text-3xl md:text-5xl">{cur.name}</p>
-        <p className={`${u} mt-3 text-[var(--bronze)]`}>{cur.type} · {cur.location}</p>
-      </div>
-      <div className="mt-8 flex justify-center">
-        <Link href={`/${lang}/projects`} className="inline-flex min-h-11 items-center rounded-full border border-[var(--surface)]/20 bg-[var(--surface)]/5 px-6 text-sm transition-colors [@media(hover:hover)]:hover:border-[var(--bronze)]">{extras[lang].explore}</Link>
-      </div>
     </section>
   );
 }

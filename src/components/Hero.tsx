@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { gsap, useGSAP } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import type { Dict, Lang } from "@/data/i18n";
 import { Btn } from "./Btn";
 import { heroVideo } from "@/data/media";
@@ -20,8 +20,13 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
   const [depth, setDepth] = useState(0);
   const alt = depth >= 1;
   useGSAP(() => {
-    // the arches are centred by GSAP (xPercent), so growing them never knocks them off centre
+    // the arches are centred by GSAP (xPercent), so growing them never knocks them off centre; their
+    // height is measured so the window always ends above the words, whatever the screen
     gsap.set(".h-arch", { xPercent: -50 });
+    const sec = ref.current!, copy = sec.querySelector<HTMLElement>(".h-copy")!;
+    const fit = () => { const H = sec.clientHeight, top = H * 0.11, free = copy.getBoundingClientRect().top - sec.getBoundingClientRect().top - top - 18; gsap.set(".h-arch", { top, height: Math.max(110, Math.min(free, H * (innerWidth < 1024 ? 0.5 : 0.46))) }); };
+    fit();
+    const ro = new ResizeObserver(() => { fit(); ScrollTrigger.refresh(); }); ro.observe(sec); ro.observe(copy);
     gsap.matchMedia().add("(prefers-reduced-motion: no-preference)", () => {
       gsap.timeline({ delay: 0.1 })
         .from(".h-film", { scale: 1.2, duration: 2.2, ease: "expo.out" }, 0)
@@ -30,8 +35,8 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
         .from(".h-word", { yPercent: 120, rotateX: -60, opacity: 0, duration: 1.1, ease: "power4.out", stagger: 0.07, transformOrigin: "50% 100%" }, 0.5)
         .from(".h-fade", { opacity: 0, y: 16, duration: 0.8, ease: "power3.out", stagger: 0.08 }, 1.1);
       // an arch box grows from the window in the middle to the whole screen while its room un-zooms
-      const open = { width: "100%", height: "100%", bottom: "0%", borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, ease: "power2.inOut", duration: 1 };
-      gsap.timeline({ scrollTrigger: { trigger: ref.current, start: "top top", end: "+=180%", pin: true, scrub: 0.7, anticipatePin: 1,
+      const open = { width: () => sec.clientWidth, height: () => sec.clientHeight, top: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, ease: "power2.inOut", duration: 1 };
+      gsap.timeline({ scrollTrigger: { trigger: ref.current, start: "top top", end: "+=180%", pin: true, scrub: 0.7, anticipatePin: 1, invalidateOnRefresh: true, onRefreshInit: fit,
         onUpdate: (st) => setDepth(st.progress < 0.42 ? 0 : st.progress < 0.85 ? 1 : 2) } })
         .to(".h-film", { scale: 1.5, opacity: 0.4, ease: "power2.in", duration: 1 }, 0)
         .to(".h-arch-0", open, 0)
@@ -41,6 +46,7 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
         .to(".h-arch-1", open, 1.2)
         .fromTo(".h-room-1", { scale: 1.35 }, { scale: 1, ease: "power2.inOut", duration: 1 }, 1.2);
     });
+    return () => ro.disconnect();
   }, { scope: ref });
 
   // each word sits in its own mask; the middle span carries the swap (the inner one keeps the intro)
@@ -51,12 +57,12 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
       </span>
     </span>
   ));
-  // an arch box anchored bottom-centre; the room inside is always screen-sized, so the box reveals it.
+  // an arch box anchored top-centre (clear of the words below); the room inside is always screen-sized, so the box reveals it.
   // Its radii are px in style (not Tailwind's calc(infinity) rounding), so GSAP can open them.
   const arch = (k: number) => (
-    <div className={`h-arch h-arch-${k} absolute bottom-[47%] left-1/2 h-[33%] w-[min(52vw,300px)] overflow-hidden md:bottom-[24%] md:h-[52%] md:w-[min(24vw,380px)]`}
+    <div className={`h-arch h-arch-${k} absolute left-1/2 w-[min(42vw,260px)] overflow-hidden md:w-[min(30vw,320px)] lg:w-[min(22vw,360px)]`}
       style={{ zIndex: 2 + k, opacity: k ? 0 : undefined, borderRadius: "999px 999px 16px 16px", boxShadow: "0 0 0 2px rgba(196,154,92,.9), 0 40px 120px -30px rgba(0,0,0,.85)" }}>
-      <div className="absolute bottom-0 left-1/2 h-[100svh] w-screen -translate-x-1/2">
+      <div className="absolute left-1/2 top-1/2 h-[100svh] w-screen -translate-x-1/2 -translate-y-1/2">
         <div className={`h-room-${k} absolute inset-0`}><Image src={DEPTHS[k]} alt="" fill sizes="100vw" priority={k === 0} className="object-cover" /></div>
       </div>
     </div>
@@ -76,7 +82,7 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
       {arch(0)}
       {arch(1)}
       {/* the bronze echo breathing around the first arch's window */}
-      <div className="h-arch h-arch-0 pointer-events-none absolute bottom-[47%] left-1/2 h-[33%] w-[min(52vw,300px)] md:bottom-[24%] md:h-[52%] md:w-[min(24vw,380px)]" style={{ zIndex: 2 }} aria-hidden>
+      <div className="h-arch h-arch-0 pointer-events-none absolute left-1/2 w-[min(42vw,260px)] md:w-[min(30vw,320px)] lg:w-[min(22vw,360px)]" style={{ zIndex: 2 }} aria-hidden>
         <span className="arch-breathe absolute -inset-3 rounded-b-[24px] rounded-t-full border border-[var(--bronze)]/40" />
       </div>
 
@@ -84,7 +90,7 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
       <div className="pointer-events-none absolute inset-x-0 top-0 z-[5] h-32 bg-gradient-to-b from-[#070b0d]/70 to-transparent" />
 
       <div className="h-copy pointer-events-none absolute inset-x-0 bottom-0 z-[6] px-5 pb-10 md:px-10 md:pb-12">
-        <p className="h-chip inline-flex max-w-full items-center gap-2 text-balance rounded-full border border-[var(--surface)]/25 bg-[#070b0d]/45 px-3.5 py-1.5 text-xs text-[var(--surface)]/90">
+        <p className="h-chip max-md:hidden inline-flex max-w-full items-center gap-2 text-balance rounded-full border border-[var(--surface)]/25 bg-[#070b0d]/45 px-3.5 py-1.5 text-xs text-[var(--surface)]/90">
           <span className="h-1.5 w-1.5 rounded-full bg-[var(--bronze)]" aria-hidden />{extras[lang].heroChip}
         </p>
         <div className="mt-5 grid gap-6 lg:grid-cols-12 lg:items-end">

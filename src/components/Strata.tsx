@@ -73,7 +73,6 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
     });
   }, { scope: root });
 
-  const p = projects[f];
   const u = "text-xs uppercase tracking-[0.18em] rtl:tracking-normal";
   return (
     <section ref={root} id="projects" data-depth={t.gauge.projects} data-meters="80 m" data-deep="1" className="bk-stage relative overflow-hidden bg-[#15130F] text-[var(--surface)] md:h-[100svh]">
@@ -103,11 +102,7 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
             })}
           </div>
         </div>
-        <div dir="ltr" className="relative z-[3] flex items-start justify-center gap-2 px-3 pb-8 md:px-5 md:pb-10">
-        <Link href={`/${lang}/projects/${p.slug}`} dir={t.dir} className="group block min-w-0 text-center" aria-live="polite">
-          <span className={`${u} mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--bronze)]/70 px-5 transition-colors group-hover:bg-[var(--bronze)] group-hover:text-[#15130F]`}>{t.project.open} {lang === "ar" ? "المشروع" : "project"} <span aria-hidden className="rtl:-scale-x-100">&#8594;</span></span>
-        </Link>
-        </div>
+        <div className="pb-8 md:pb-10" aria-hidden />
       </div>
     </section>
   );

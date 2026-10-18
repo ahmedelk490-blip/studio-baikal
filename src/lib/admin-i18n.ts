@@ -1,0 +1,41 @@
+/* Admin interface labels. /en/admin is English, /ar/admin is Arabic (right-to-left). */
+const en = {
+  brand: "Studio Baikal · Admin", menu: "Menu", dashboard: "Dashboard", projects: "Projects", inquiries: "Inquiries", media: "Media library", users: "Users", account: "My account",
+  viewSite: "View site", logout: "Sign out", signIn: "Sign in", email: "Email", password: "Password", loginTitle: "Sign in to the dashboard",
+  badLogin: "Email or password is incorrect.", lockedOut: "Too many attempts. Try again in 15 minutes.", denied: "Your role does not allow that page.",
+  saved: "Saved.", created: "Created.", deleted: "Deleted.", error: "Something went wrong. Nothing was changed.",
+  statsPublished: "Published projects", statsDrafts: "Drafts", statsNew: "New inquiries", statsMedia: "Media files",
+  recentInquiries: "Recent inquiries", activity: "Recent activity", quick: "Quick actions", newProject: "New project", upload: "Upload media", none: "Nothing here yet.",
+  name: "Name", slug: "URL slug", status: "Status", published: "Published", draft: "Draft", featured: "Featured", order: "Order", category: "Category", area: "Area", year: "Year",
+  updated: "Updated", edit: "Edit", save: "Save changes", create: "Create", delete: "Delete", cover: "Cover image", back: "Back",
+  english: "English", arabic: "Arabic", type: "Type label", location: "Location", style: "Style", scope: "Scope", blurb: "Short description", story: "Story", materials: "Materials (one per line)",
+  seoTitle: "SEO title", seoDesc: "SEO description", gallery: "Gallery", roomEn: "Room (EN)", roomAr: "Room (AR)", caption: "Caption", up: "Up", down: "Down", remove: "Remove",
+  addFromLibrary: "Add from the media library", addSelected: "Add selected", deleteProject: "Delete this project", confirmDelete: "I understand this cannot be undone",
+  open: "Open on site", search: "Search", all: "All", phone: "WhatsApp", size: "Space", need: "Need", source: "Source", notes: "Internal notes", exportCsv: "Export CSV",
+  st_new: "New", st_contacted: "Contacted", st_in_progress: "In progress", st_won: "Won", st_lost: "Lost", st_spam: "Spam", prev: "Previous", next: "Next", date: "Date",
+  files: "Files", alt: "Alt text", title: "Title", uploadHint: "JPG, PNG, WebP or PDF, up to 15 MB each. Images are converted to WebP.", inUse: "In use by a project — remove it there first.",
+  role: "Role", active: "Active", lastLogin: "Last login", newUser: "Add a user", tempPassword: "Temporary password", resetPassword: "Set new password",
+  currentPassword: "Current password", newPassword: "New password", changePassword: "Change password", pwRule: "At least 10 characters, letters and numbers.", signOutAll: "Sign out everywhere",
+  r_super_admin: "Super admin", r_admin: "Administrator", r_editor: "Editor", r_author: "Author", r_viewer: "Viewer",
+};
+const ar: typeof en = {
+  brand: "استوديو بايكال · لوحة التحكم", menu: "القائمة", dashboard: "الرئيسية", projects: "المشاريع", inquiries: "الاستفسارات", media: "مكتبة الوسائط", users: "المستخدمون", account: "حسابي",
+  viewSite: "عرض الموقع", logout: "تسجيل الخروج", signIn: "تسجيل الدخول", email: "البريد الإلكتروني", password: "كلمة المرور", loginTitle: "الدخول إلى لوحة التحكم",
+  badLogin: "البريد الإلكتروني أو كلمة المرور غير صحيحة.", lockedOut: "محاولات كثيرة. حاول مرة أخرى بعد 15 دقيقة.", denied: "صلاحيات دورك لا تسمح بهذه الصفحة.",
+  saved: "تم الحفظ.", created: "تمت الإضافة.", deleted: "تم الحذف.", error: "حدث خطأ ولم يتم تغيير أي شيء.",
+  statsPublished: "مشاريع منشورة", statsDrafts: "مسودات", statsNew: "استفسارات جديدة", statsMedia: "ملفات الوسائط",
+  recentInquiries: "أحدث الاستفسارات", activity: "آخر النشاطات", quick: "إجراءات سريعة", newProject: "مشروع جديد", upload: "رفع وسائط", none: "لا يوجد شيء بعد.",
+  name: "الاسم", slug: "رابط الصفحة", status: "الحالة", published: "منشور", draft: "مسودة", featured: "مميز", order: "الترتيب", category: "الفئة", area: "المساحة", year: "السنة",
+  updated: "آخر تعديل", edit: "تعديل", save: "حفظ التغييرات", create: "إضافة", delete: "حذف", cover: "صورة الغلاف", back: "رجوع",
+  english: "الإنجليزية", arabic: "العربية", type: "وصف النوع", location: "الموقع", style: "الطراز", scope: "نطاق العمل", blurb: "وصف مختصر", story: "الحكاية", materials: "الخامات (كل خامة في سطر)",
+  seoTitle: "عنوان SEO", seoDesc: "وصف SEO", gallery: "معرض الصور", roomEn: "الغرفة (EN)", roomAr: "الغرفة (AR)", caption: "تعليق", up: "أعلى", down: "أسفل", remove: "إزالة",
+  addFromLibrary: "إضافة من مكتبة الوسائط", addSelected: "إضافة المحدد", deleteProject: "حذف هذا المشروع", confirmDelete: "أفهم أن الحذف لا يمكن التراجع عنه",
+  open: "فتح في الموقع", search: "بحث", all: "الكل", phone: "واتساب", size: "المساحة", need: "الاحتياج", source: "المصدر", notes: "ملاحظات داخلية", exportCsv: "تصدير CSV",
+  st_new: "جديد", st_contacted: "تم التواصل", st_in_progress: "قيد التنفيذ", st_won: "تم التعاقد", st_lost: "لم يتم", st_spam: "مزعج", prev: "السابق", next: "التالي", date: "التاريخ",
+  files: "الملفات", alt: "النص البديل", title: "العنوان", uploadHint: "JPG أو PNG أو WebP أو PDF حتى 15 ميجابايت للملف. تُحوَّل الصور إلى WebP.", inUse: "مستخدم في مشروع، أزله من هناك أولًا.",
+  role: "الدور", active: "نشط", lastLogin: "آخر دخول", newUser: "إضافة مستخدم", tempPassword: "كلمة مرور مؤقتة", resetPassword: "تعيين كلمة مرور جديدة",
+  currentPassword: "كلمة المرور الحالية", newPassword: "كلمة المرور الجديدة", changePassword: "تغيير كلمة المرور", pwRule: "10 أحرف على الأقل، حروف وأرقام.", signOutAll: "تسجيل الخروج من كل الأجهزة",
+  r_super_admin: "مدير عام", r_admin: "مدير", r_editor: "محرر", r_author: "كاتب", r_viewer: "مشاهد",
+};
+export type AdminDict = typeof en;
+export const adminDict = (lang: string): AdminDict => (lang === "ar" ? ar : en);

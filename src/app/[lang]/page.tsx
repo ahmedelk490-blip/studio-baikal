@@ -18,7 +18,7 @@ import { Studio } from "@/components/Studio";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFab } from "@/components/WhatsAppFab";
-import { projects, localize } from "@/data/projects";
+import { listProjects } from "@/lib/content";
 import { dict, isLang } from "@/data/i18n";
 
 export const instant = false;
@@ -27,7 +27,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   const { lang } = await params;
   if (!isLang(lang)) notFound();
   const t = dict[lang];
-  const list = projects.map((p) => localize(p, lang));
+  const list = await listProjects(lang);
   return (
     <>
       <Preloader label={t.preloader} />

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageShell } from "@/components/PageShell";
 import { ProjectsIndex } from "@/components/ProjectsIndex";
-import { projects, localize } from "@/data/projects";
+import { listProjects } from "@/lib/content";
 import { isLang } from "@/data/i18n";
 import { pages } from "@/data/pages";
 
@@ -13,6 +13,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> { c
 export default async function Page({ params }: Props) {
   const { lang } = await params;
   if (!isLang(lang)) notFound();
-  const rows = projects.map((p) => ({ ...localize(p, lang), kind: p.type }));
+  const rows = await listProjects(lang);
   return <PageShell lang={lang}><ProjectsIndex rows={rows} lang={lang} p={pages[lang].projects} /></PageShell>;
 }

@@ -9,32 +9,36 @@ import { Btn } from "@/components/Btn";
 import { Clip } from "@/components/Clip";
 import { JsonLd } from "@/components/JsonLd";
 import { projectVideo } from "@/data/media";
-import { projects, getProject, localize } from "@/data/projects";
+import { findProject } from "@/lib/content";
+import { db } from "@/lib/db";
 import { dict, isLang, langs } from "@/data/i18n";
 
 export const instant = false;
 type Props = { params: Promise<{ lang: string; slug: string }> };
 
-export function generateStaticParams() { return langs.flatMap((lang) => projects.map((p) => ({ lang, slug: p.slug }))); }
+export function generateStaticParams() {
+  const slugs = db().prepare("SELECT slug FROM projects WHERE status = 'published'").all() as { slug: string }[];
+  return langs.flatMap((lang) => slugs.map(({ slug }) => ({ lang, slug })));
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, slug } = await params;
-  const base = getProject(slug);
-  if (!base || !isLang(lang)) return {};
-  const p = localize(base, lang);
-  return { title: `${p.name}, ${p.location}`, description: `${p.blurb} ${p.type} · ${p.area} · ${p.style}.`, alternates: { canonical: `/${lang}/projects/${slug}`, languages: { en: `/en/projects/${slug}`, ar: `/ar/projects/${slug}` } }, openGraph: { images: [p.cover] } };
+  if (!isLang(lang)) return {};
+  const hit = await findProject(slug, lang);
+  if (!hit) return {};
+  const p = hit.p;
+  return { title: p.seo.title || `${p.name}, ${p.location}`, description: p.seo.description || `${p.blurb} ${p.type} · ${p.area} · ${p.style}.`, alternates: { canonical: `/${lang}/projects/${slug}`, languages: { en: `/en/projects/${slug}`, ar: `/ar/projects/${slug}` } }, openGraph: { images: [p.cover] } };
 }
 
 /* One calm, organised layout for every project: split hero (text beside the cover or walkthrough clip,
    never over it), story + details panel, the autoplaying arch slider, then a split "next project" row. */
 export default async function ProjectPage({ params }: Props) {
   const { lang, slug } = await params;
-  const base = getProject(slug);
-  if (!base || !isLang(lang)) notFound();
+  if (!isLang(lang)) notFound();
+  const hit = await findProject(slug, lang);
+  if (!hit) notFound();
   const t = dict[lang];
-  const p = localize(base, lang);
-  const idx = projects.findIndex((x) => x.slug === p.slug);
-  const next = localize(projects[(idx + 1) % projects.length], lang);
+  const { p, next } = hit;
   const f = t.project.facts;
   const facts = [[f.type, p.type], [f.area, p.area], [f.rooms, `${p.images.length}`], [f.year, p.year], [f.style, p.style], [f.scope, p.scope]];
   const cover = p.images.find((i) => i.src === p.cover && i.w >= i.h) ?? p.images.find((i) => i.w >= i.h) ?? p.images[0];

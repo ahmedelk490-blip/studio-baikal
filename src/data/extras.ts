@@ -1,7 +1,7 @@
 import type { Lang } from "./i18n";
 
 /* Copy for the layered-build board, the growing frame, the closing invitation and the hero's
-   second line (taken from the approved brand line, not new wording). */
+   second line (the film's own story: drawn, then built). */
 export type Layer = { name: string; note: string };
 export type Extras = {
   layers: { eyebrow: string; title: string; intro: string; items: Layer[] };
@@ -26,7 +26,7 @@ export const extras: Record<Lang, Extras> = {
     },
     grow: { eyebrow: "El Nakhil Villa · New Cairo", line: "A room should feel like it was always there." },
     cta: { eyebrow: "Your space", title: "Ready to shape your space?", note: "Tell us about the place. We call you back within one working day, and the first consultation is free.", btn: "Book a free consultation" },
-    heroAlt: ["Inspired by nature,", "rooted in structure."],
+    heroAlt: ["Drawn with care,", "built to last."],
   },
   ar: {
     layers: {
@@ -43,6 +43,6 @@ export const extras: Record<Lang, Extras> = {
     },
     grow: { eyebrow: "فيلا النخيل · القاهرة الجديدة", line: "الغرفة الجيدة تبدو وكأنها كانت هنا دائمًا." },
     cta: { eyebrow: "مساحتك", title: "جاهز نصمم مساحتك؟", note: "احكِ لنا عن المكان، ونتصل بك خلال يوم عمل واحد. الاستشارة الأولى مجانية.", btn: "احجز استشارة مجانية" },
-    heroAlt: ["تستلهم الطبيعة،", "وتقوم على بنية متقنة."],
+    heroAlt: ["نرسمها بعناية،", "ونبنيها لتدوم."],
   },
 };

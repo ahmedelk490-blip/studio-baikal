@@ -2,10 +2,16 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { ShapeCycle } from "./ShapeCycle";
 import type { Dict } from "@/data/i18n";
 import type { PagesDict } from "@/data/pages";
 
 const imgs = ["/projects/october-250/01.webp", "/projects/maadi-180/05.webp", "/projects/el-nakhil-villa/01.webp"];
+const valueRooms = [
+  ["/projects/el-nakhil-villa/01.webp", "/projects/october-250/01.webp", "/projects/maadi-285/01.webp"],
+  ["/projects/maadi-180/05.webp", "/projects/tagamo3-115/04.webp", "/projects/zayed-160/02.webp"],
+  ["/projects/hadayek-el-ahram-200/03.webp", "/projects/mountain-view-zayed-80/03.webp", "/projects/october-250/05.webp"],
+];
 
 function Values({ items }: { items: string[][] }) {
   const ref = useRef<HTMLUListElement>(null);
@@ -17,9 +23,11 @@ function Values({ items }: { items: string[][] }) {
           <span className="relative mx-auto grid h-48 w-48 place-items-center md:h-56 md:w-56">
             <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full -rotate-90" aria-hidden><circle cx="50" cy="50" r="48" fill="none" stroke="var(--bronze)" strokeWidth=".7" pathLength={1} className="val-c" style={{ transitionDelay: `${k * 250}ms` }} /></svg>
             <svg viewBox="0 0 100 100" className="spin absolute -inset-3 h-[calc(100%+1.5rem)] w-[calc(100%+1.5rem)]" aria-hidden><circle cx="50" cy="50" r="49" fill="none" stroke="var(--surface)" strokeOpacity=".2" strokeWidth=".3" strokeDasharray="1 3" /></svg>
-            <span className="display text-3xl md:text-4xl">{v}</span>
+            {/* a round window onto the rooms that hold this value; it keeps changing by itself */}
+            <ShapeCycle imgs={valueRooms[k % valueRooms.length]} every={3600 + k * 600} sizes="240px" className="absolute inset-[7%] rounded-full" />
           </span>
-          <p className="mx-auto mt-6 max-w-xs text-sm text-[var(--surface)]/75">{d}</p>
+          <h3 className="display mt-6 text-3xl md:text-4xl">{v}</h3>
+          <p className="mx-auto mt-3 max-w-xs text-sm text-[var(--surface)]/75">{d}</p>
         </li>
       ))}
     </ul>

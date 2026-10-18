@@ -21,7 +21,7 @@ export function ShapeCycle({ imgs, className = "", sizes = "50vw", every = 3600 
     return () => { clearInterval(iv); io.disconnect(); };
   }, [key, every]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <div ref={box} className={`relative overflow-hidden bg-[var(--deep)] ${className}`}>
+    <div ref={box} className={`${/\b(absolute|fixed)\b/.test(className) ? "" : "relative "}overflow-hidden bg-[var(--deep)] ${className}`}>
       <Image src={s.under} alt="" fill sizes={sizes} className="object-cover" />
       <div key={s.n} className={`rv rv-${s.n % 5} absolute inset-0`}><Image src={s.top} alt="" fill sizes={sizes} className="ken object-cover" /></div>
     </div>

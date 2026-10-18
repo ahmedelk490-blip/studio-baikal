@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import { Contours } from "./Contours";
+import { ShapeCycle } from "./ShapeCycle";
 import { contact } from "@/data/projects";
 import type { Dict } from "@/data/i18n";
 import type { PagesDict } from "@/data/pages";
@@ -26,10 +26,9 @@ export function ContactWizard({ t, p }: { t: Dict; p: PagesDict["contact"] }) {
   const tile = (on: boolean) => `rounded-2xl border p-5 text-start text-lg transition-colors ${on ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--surface)]" : "border-[var(--ink)]/15 hover:border-[var(--ink)]/40"}`;
   return (
     <section className="relative min-h-[100svh] overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
-      <Contours className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 opacity-40" />
       <div className="relative grid gap-12 px-5 pb-16 pt-28 md:px-10 md:pt-36 lg:grid-cols-12">
         <div className="hero-in lg:col-span-5">
-          <p className={`${u} text-[var(--bronze)]`}>{p.eyebrow}</p>
+          <p className={`${u} eyebrow text-[var(--bronze)]`}>{p.eyebrow}</p>
           <h1 className="display mt-4 text-5xl md:text-7xl">{p.title}</h1>
           <p className="mt-5 max-w-md text-sm text-[var(--surface)]/75">{p.intro}</p>
           <ol className="mt-10 grid gap-4">
@@ -45,6 +44,8 @@ export function ContactWizard({ t, p }: { t: Dict; p: PagesDict["contact"] }) {
             <a href={contact.phoneHref} dir="ltr" className="block w-fit py-2">{contact.phone}</a>
             <a href={`mailto:${contact.email}`} className="block w-fit py-2">{contact.email}</a>
           </div>
+          {/* a small Baikal arch that keeps showing finished rooms while the visitor fills the form */}
+          <ShapeCycle imgs={needImgs.concat(["/projects/maadi-180/05.webp", "/projects/zayed-160/02.webp"])} sizes="200px" className="mt-10 hidden aspect-[4/5] w-44 rounded-b-xl rounded-t-full ring-1 ring-[var(--bronze)]/30 lg:block" />
         </div>
         <div className="lg:col-span-7">
           <div className="rounded-3xl bg-[var(--surface)] p-6 text-[var(--ink)] md:p-10">

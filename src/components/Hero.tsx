@@ -60,8 +60,8 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0b1013]/80 to-transparent" />
 
         <div className="h-copy relative grid h-full place-items-center px-5 text-center">
-          <div>
-            <p className="h-chip mx-auto inline-flex items-center gap-2 rounded-full border border-[var(--surface)]/20 bg-[#0b1013]/40 px-3.5 py-1.5 text-xs text-[var(--surface)]/85">
+          <div className="w-full min-w-0">
+            <p className="h-chip mx-auto inline-flex max-w-full items-center gap-2 text-balance rounded-full border border-[var(--surface)]/20 bg-[#0b1013]/40 px-3.5 py-1.5 text-xs text-[var(--surface)]/85">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--bronze)]" aria-hidden />{extras[lang].heroChip}
             </p>
             <h1 className="display mx-auto mt-6 grid max-w-[16ch] text-[12.5vw] leading-[1.02] rtl:leading-[1.3] rtl:text-[10vw] md:text-[7vw] md:rtl:text-[6vw] lg:text-[5.6vw] lg:rtl:text-[4.8vw]" style={{ perspective: "900px" }}>

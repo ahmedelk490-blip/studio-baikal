@@ -49,3 +49,6 @@ next-env.d.ts
 
 # reference videos (never ship)
 public/refs/
+
+# second dev server build (hero B preview)
+.next-light/

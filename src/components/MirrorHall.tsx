@@ -48,7 +48,7 @@ export function MirrorHall({ projects, t, lang }: { projects: Project[]; t: Dict
       </div>
 
       <div
-        className="relative mx-auto mt-10 h-[340px] max-w-[1600px] touch-pan-y select-none overflow-hidden [--step:31vw] md:[--step:min(19vw,300px)] md:mt-12 md:h-[440px]"
+        className="relative mx-auto mt-10 h-[340px] max-w-[1600px] touch-pan-y select-none overflow-x-clip [--step:31vw] md:[--step:min(19vw,300px)] md:mt-12 md:h-[440px]"
         style={{ perspective: "1500px" }}
         dir="ltr"
         onPointerDown={(e) => { down.current = { x: e.clientX, y: e.clientY }; }}

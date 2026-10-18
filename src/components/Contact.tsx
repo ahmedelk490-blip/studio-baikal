@@ -35,7 +35,11 @@ export function Contact({ t, contact }: { t: Dict; contact: ContactInfo }) {
     ["insta", ar ? "إنستجرام" : "Instagram", "@studio_baikal", contact.instagram],
   ];
   const lab = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
-  const chip = (on: boolean) => `rounded-full border px-4 py-2 text-sm transition-colors ${on ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--surface)]" : "border-[var(--ink)]/20 hover:border-[var(--ink)]/50"}`;
+  const chip = (on: boolean) => `min-h-11 rounded-full border px-4 text-sm transition-colors duration-300 ${on ? "border-[var(--bronze)] bg-[var(--bronze)] text-[var(--deep)]" : "border-[var(--surface)]/25 text-[var(--surface)]/80 [@media(hover:hover)]:hover:border-[var(--surface)]/60"}`;
+  // one flat form row: small icon, label over the value, a hairline that turns bronze while typing
+  const row = "mt-5 flex items-center gap-4 border-b border-[var(--surface)]/15 pb-2 transition-colors duration-300 focus-within:border-[var(--bronze)]";
+  const dot = "grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[var(--bronze)]/50 text-[var(--bronze)]";
+  const field = "min-h-10 w-full bg-transparent text-lg font-medium text-[var(--surface)] outline-none placeholder:font-normal placeholder:text-[var(--surface)]/30";
   return (
     <section id="contact" data-depth={t.gauge.contact} data-meters="1,642 m" data-deep="1" className="relative overflow-hidden bg-[var(--deeper)] text-[var(--surface)]">
       <div className="grid lg:grid-cols-2">
@@ -68,26 +72,33 @@ export function Contact({ t, contact }: { t: Dict; contact: ContactInfo }) {
           </div>
         </div>
 
-        <div className="flex flex-col justify-center bg-[var(--surface)] px-5 py-14 text-[var(--ink)] md:px-12 md:py-20 lg:px-16">
+        <div className="relative flex flex-col justify-center overflow-hidden bg-[#0F1A1E] px-5 py-14 text-[var(--surface)] md:px-12 md:py-20 lg:px-16">
+          <div className="pointer-events-none absolute -top-40 end-0 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(196,154,92,.22),transparent_65%)]" aria-hidden />
           {state === "done" ? (
-            <div className="hero-in"><p className="display text-5xl">{c.thanks}</p><p className="mt-3 text-[var(--muted)]">{c.thanksText}</p></div>
+            <div className="hero-in relative"><p className="display text-5xl">{c.thanks}</p><p className="mt-3 text-[var(--surface)]/70">{c.thanksText}</p></div>
           ) : (
-            <form onSubmit={submit}>
-              <p className={`${lab} text-[var(--bronze)]`}>{t.nav.book}</p>
-              <label className="mt-6 block border-b border-[var(--ink)]/15 pb-2"><span className={`${lab} text-[var(--muted)]`}>{c.name}</span><input name="name" required autoComplete="name" placeholder={ar ? "اكتب اسمك" : "Your name"} className="mt-1 min-h-11 w-full bg-transparent text-lg font-medium outline-none placeholder:font-normal placeholder:text-[var(--ink)]/30" /></label>
-              <label className="mt-6 block border-b border-[var(--ink)]/15 pb-2"><span className={`${lab} text-[var(--muted)]`}>{c.whatsapp}</span><input name="whatsapp" required inputMode="tel" autoComplete="tel" dir="ltr" placeholder="01x xxxx xxxx" className="mt-1 min-h-11 w-full bg-transparent text-lg font-medium outline-none placeholder:font-normal placeholder:text-[var(--ink)]/30 rtl:text-right" /></label>
+            <form onSubmit={submit} className="relative">
+              <p className="display text-3xl md:text-4xl">{t.nav.book}</p>
+              <label className={row}>
+                <span className={dot} aria-hidden><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4 21a8 8 0 0 1 16 0" /></svg></span>
+                <span className="min-w-0 flex-1"><span className={`${lab} block text-[var(--surface)]/55`}>{c.name}</span><input name="name" required autoComplete="name" placeholder={ar ? "اكتب اسمك" : "Your name"} className={field} /></span>
+              </label>
+              <label className={row}>
+                <span className={dot} aria-hidden><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d={WA_PATH} /></svg></span>
+                <span className="min-w-0 flex-1"><span className={`${lab} block text-[var(--surface)]/55`}>{c.whatsapp}</span><input name="whatsapp" required inputMode="tel" autoComplete="tel" dir="ltr" placeholder="01x xxxx xxxx" className={`${field} rtl:text-right`} /></span>
+              </label>
               <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
-              <fieldset className="mt-6"><legend className={`${lab} text-[var(--muted)]`}>{c.size}</legend>
+              <fieldset className="mt-7"><legend className={`${lab} text-[var(--surface)]/55`}>{c.size}</legend>
                 <div className="mt-3 flex flex-wrap gap-2">{c.sizes.map((s) => <button type="button" key={s} onClick={() => setSize(s)} aria-pressed={size === s} className={chip(size === s)}>{s}</button>)}</div>
               </fieldset>
-              <fieldset className="mt-6"><legend className={`${lab} text-[var(--muted)]`}>{c.need}</legend>
+              <fieldset className="mt-6"><legend className={`${lab} text-[var(--surface)]/55`}>{c.need}</legend>
                 <div className="mt-3 flex flex-wrap gap-2">{c.needs.map((s) => <button type="button" key={s} onClick={() => setNeed(s)} aria-pressed={need === s} className={chip(need === s)}>{s}</button>)}</div>
               </fieldset>
               <button disabled={state === "sending"} className="btn btn-primary mt-8 w-full justify-between disabled:opacity-60">
                 <span className="btn-roll"><span>{state === "sending" ? c.sending : c.send}</span><span aria-hidden>{state === "sending" ? c.sending : c.send}</span></span>
                 <span className="btn-ico" aria-hidden />
               </button>
-              {state === "error" && <p className="mt-3 text-sm text-[#9a4a2a]">{c.error}</p>}
+              {state === "error" && <p className="mt-3 text-sm text-[#e0a383]">{c.error}</p>}
             </form>
           )}
         </div>

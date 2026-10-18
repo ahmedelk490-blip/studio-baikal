@@ -16,7 +16,6 @@ export function Manifesto({ t }: { t: Dict }) {
     gsap.to(".ph-img", { scale: 1, ease: "none", scrollTrigger: st });
     gsap.from(".ph-cap > *", { opacity: 0, y: 24, stagger: 0.12, duration: 0.8, scrollTrigger: { trigger: ".ph-wrap", start: "center 70%" } });
   }, { scope: ref });
-  const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   return (
     <section ref={ref} data-depth={t.gauge.statement} data-meters="20 m" className="relative overflow-hidden bg-[var(--surface)] text-[var(--ink)]">
       <Contours className="pointer-events-none absolute inset-x-0 top-10 h-[46%] opacity-45" />
@@ -29,9 +28,11 @@ export function Manifesto({ t }: { t: Dict }) {
         <div className="ph absolute inset-0" style={{ clipPath: "circle(22% at 50% 50%)" }}>
           <Image src="/projects/el-nakhil-villa/01.webp" alt="" fill sizes="100vw" className="ph-img scale-[1.35] object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--deep)] via-[var(--deep)]/25 to-transparent" />
-          <div className="ph-cap absolute inset-x-0 bottom-[10%] px-5 text-center text-[var(--surface)]">
-            <p className={`${u} text-[var(--bronze)]`}>80 m</p>
-            <p className="display mt-3 text-4xl md:text-6xl">{t.statement.dive}</p>
+          {/* no words on the photo: one bronze ring with an arrow sinking down to the projects */}
+          <div className="ph-cap absolute inset-x-0 bottom-[10%] flex justify-center">
+            <a href="#projects" aria-label={t.statement.dive} className="grid h-16 w-16 place-items-center rounded-full border border-[var(--bronze)]/70 bg-[var(--deep)]/30 text-[var(--surface)] md:h-20 md:w-20">
+              <svg className="sink" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M12 4v16M5 13l7 7 7-7" /></svg>
+            </a>
           </div>
         </div>
       </div>

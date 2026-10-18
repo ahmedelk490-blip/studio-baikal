@@ -232,3 +232,7 @@ html.is-deep { color-scheme: dark; }
 .draw-sweep { animation: drawSweep 6.5s cubic-bezier(.65,0,.35,1) infinite; }
 @keyframes drawSweep { 0%, 18% { clip-path: inset(0 0 0 0); } 55%, 82% { clip-path: inset(0 0 0 100%); } 100% { clip-path: inset(0 0 0 0); } }
 @media (prefers-reduced-motion: reduce) { .draw-sweep { animation: none; clip-path: inset(0 0 0 100%); } }
+/* hero portal: the thin bronze echo around the arch breathes slowly */
+.arch-breathe { animation: archBreathe 6s ease-in-out infinite; }
+@keyframes archBreathe { 50% { transform: scale(1.018); opacity: .55; } }
+@media (prefers-reduced-motion: reduce) { .arch-breathe { animation: none; } }

@@ -7,16 +7,13 @@ import { Btn } from "./Btn";
 import { heroVideo } from "@/data/media";
 import { extras } from "@/data/extras";
 
-const srcs = ["/projects/october-250/01.webp", "/projects/el-nakhil-villa/01.webp", "/projects/maadi-285/01.webp", "/projects/maadi-180/05.webp"];
-const EVERY = 4200;
-const bubbles = Array.from({ length: 14 }, (_, k) => ({ x: (k * 67) % 100, d: 9 + (k % 5) * 2.2, s: 3 + (k % 3) * 2, delay: (k * 1.37) % 9 }));
-
-/* Surface, full screen: a self-changing room under moving light, the headline rising word by word
-   on the waterline, and a live depth HUD that slides when the room changes. */
+/* Surface — the portal. The words stand on one side; on the other the Baikal arch is a window onto the
+   film, with a thin bronze echo of it breathing around. On desktop the page holds while the arch opens
+   until the film fills the screen and the words step aside; on phones the words sit above the arch.
+   The film plays inside a full-screen layer clipped to the arch, so opening it is one clip-path. */
 export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
   const ref = useRef<HTMLElement>(null);
-  const [i, setI] = useState(0);
-  // tablet/desktop: the headline hands over to the brand line while the film is on its second room
+  // tablet/desktop: the headline hands over to the second line while the film is on its second room
   const [alt, setAlt] = useState(false);
   useEffect(() => {
     if (!matchMedia("(min-width: 768px) and (prefers-reduced-motion: no-preference)").matches) return;
@@ -25,22 +22,26 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
     const id = setInterval(() => setAlt((a) => !a), 5000);
     return () => clearInterval(id);
   }, []);
-  useEffect(() => { const x = setInterval(() => setI((k) => (k + 1) % srcs.length), EVERY); return () => clearInterval(x); }, []);
   useGSAP(() => {
-    gsap.timeline({ delay: 0.1 })
-      .from(".h-stage", { scale: 1.25, duration: 2.2, ease: "expo.out" }, 0)
-      .from(".h-veil", { opacity: 1, duration: 1.6, ease: "power2.out" }, 0.2)
-      .from(".h-word", { yPercent: 120, rotateX: -60, opacity: 0, duration: 1.1, ease: "power4.out", stagger: 0.07, transformOrigin: "50% 100%" }, 0.6)
-      .from(".h-fade", { opacity: 0, y: 16, duration: 0.8, ease: "power3.out", stagger: 0.08 }, 1.3)
-      .from(".h-hud > *", { opacity: 0, x: 20, duration: 0.7, ease: "power3.out", stagger: 0.06 }, 1.4);
-    gsap.to(".h-stage", { yPercent: 16, ease: "none", scrollTrigger: { trigger: ref.current, start: "top top", end: "bottom top", scrub: true } });
-    gsap.to(".h-copy", { yPercent: -10, opacity: 0.2, ease: "none", scrollTrigger: { trigger: ref.current, start: "40% top", end: "bottom top", scrub: true } });
-    gsap.matchMedia().add("(pointer: fine) and (prefers-reduced-motion: no-preference)", () => {
-      const x = gsap.quickTo(".h-stage", "x", { duration: 1.6, ease: "power3.out" });
-      const y = gsap.quickTo(".h-stage", "y", { duration: 1.6, ease: "power3.out" });
-      const move = (e: MouseEvent) => { x((e.clientX / innerWidth - 0.5) * -30); y((e.clientY / innerHeight - 0.5) * -16); };
-      addEventListener("mousemove", move);
-      return () => removeEventListener("mousemove", move);
+    const sec = ref.current!, win = sec.querySelector<HTMLElement>(".h-win")!, slot = sec.querySelector<HTMLElement>(".h-slot")!;
+    // the arch as a clip on the full-screen film layer, measured from the invisible slot in the layout
+    const arch = () => { const s = sec.getBoundingClientRect(), r = slot.getBoundingClientRect(), R = r.width / 2;
+      return `inset(${r.top - s.top}px ${s.right - r.right}px ${s.bottom - r.bottom}px ${r.left - s.left}px round ${R}px ${R}px 18px 18px)`; };
+    gsap.matchMedia().add({ desk: "(min-width: 1024px)", small: "(max-width: 1023px)", reduce: "(prefers-reduced-motion: reduce)" }, (ctx) => {
+      gsap.set(win, { clipPath: arch() });
+      const fit = () => gsap.set(win, { clipPath: arch() });
+      if (ctx.conditions!.reduce) { const ro = new ResizeObserver(fit); ro.observe(sec); ro.observe(slot); return () => ro.disconnect(); }
+      gsap.timeline({ delay: 0.1 })
+        .from(".h-film", { scale: 1.25, duration: 2.2, ease: "expo.out" }, 0)
+        .from(".h-echo", { opacity: 0, scale: 0.9, duration: 1.6, ease: "expo.out" }, 0.2)
+        .from(".h-word", { yPercent: 120, rotateX: -60, opacity: 0, duration: 1.1, ease: "power4.out", stagger: 0.07, transformOrigin: "50% 100%" }, 0.4)
+        .from(".h-fade", { opacity: 0, y: 16, duration: 0.8, ease: "power3.out", stagger: 0.08 }, 1.1);
+      // phones/tablets: no scroll opening, so re-measure whenever the layout settles or changes (fonts, images)
+      if (!ctx.conditions!.desk) { const ro = new ResizeObserver(fit); ro.observe(sec); ro.observe(slot); return () => ro.disconnect(); }
+      gsap.timeline({ scrollTrigger: { trigger: sec, start: "top top", end: "+=90%", pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true } })
+        .fromTo(win, { clipPath: arch }, { clipPath: "inset(0px 0px 0px 0px round 0px 0px 0px 0px)", ease: "power2.inOut" }, 0)
+        .to(".h-copy", { opacity: 0, x: lang === "ar" ? 90 : -90, ease: "power1.in" }, 0)
+        .to(".h-echo", { opacity: 0, scale: 1.2, ease: "power1.in" }, 0);
     });
   }, { scope: ref });
 
@@ -54,56 +55,57 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
   ));
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   return (
-    <section ref={ref} data-depth={t.gauge.surface} data-meters="0 m" data-deep="1" className="relative min-h-[100svh] overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
-      <div className="h-stage absolute -inset-[6%]">
-        {heroVideo.mp4 ? (
-          <video className="absolute inset-0 h-full w-full object-cover" autoPlay muted loop playsInline preload="metadata" poster={heroVideo.poster} aria-hidden>
-            {heroVideo.mobile && <source src={heroVideo.mobile} type="video/mp4" media="(max-width: 767px)" />}
-            {heroVideo.webm && <source src={heroVideo.webm} type="video/webm" />}
-            <source src={heroVideo.mp4} type="video/mp4" />
-          </video>
-        ) : srcs.map((s, k) => <Image key={s} src={s} alt={t.hero.rooms[k]} fill priority={k === 0} sizes="100vw" className={`object-cover transition-opacity duration-[1600ms] ease-out ${k === i ? "ken opacity-100" : "opacity-0"}`} />)}
+    <section ref={ref} data-depth={t.gauge.surface} data-meters="0 m" data-deep="1" className="relative overflow-hidden bg-[radial-gradient(ellipse_at_70%_45%,#16232a,#0B1013_65%)] text-[var(--surface)] lg:h-[100svh]">
+      {/* the film: a full-screen layer, clipped to the arch until the scroll opens it */}
+      <div className="h-win absolute inset-0 z-[1] overflow-hidden" style={{ clipPath: "inset(50% 50% 50% 50%)" }} aria-hidden>
+        <div className="h-film absolute inset-0">
+          {heroVideo.mp4 ? (
+            <video className="absolute inset-0 h-full w-full object-cover" autoPlay muted loop playsInline preload="metadata" poster={heroVideo.poster}>
+              {heroVideo.mobile && <source src={heroVideo.mobile} type="video/mp4" media="(max-width: 767px)" />}
+              {heroVideo.webm && <source src={heroVideo.webm} type="video/webm" />}
+              <source src={heroVideo.mp4} type="video/mp4" />
+            </video>
+          ) : <Image src={heroVideo.poster} alt="" fill priority sizes="100vw" className="object-cover" />}
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--deep)]/55 via-transparent to-[var(--deep)]/25" />
       </div>
-      <div className="caustic caustic-a" aria-hidden /><div className="caustic caustic-b" aria-hidden />
-      <div className="absolute inset-0 bg-gradient-to-t from-[var(--deep)] via-[var(--deep)]/35 to-[var(--deep)]/20" />
-      <div className="absolute inset-0 bg-gradient-to-r from-[var(--deep)]/70 via-transparent to-transparent rtl:bg-gradient-to-l" />
-      <div className="h-veil pointer-events-none absolute inset-0 bg-[var(--deep)] opacity-0" />
-      <ul className="bubbles pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-        {bubbles.map((b, k) => <li key={k} style={{ left: `${b.x}%`, width: b.s, height: b.s, animationDuration: `${b.d}s`, animationDelay: `-${b.delay}s` }} />)}
-      </ul>
 
-      <div className="h-copy relative flex min-h-[100svh] flex-col justify-end px-5 pb-28 pt-28 md:px-10 md:pb-24">
-        <h1 className="display mt-5 grid max-w-[14ch] text-[14vw] leading-[1.02] rtl:leading-[1.3] rtl:text-[11vw] md:text-[8vw] lg:text-[7vw] md:rtl:text-[6.4vw] lg:rtl:text-[5.4vw] md:max-w-[19ch]" style={{ perspective: "900px" }}>
-          <span className="col-start-1 row-start-1">
-            <span className="block">{words(t.hero.t1, !alt)}</span>
-            <span className="block italic text-[var(--bronze)] lg:ps-[8vw]">{words(t.hero.t2, !alt, -1, 2)}</span>
-          </span>
-          <span className="col-start-1 row-start-1 max-md:hidden" aria-hidden>
-            <span className="block">{words(extras[lang].heroAlt[0], alt, 1, 0, false)}</span>
-            <span className="block italic text-[var(--bronze)] lg:ps-[8vw]">{words(extras[lang].heroAlt[1], alt, 1, 2, false)}</span>
-          </span>
-        </h1>
-        <div className="mt-6 grid gap-6 md:grid-cols-12 md:items-end">
-          <p className="h-fade max-w-md text-sm leading-relaxed text-[var(--surface)]/80 md:col-span-6">{t.hero.intro}</p>
-          <div className={`h-fade flex flex-wrap items-center gap-x-6 gap-y-3 ${u} md:col-span-6 md:justify-end`}>
+      <div className="relative grid min-h-[100svh] content-center gap-8 px-5 pb-12 pt-28 md:px-10 lg:h-full lg:grid-cols-12 lg:items-center lg:gap-10 lg:pb-10">
+        <div className="h-copy relative z-[2] lg:col-span-6">
+          <h1 className="display grid text-[13vw] leading-[1.02] rtl:leading-[1.3] rtl:text-[10.5vw] md:text-[8vw] md:rtl:text-[6.6vw] lg:text-[5.6vw] lg:rtl:text-[4.6vw]" style={{ perspective: "900px" }}>
+            <span className="col-start-1 row-start-1">
+              <span className="block">{words(t.hero.t1, !alt)}</span>
+              <span className="block italic text-[var(--bronze)] rtl:not-italic">{words(t.hero.t2, !alt, -1, 2)}</span>
+            </span>
+            <span className="col-start-1 row-start-1 max-md:hidden" aria-hidden>
+              <span className="block">{words(extras[lang].heroAlt[0], alt, 1, 0, false)}</span>
+              <span className="block italic text-[var(--bronze)] rtl:not-italic">{words(extras[lang].heroAlt[1], alt, 1, 2, false)}</span>
+            </span>
+          </h1>
+          <p className="h-fade mt-6 max-w-md text-sm leading-relaxed text-[var(--surface)]/75 max-lg:hidden">{t.hero.intro}</p>
+          <div className={`h-fade mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 ${u} max-lg:hidden`}>
+            <Btn href={`/${lang}#contact`}>{t.hero.cta1}</Btn>
+            <Btn href={`/${lang}#projects`} variant="ghost">{t.hero.cta2}</Btn>
+          </div>
+        </div>
+
+        {/* the arch's place in the layout (invisible), and its thin bronze echo */}
+        <div className="relative mx-auto h-[46svh] w-full max-w-[420px] lg:col-span-5 lg:col-start-8 lg:h-[74svh] lg:max-w-none">
+          <div className="h-slot absolute inset-0" />
+          <div className="h-echo pointer-events-none absolute -inset-3 z-[2] md:-inset-4" aria-hidden><span className="arch-breathe absolute inset-0 rounded-b-[26px] rounded-t-full border border-[var(--bronze)]/40" /></div>
+        </div>
+
+        {/* phones/tablets: the words that sat beside the arch on desktop come under it */}
+        <div className="h-fade relative z-[2] lg:hidden">
+          <p className="max-w-md text-sm leading-relaxed text-[var(--surface)]/75">{t.hero.intro}</p>
+          <div className={`mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 ${u}`}>
             <Btn href={`/${lang}#contact`}>{t.hero.cta1}</Btn>
             <Btn href={`/${lang}#projects`} variant="ghost">{t.hero.cta2}</Btn>
           </div>
         </div>
       </div>
 
-      {/* live depth HUD */}
-      <div className="h-hud pointer-events-none absolute end-6 top-1/2 hidden -translate-y-1/2 flex-col items-end gap-3 text-end lg:flex" aria-hidden>
-        <span className={`${u} text-[var(--surface)]/60`}>Lake Baikal · 53°N 108°E</span>
-        <span className="relative block h-48 w-px bg-[var(--surface)]/30">
-          {[0, 1, 2, 3].map((k) => <span key={k} className="absolute end-0 h-px w-3 bg-[var(--surface)]/50" style={{ top: `${(k / 3) * 100}%` }} />)}
-          <span className="absolute end-0 h-2 w-2 translate-x-1/2 rounded-full bg-[var(--bronze)] transition-[top] duration-700 ease-out" style={{ top: `${(i / 3) * 100}%`, transform: "translate(50%,-50%)" }} />
-        </span>
-        <span className={`${u} text-[var(--bronze)]`}>{i * 4} m</span>
-      </div>
-
-      {/* the film names no room, so only the descend cue sits on the bottom edge */}
-      <p className={`absolute inset-x-5 bottom-6 hidden items-center justify-end gap-2 opacity-70 ${u} md:inset-x-10 md:flex md:pe-20`} aria-hidden><span className="sink inline-block">&#8595;</span> {t.hero.descend}</p>
+      <p className={`absolute bottom-6 end-10 z-[2] hidden items-center gap-2 opacity-70 ${u} lg:flex lg:pe-20`} aria-hidden><span className="sink inline-block">&#8595;</span> {t.hero.descend}</p>
     </section>
   );
 }

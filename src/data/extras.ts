@@ -14,24 +14,24 @@ export const extras: Record<Lang, Extras> = {
   en: {
     layers: {
       eyebrow: "Built in layers",
-      title: "What sits behind the finish.",
+      title: "What sits behind the finish",
       intro: "Every room we hand over is built from the slab up. This is what goes into a Baikal wall before you ever see it.",
       items: [
-        { name: "Finish", note: "Walnut, travertine or paint: the surface you touch every day." },
-        { name: "Plaster & skim", note: "Level, crack-free walls, so the finish sits true." },
-        { name: "Services", note: "Power, plumbing and lighting runs, planned before a wall is closed." },
-        { name: "Insulation", note: "Sound and heat kept where they belong." },
-        { name: "Structure", note: "The slab and the walls, checked and corrected first." },
+        { name: "Finish", note: "Walnut, travertine or paint: the surface you touch every day" },
+        { name: "Plaster & skim", note: "Level, crack-free walls, so the finish sits true" },
+        { name: "Services", note: "Power, plumbing and lighting runs, planned before a wall is closed" },
+        { name: "Insulation", note: "Sound and heat kept where they belong" },
+        { name: "Structure", note: "The slab and the walls, checked and corrected first" },
       ],
     },
     grow: { eyebrow: "El Nakhil Villa · New Cairo", line: "A room should feel like it was always there" },
     cta: { eyebrow: "Your space", title: "Ready to shape your space?", note: "Tell us about the place. We call you back within one working day, and the first consultation is free.", btn: "Book a free consultation" },
-    heroAlt: ["Drawn with care,", "built to last."],
+    heroAlt: ["Drawn with care,", "built to last"],
   },
   ar: {
     layers: {
       eyebrow: "طبقة فوق طبقة",
-      title: "ما وراء التشطيب.",
+      title: "ما وراء التشطيب",
       intro: "كل مساحة نسلّمها تُبنى من الأساس. هذا ما يدخل في حائط بايكال قبل أن تراه",
       items: [
         { name: "التشطيب النهائي", note: "خشب جوز أو ترافرتين أو دهان: السطح الذي تلمسه كل يوم" },

@@ -3,16 +3,16 @@ import type { Lang } from "./i18n";
 const en = {
   nav: { home: "Home", projects: "Projects", services: "Services", studio: "Studio", contact: "Contact" },
   projects: {
-    eyebrow: "Project archive", title: "Every home, every room.", view: "Step inside", all: "All",
+    eyebrow: "Project archive", title: "Every home, every room", view: "Step inside", all: "All",
     intro: "Villas, apartments and a clinic across Cairo, Giza and Sheikh Zayed. Filter by type, then step inside.",
     filters: { Villa: "Villas", Apartment: "Apartments", Clinic: "Clinics" } as Record<string, string>,
   },
   services: {
-    eyebrow: "Services & packages", title: "From drawing to doorstep.", drawing: "Drawing", render: "Finished", forLabel: "Best for", included: "What you get", cta: "Book a free consultation",
-    intro: "Drag the line, or watch it move: every Baikal room starts as a precise drawing and ends as a finished space.",
+    eyebrow: "Services & packages", title: "From drawing to doorstep", drawing: "Drawing", render: "Finished", forLabel: "Best for", included: "What you get", cta: "Book a free consultation",
+    intro: "Drag the line, or watch it move: every Baikal room starts as a precise drawing and ends as a finished space",
     packages: [
-      { name: "3D Design Package", for: "Owners who want to see every room before building.", items: ["Measured survey of the space", "Furniture layout and 2D plans", "Material and colour board", "Photoreal 3D renders of every room", "360° virtual tour", "Technical drawings for any contractor"] },
-      { name: "Design & Execution", for: "Owners who want one team from first sketch to handover.", items: ["Everything in the 3D package", "Contractor selection and coordination", "Regular site supervision", "Sourcing of furniture and lighting", "Snag list and final styling", "Handover with a care guide"] },
+      { name: "3D Design Package", for: "Owners who want to see every room before building", items: ["Measured survey of the space", "Furniture layout and 2D plans", "Material and colour board", "Photoreal 3D renders of every room", "360° virtual tour", "Technical drawings for any contractor"] },
+      { name: "Design & Execution", for: "Owners who want one team from first sketch to handover", items: ["Everything in the 3D package", "Contractor selection and coordination", "Regular site supervision", "Sourcing of furniture and lighting", "Snag list and final styling", "Handover with a care guide"] },
     ],
     faqTitle: "Questions we hear often",
     faq: [
@@ -23,8 +23,8 @@ const en = {
     ] as [string, string][],
   },
   studio: {
-    eyebrow: "The studio", title: "Two sisters, one calm language.", valuesTitle: "What we hold on to", cta: "Start your project",
-    intro: "Studio Baikal is named after the deepest lake on earth: still on the surface, full of structure below.",
+    eyebrow: "The studio", title: "Two sisters, one calm language", valuesTitle: "What we hold on to", cta: "Start your project",
+    intro: "Studio Baikal is named after the deepest lake on earth: still on the surface, full of structure below",
     chapters: [
       ["Our story", "Studio Baikal believes great design is more than beautiful spaces. It is about creating environments that reflect the people who live in them, inspired by the depth, balance and tranquillity of nature."],
       ["Our approach", "Every project is approached with thoughtful planning, attention to detail and a deep understanding of our clients' vision. We create spaces that feel personal, refined and built to last."],
@@ -32,7 +32,7 @@ const en = {
     ] as [string, string][],
   },
   config: {
-    eyebrow: "Choose your palette", title: "One kitchen, your materials.", room: "Kitchen",
+    eyebrow: "Choose your palette", title: "One kitchen, your materials", room: "Kitchen",
     intro: "Pick a palette and watch cabinetry, stone and trim change together. Every Baikal project starts from a board like this.",
     fields: ["Cabinetry", "Stone", "Trim", "Lighting"],
     options: [
@@ -42,7 +42,7 @@ const en = {
       { name: "Light Oak & Quartz", spec: ["Light oak and white", "White quartz", "Brushed steel", "Soft pendants"] },
     ],
   },
-  contact: { eyebrow: "Free consultation", title: "Three questions, then we call you.", intro: "It takes under a minute. We reply within one working day.", steps: ["Your space", "Your need", "Your details"], next: "Next", back: "Back" },
+  contact: { eyebrow: "Free consultation", title: "Three questions, then we call you", intro: "It takes under a minute. We reply within one working day.", steps: ["Your space", "Your need", "Your details"], next: "Next", back: "Back" },
 };
 export type PagesDict = typeof en;
 

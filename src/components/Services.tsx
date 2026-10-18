@@ -29,11 +29,12 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
       const pill = () => { const P = Math.min(win.offsetWidth, win.offsetHeight) / 2; return corners(P, P); };
       const n = items.length - 1;
       tl.current = gsap.timeline({ scrollTrigger: { trigger: ".svc-phone", start: "top 72px", end: "+=" + n * 110 + "%", pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true, onUpdate: (st) => setA(Math.round(st.progress * n)) } })
-        .fromTo(win, { ...arch() }, { ...pill(), ease: "power2.inOut", duration: 1, immediateRender: true }, 0)
-        .to(win, { ...corners(24, 24), ease: "power2.inOut", duration: 1 }, 1)
+        // each change happens around the moment the name switches (0.5, 1.5) and holds in between
+        .fromTo(win, { ...arch() }, { ...pill(), ease: "power2.inOut", duration: 0.3, immediateRender: true }, 0.35)
+        .to(win, { ...corners(24, 24), ease: "power2.inOut", duration: 0.3 }, 1.35)
         // each next room wipes in over the last one (nothing waits outside the window)
-        .fromTo(".svc-pane-1", { clipPath: "inset(0% 0% 0% 100%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.inOut", duration: 1 }, 0)
-        .fromTo(".svc-pane-2", { clipPath: "inset(0% 0% 0% 100%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.inOut", duration: 1 }, 1)
+        .fromTo(".svc-pane-1", { clipPath: "inset(0% 0% 0% 100%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.inOut", duration: 0.4 }, 0.3)
+        .fromTo(".svc-pane-2", { clipPath: "inset(0% 0% 0% 100%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.inOut", duration: 0.4 }, 1.3)
         .fromTo(".svc-par img", { objectPosition: "30% 50%" }, { objectPosition: "70% 50%", ease: "none", duration: n }, 0);
       return () => { tl.current = null; };
     });

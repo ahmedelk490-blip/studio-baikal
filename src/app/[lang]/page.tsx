@@ -36,8 +36,8 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       <DepthGauge />
       <Header t={t} lang={lang} dark />
       <main>
-        {/* NEXT_PUBLIC_HERO=light serves the second hero (the light finds the room) for comparing */}
-        {process.env.NEXT_PUBLIC_HERO === "light" ? <HeroLight t={t} lang={lang} /> : <Hero t={t} lang={lang} />}
+        {/* the light finds the room (chosen hero); NEXT_PUBLIC_HERO=arch still serves the arch dive */}
+        {process.env.NEXT_PUBLIC_HERO === "arch" ? <Hero t={t} lang={lang} /> : <HeroLight t={t} lang={lang} />}
         <Manifesto t={t} />
         {/* eight rooms, each with its own ground, layout and motion */}
         <MirrorHall projects={list} t={t} lang={lang} />

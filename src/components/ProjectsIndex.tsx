@@ -1,71 +1,69 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Contours } from "./Contours";
-import type { Img, Project } from "@/data/projects";
+import { useState } from "react";
+import { MaskReveal } from "./MaskReveal";
+import { ShapeCycle } from "./ShapeCycle";
+import type { Project } from "@/data/projects";
 import type { Lang } from "@/data/i18n";
 import type { PagesDict } from "@/data/pages";
 
 type Row = Project & { kind: string };
+type Facts = { area: string; rooms: string; year: string };
 
-/* A cover that plays through the home's rooms by itself (landscape renders only, never cropped badly). */
-function Cycle({ images, offset }: { images: Img[]; offset: number }) {
-  const [k, setK] = useState(0);
-  useEffect(() => {
-    let iv: ReturnType<typeof setInterval>;
-    const t0 = setTimeout(() => { iv = setInterval(() => setK((x) => (x + 1) % images.length), 3200); }, offset * 450);
-    return () => { clearTimeout(t0); clearInterval(iv); };
-  }, [images.length, offset]);
-  return (
-    <div className="relative aspect-[16/9] overflow-hidden bg-[var(--mist)]">
-      {images.map((im, j) => <Image key={im.src} src={im.src} alt={im.room} fill sizes="(min-width:768px) 58vw, 100vw" className={`object-cover transition-[opacity,transform] duration-[1200ms] ease-out ${j === k ? "scale-100 opacity-100" : "scale-105 opacity-0"}`} />)}
-      <span className="room-tag absolute bottom-3 start-3 rounded-full bg-[var(--deep)]/70 px-3 py-1.5 text-xs uppercase tracking-[0.14em] rtl:tracking-normal text-[var(--surface)]">{images[k]?.room}</span>
-      <span className="absolute bottom-4 end-4 flex gap-1.5">{images.map((im, j) => <span key={im.src} className={`h-1.5 rounded-full bg-[var(--surface)] transition-all duration-500 ${j === k ? "w-6" : "w-1.5 opacity-50"}`} />)}</span>
-    </div>
-  );
-}
-
-/* Projects page: an archive with type filters; each home is a wide row whose cover plays through its rooms. */
-export function ProjectsIndex({ rows, lang, p }: { rows: Row[]; lang: Lang; p: PagesDict["projects"] }) {
+/* Projects page. Hero: title beside a Baikal arch that keeps cycling every project's cover through
+   the shape reveals. Archive: type filters, then one wide row per home whose frame opens with a mask
+   reveal on scroll and then plays through that home's rooms by itself, each row on its own rhythm.
+   No text sits on the photos; facts are labelled beside them. */
+export function ProjectsIndex({ rows, lang, p, facts }: { rows: Row[]; lang: Lang; p: PagesDict["projects"]; facts: Facts }) {
   const [f, setF] = useState("all");
   const kinds = ["all", ...Array.from(new Set(rows.map((r) => r.kind)))];
   const list = f === "all" ? rows : rows.filter((r) => r.kind === f);
-  const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
+  const u = "text-xs uppercase tracking-[0.18em] rtl:tracking-normal";
+  const covers = rows.map((r) => r.cover).filter(Boolean).slice(0, 8);
   return (
     <section className="bg-[var(--surface)] text-[var(--ink)]">
-      <div className="relative overflow-hidden px-5 pb-10 pt-28 md:px-10 md:pt-36">
-        <Contours className="pointer-events-none absolute inset-x-0 top-16 h-[70%] opacity-40" />
-        <div className="hero-in relative grid gap-6 md:grid-cols-12 md:items-end">
-          <div className="md:col-span-8"><p className={`${u} text-[var(--bronze)]`}>{p.eyebrow}</p><h1 className="display mt-4 text-5xl md:text-8xl">{p.title}</h1></div>
-          <p className="max-w-sm text-sm text-[var(--muted)] md:col-span-4">{p.intro}</p>
+      <div className="px-5 pb-10 pt-28 md:px-10 md:pt-36">
+        <div className="grid items-end gap-10 md:grid-cols-12">
+          <div className="hero-in md:col-span-7 lg:col-span-8">
+            <p className={`${u} eyebrow text-[var(--bronze)]`}>{p.eyebrow}</p>
+            <h1 className="display mt-4 text-5xl md:text-7xl lg:text-8xl">{p.title}</h1>
+            <p className="mt-6 max-w-md text-sm text-[var(--muted)]">{p.intro}</p>
+          </div>
+          {covers.length > 0 && <ShapeCycle imgs={covers} every={3000} sizes="(min-width:768px) 30vw, 70vw" className="mx-auto aspect-[4/5] w-full max-w-[16rem] rounded-b-2xl rounded-t-full ring-1 ring-[var(--bronze)]/35 md:col-span-5 md:max-w-xs lg:col-span-4" />}
         </div>
-        <div className="relative mt-10 flex flex-wrap gap-2">
+        <div className="mt-12 flex flex-wrap gap-2" role="group" aria-label={p.all}>
           {kinds.map((k) => (
-            <button key={k} onClick={() => setF(k)} aria-pressed={f === k} className={`rounded-full border px-5 py-2.5 text-sm transition-colors ${f === k ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--surface)]" : "border-[var(--ink)]/20 hover:border-[var(--ink)]/50"}`}>
-              {k === "all" ? p.all : p.filters[k] ?? k} <span className="opacity-60">({k === "all" ? rows.length : rows.filter((r) => r.kind === k).length})</span>
+            <button key={k} onClick={() => setF(k)} aria-pressed={f === k} className={`min-h-11 rounded-full border px-5 text-sm transition-colors ${f === k ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--surface)]" : "border-[var(--ink)]/20 hover:border-[var(--ink)]/50"}`}>
+              {k === "all" ? p.all : p.filters[k] ?? k} <span className="opacity-60" dir="ltr">({k === "all" ? rows.length : rows.filter((r) => r.kind === k).length})</span>
             </button>
           ))}
         </div>
       </div>
       <ol key={f} className="px-5 pb-20 md:px-10">
-        {list.map((r, i) => (
-          <li key={r.slug} className="hero-in border-t border-[var(--ink)]/15 py-10 md:py-14">
-            <Link href={`/${lang}/projects/${r.slug}`} className="group grid items-center gap-8 md:grid-cols-12 md:gap-12">
-              <div className={`md:col-span-7 ${i % 2 ? "md:order-2" : ""}`}><Cycle images={r.images.filter((im) => im.w >= im.h).slice(0, 4)} offset={i} /></div>
-              <div className="md:col-span-5">
-                <p className={`${u} text-[var(--bronze)]`}>{r.type} · {r.style}</p>
-                <h2 className="display mt-3 text-4xl transition-colors group-hover:text-[var(--bronze)] md:text-6xl">{r.name}</h2>
-                <p className="mt-2 text-sm text-[var(--muted)]">{r.location}</p>
-                <p className="mt-5 max-w-md text-base">{r.blurb}</p>
-                <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-2 border-t border-[var(--ink)]/15 pt-4">
-                  {[[r.area], [`${r.images.length}`], [r.year]].map(([v], j) => <dd key={j} className="text-sm font-semibold">{v}</dd>)}
-                </dl>
-                <span className="btn btn-dark mt-7"><span className="btn-roll"><span>{p.view}</span><span aria-hidden>{p.view}</span></span><span className="btn-ico" aria-hidden /></span>
-              </div>
-            </Link>
-          </li>
-        ))}
+        {list.map((r, i) => {
+          const imgs = r.images.filter((im) => im.w >= im.h).slice(0, 5).map((im) => im.src);
+          return (
+            <li key={r.slug} className="hero-in border-t border-[var(--ink)]/15 py-10 md:py-14">
+              <Link href={`/${lang}/projects/${r.slug}`} className="group grid items-center gap-8 md:grid-cols-12 md:gap-12">
+                <MaskReveal className={`relative overflow-hidden rounded-2xl md:col-span-7 ${i % 2 ? "md:order-2" : ""}`}>
+                  <ShapeCycle imgs={imgs.length ? imgs : [r.cover]} every={3200 + (i % 3) * 450} sizes="(min-width:768px) 58vw, 100vw" className="aspect-[16/9] w-full transition-transform duration-700 group-hover:scale-[1.015]" />
+                </MaskReveal>
+                <div className="md:col-span-5">
+                  <p className={`${u} eyebrow text-[var(--bronze)]`}>{r.type} · {r.style}</p>
+                  <h2 className="display mt-3 text-4xl transition-colors group-hover:text-[var(--bronze)] md:text-6xl">{r.name}</h2>
+                  <p className="mt-2 text-sm text-[var(--muted)]">{r.location}</p>
+                  <p className="mt-5 max-w-md text-base">{r.blurb}</p>
+                  <dl className="mt-6 grid max-w-sm grid-cols-3 gap-4 border-t border-[var(--ink)]/15 pt-4">
+                    {([[facts.area, r.area], [facts.rooms, `${r.images.length}`], [facts.year, r.year]] as [string, string][]).map(([k, v]) => (
+                      <div key={k}><dt className="text-xs text-[var(--muted)]">{k}</dt><dd className="mt-1 text-sm font-semibold" dir="ltr">{v}</dd></div>
+                    ))}
+                  </dl>
+                  <span className="btn btn-dark mt-7"><span className="btn-roll"><span>{p.view}</span><span aria-hidden>{p.view}</span></span><span className="btn-ico" aria-hidden /></span>
+                </div>
+              </Link>
+            </li>
+          );
+        })}
       </ol>
     </section>
   );

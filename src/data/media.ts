@@ -1,5 +1,6 @@
 /* Hero film (optional) and the per-project clips used in project heroes. */
-export const heroVideo = { mp4: "", webm: "", poster: "/projects/october-250/01.webp" };
+// rendered from the El Nakhil + October renders: traced drawing -> lit room, arch transition, 10 s loop
+export const heroVideo = { mp4: "/video/hero.mp4", mobile: "/video/hero-720.mp4", webm: "", poster: "/video/hero-poster.webp" };
 export const projectVideo: Record<string, string> = {
   "el-nakhil-villa": "/video/el-nakhil-villa.mp4",
   "october-250": "/video/october-250.mp4",

@@ -42,6 +42,7 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
       <div className="h-stage absolute -inset-[6%]">
         {heroVideo.mp4 ? (
           <video className="absolute inset-0 h-full w-full object-cover" autoPlay muted loop playsInline preload="metadata" poster={heroVideo.poster} aria-hidden>
+            {heroVideo.mobile && <source src={heroVideo.mobile} type="video/mp4" media="(max-width: 767px)" />}
             {heroVideo.webm && <source src={heroVideo.webm} type="video/webm" />}
             <source src={heroVideo.mp4} type="video/mp4" />
           </video>

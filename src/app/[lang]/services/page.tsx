@@ -9,10 +9,11 @@ import { Btn } from "@/components/Btn";
 import { JsonLd } from "@/components/JsonLd";
 import { dict, isLang } from "@/data/i18n";
 import { pages } from "@/data/pages";
+import { withSeo } from "@/lib/site";
 
 export const instant = false;
 type Props = { params: Promise<{ lang: string }> };
-export async function generateMetadata({ params }: Props): Promise<Metadata> { const { lang } = await params; const ar = lang === "ar"; return { title: isLang(lang) ? pages[lang].services.eyebrow : "Services", description: ar ? "خدمات التصميم الداخلي في مصر: باقة الثري دي (مخططات، رندرات، جولة 360°) أو التصميم والتنفيذ الكامل مع إشراف موقعي." : "Interior design services in Egypt: 3D design package (plans, 3D renders, 360° tour) or full design and execution with site supervision.", alternates: { canonical: `/${lang}/services`, languages: { en: "/en/services", ar: "/ar/services" } } }; }
+export async function generateMetadata({ params }: Props): Promise<Metadata> { const { lang } = await params; const ar = lang === "ar"; const meta: Metadata = { title: isLang(lang) ? pages[lang].services.eyebrow : "Services", description: ar ? "خدمات التصميم الداخلي في مصر: باقة الثري دي (مخططات، رندرات، جولة 360°) أو التصميم والتنفيذ الكامل مع إشراف موقعي." : "Interior design services in Egypt: 3D design package (plans, 3D renders, 360° tour) or full design and execution with site supervision.", alternates: { canonical: `/${lang}/services`, languages: { en: "/en/services", ar: "/ar/services" } } }; return isLang(lang) ? withSeo("services", lang, meta) : meta; }
 
 const faqRooms = ["/projects/maadi-180/05.webp", "/projects/october-250/01.webp", "/projects/zayed-160/02.webp", "/projects/tagamo3-115/02.webp"];
 

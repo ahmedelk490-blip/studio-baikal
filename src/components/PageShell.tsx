@@ -10,7 +10,7 @@ export function PageShell({ lang, dark = false, children }: { lang: Lang; dark?:
       <Header t={t} lang={lang} dark={dark} />
       <main>{children}</main>
       <Footer t={t} lang={lang} />
-      <WhatsAppFab label={t.contact.fab} />
+      <WhatsAppFab label={t.contact.fab} lang={lang} />
     </>
   );
 }

@@ -7,10 +7,11 @@ import { ShapeCycle } from "@/components/ShapeCycle";
 import { Btn } from "@/components/Btn";
 import { dict, isLang } from "@/data/i18n";
 import { pages } from "@/data/pages";
+import { withSeo } from "@/lib/site";
 
 export const instant = false;
 type Props = { params: Promise<{ lang: string }> };
-export async function generateMetadata({ params }: Props): Promise<Metadata> { const { lang } = await params; const ar = lang === "ar"; return { title: isLang(lang) ? pages[lang].studio.eyebrow : "Studio", description: ar ? "استوديو بايكال استوديو تصميم داخلي في مصر أسسته شقيقتان: مساحات هادئة وشخصية مستوحاة من الطبيعة." : "Studio Baikal is an interior design studio in Egypt founded by two sisters: calm, timeless, personal spaces inspired by nature.", alternates: { canonical: `/${lang}/studio`, languages: { en: "/en/studio", ar: "/ar/studio" } } }; }
+export async function generateMetadata({ params }: Props): Promise<Metadata> { const { lang } = await params; const ar = lang === "ar"; const meta: Metadata = { title: isLang(lang) ? pages[lang].studio.eyebrow : "Studio", description: ar ? "استوديو بايكال استوديو تصميم داخلي في مصر أسسته شقيقتان: مساحات هادئة وشخصية مستوحاة من الطبيعة." : "Studio Baikal is an interior design studio in Egypt founded by two sisters: calm, timeless, personal spaces inspired by nature.", alternates: { canonical: `/${lang}/studio`, languages: { en: "/en/studio", ar: "/ar/studio" } } }; return isLang(lang) ? withSeo("studio", lang, meta) : meta; }
 
 export default async function Page({ params }: Props) {
   const { lang } = await params;

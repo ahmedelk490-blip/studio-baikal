@@ -7,13 +7,14 @@ import { can } from "@/lib/perm";
 import { adminDict } from "@/lib/admin-i18n";
 import { addImages, deleteProject, galleryAction, saveProject } from "../../../actions";
 import { ConfirmButton } from "@/components/admin/client";
+import { Revisions } from "@/components/admin/Revisions";
 import { Notice, btn, btnDanger, btnGhost, card, inp } from "@/components/admin/ui";
 
 // Per-request admin page (session + live data): block on the server, no prerendered shell.
 export const instant = false;
 
 type Props = { params: Promise<{ lang: string; id: string }>; searchParams: Promise<{ msg?: string }> };
-type P = { id: number; slug: string; status: string; featured: number; sort: number; category: string; area: string; year: string; cover: string; en: string; ar: string; seo: string };
+type P = { id: number; slug: string; status: string; featured: number; sort: number; category: string; area: string; year: string; cover: string; en: string; ar: string; seo: string; updated_at: string };
 type I = { id: number; src: string; room_en: string; room_ar: string; caption: string; w: number; h: number };
 
 /* Project editor: both languages side by side, SEO, cover and publish state, then the gallery
@@ -57,7 +58,7 @@ export default async function EditProject({ params, searchParams }: Props) {
         {p.status === "published" && <a href={`/${lang}/projects/${p.slug}`} target="_blank" rel="noopener" className={btnGhost}>{a.open} ↗</a>}
       </div>
 
-      <form action={saveProject} className="mt-6 grid gap-6">
+      <form key={p.updated_at} action={saveProject} className="mt-6 grid gap-6">
         <fieldset disabled={!edit} className="grid gap-6">
           <input type="hidden" name="lang" value={lang} /><input type="hidden" name="id" value={p.id} />
           <div className={`${card} grid gap-4 sm:grid-cols-2 xl:grid-cols-4`}>
@@ -82,7 +83,7 @@ export default async function EditProject({ params, searchParams }: Props) {
             {imgs.map((i, k) => (
               <li key={i.id} className={`${card} grid items-center gap-4 p-3 md:grid-cols-[120px_1fr_auto]`}>
                 <Image src={i.src} alt="" width={120} height={80} className="h-20 w-[120px] rounded-lg object-cover" />
-                <form action={galleryAction} className="grid gap-2 sm:grid-cols-3">
+                <form key={`${i.room_en}|${i.room_ar}|${i.caption}`} action={galleryAction} className="grid gap-2 sm:grid-cols-3">
                   {hid}<input type="hidden" name="image" value={i.id} /><input type="hidden" name="op" value="save" />
                   <input name="room_en" defaultValue={i.room_en} placeholder={a.roomEn} aria-label={a.roomEn} disabled={!edit} className={inp} />
                   <input name="room_ar" defaultValue={i.room_ar} placeholder={a.roomAr} aria-label={a.roomAr} dir="rtl" disabled={!edit} className={inp} />
@@ -113,6 +114,8 @@ export default async function EditProject({ params, searchParams }: Props) {
           </form>
         )}
       </section>
+
+      <Revisions entity="project" id={p.id} current={{ slug: p.slug, status: p.status, featured: p.featured, sort: p.sort, category: p.category, area: p.area, year: p.year, cover: p.cover, en: p.en, ar: p.ar, seo: p.seo }} lang={lang} a={a} canRestore={edit} />
 
       {can(u.role, "projects.delete") && (
         <form action={deleteProject} className="mt-10 rounded-2xl border border-red-200 bg-red-50/50 p-5">

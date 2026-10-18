@@ -63,7 +63,7 @@ export default async function Inquiries({ params, searchParams }: Props) {
                     </div>
                   </dl>
                   {edit ? (
-                    <form action={updateInquiry} className="grid gap-3">
+                    <form key={`${r.status}|${r.updated_at}`} action={updateInquiry} className="grid gap-3">
                       <input type="hidden" name="lang" value={lang} /><input type="hidden" name="id" value={r.id} />
                       <input type="hidden" name="q" value={q} /><input type="hidden" name="st" value={st} /><input type="hidden" name="page" value={page} />
                       <label className="grid gap-1.5 text-sm">{a.status}<select name="status" defaultValue={r.status} className={inp}>{STATUSES.map((s) => <option key={s} value={s}>{a[`st_${s}`]}</option>)}</select></label>

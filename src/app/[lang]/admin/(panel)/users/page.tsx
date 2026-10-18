@@ -27,7 +27,7 @@ export default async function Users({ params, searchParams }: Props) {
       <ul className="mt-6 grid gap-3">
         {rows.map((r) => (
           <li key={r.id} className={card}>
-            <form action={updateUser} className="grid items-end gap-3 md:grid-cols-[1.4fr_1fr_auto_1fr_auto]">
+            <form key={`${r.role}|${r.active}`} action={updateUser} className="grid items-end gap-3 md:grid-cols-[1.4fr_1fr_auto_1fr_auto]">
               <input type="hidden" name="lang" value={lang} /><input type="hidden" name="id" value={r.id} />
               <div className="text-sm"><b className="font-medium">{r.name}</b><br /><span className="text-[var(--muted)]" dir="ltr">{r.email}</span><br /><span className="text-xs text-[var(--muted)]">{a.lastLogin}: {fmtDate(r.last_login, lang)}</span></div>
               <label className="grid gap-1.5 text-sm">{a.role}{roleSel(r.role, r.id === me.id)}{r.id === me.id && <input type="hidden" name="role" value={r.role} />}</label>

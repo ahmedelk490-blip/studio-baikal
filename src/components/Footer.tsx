@@ -1,14 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Wordmark } from "./Wordmark";
-import { contact } from "@/data/projects";
+import { getSite, contactOf } from "@/lib/site";
 import type { Dict, Lang } from "@/data/i18n";
 import { pages } from "@/data/pages";
 
 /* Lake-floor footer (Tama Square layout in Baikal's identity): a bronze line draws across, brand +
    three link columns, one consultation strip, the legal row, then a huge outlined BAIKAL that lights
    up in bronze under the cursor over a faded, mirrored room floor. */
-export function Footer({ t, lang }: { t: Dict; lang: Lang }) {
+export async function Footer({ t, lang }: { t: Dict; lang: Lang }) {
+  const site = await getSite();
+  const contact = contactOf(site, lang);
   const n = pages[lang].nav;
   const links = [[n.home, `/${lang}`], [n.projects, `/${lang}/projects`], [n.services, `/${lang}/services`], [n.studio, `/${lang}/studio`], [n.contact, `/${lang}/contact`]];
   const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
@@ -26,8 +28,8 @@ export function Footer({ t, lang }: { t: Dict; lang: Lang }) {
               <Image src="/brand/logo.png" alt="" width={44} height={44} className="h-11 w-11 bg-[var(--surface)] p-1" />
               <span className="text-xs font-semibold uppercase tracking-[0.28em] rtl:tracking-normal">{lang === "ar" ? "استوديو بايكال" : "Studio Baikal"}</span>
             </Link>
-            <p className="display mt-6 text-3xl italic leading-[1.3] md:text-4xl">{t.footer.tagline}</p>
-            <p className="mt-3 max-w-xs text-sm text-[var(--surface)]/60">{t.footer.sub}</p>
+            <p className="display mt-6 text-3xl italic leading-[1.3] md:text-4xl">{site.footer[lang].tagline}</p>
+            <p className="mt-3 max-w-xs text-sm text-[var(--surface)]/60">{site.footer[lang].sub}</p>
           </div>
           <nav aria-label="Footer">
             <p className={`${u} text-[var(--bronze)]`}>{t.footer.explore}</p>

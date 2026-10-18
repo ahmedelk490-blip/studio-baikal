@@ -1,10 +1,10 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import { contact } from "@/data/projects";
+import type { Contact as ContactInfo } from "@/lib/site";
 import type { Dict } from "@/data/i18n";
 import { Contours } from "./Contours";
-import { WA_PATH } from "./WhatsAppFab";
+import { WA_PATH } from "./wa-path";
 
 const ic = {
   phone: "M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z",
@@ -15,7 +15,7 @@ const ic = {
 
 /* 1,642 m — the lake floor. Split: a lit photo with the promise and four contact rows
    (icon + label over bold value) / a light panel with the flat-row form and a rolling submit. */
-export function Contact({ t }: { t: Dict }) {
+export function Contact({ t, contact }: { t: Dict; contact: ContactInfo }) {
   const c = t.contact;
   const ar = t.dir === "rtl";
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");

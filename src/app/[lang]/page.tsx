@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Preloader } from "@/components/Preloader";
@@ -19,9 +20,15 @@ import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFab } from "@/components/WhatsAppFab";
 import { listProjects } from "@/lib/content";
+import { getContact, withSeo } from "@/lib/site";
 import { dict, isLang } from "@/data/i18n";
 
 export const instant = false;
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  return isLang(lang) ? withSeo("home", lang, {}) : {};
+}
 
 export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
@@ -49,11 +56,11 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
           <DrawnToBuilt t={t} />
           <Approach t={t} />
           <Studio t={t} />
-          <Contact t={t} />
+          <Contact t={t} contact={await getContact(lang)} />
         </div>
       </main>
       <Footer t={t} lang={lang} />
-      <WhatsAppFab label={t.contact.fab} />
+      <WhatsAppFab label={t.contact.fab} lang={lang} />
     </>
   );
 }

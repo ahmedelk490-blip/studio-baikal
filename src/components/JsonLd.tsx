@@ -1,7 +1,8 @@
-import { contact } from "@/data/projects";
+import { getContact } from "@/lib/site";
 
 /* Organization + LocalBusiness so Google can show the studio card; FAQ/Breadcrumb are added per page. */
-export function JsonLd({ lang, extra }: { lang: "en" | "ar"; extra?: object[] }) {
+export async function JsonLd({ lang, extra }: { lang: "en" | "ar"; extra?: object[] }) {
+  const contact = await getContact(lang);
   const org = {
     "@context": "https://schema.org", "@type": ["InteriorDesignService", "LocalBusiness"], "@id": "https://baikalstudio.com/#studio",
     name: lang === "ar" ? "استوديو بايكال" : "Studio Baikal", url: `https://baikalstudio.com/${lang}`, logo: "https://baikalstudio.com/brand/logo.png", image: "https://baikalstudio.com/projects/october-250/01.webp",

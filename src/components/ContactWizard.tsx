@@ -1,14 +1,14 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import { contact } from "@/data/projects";
+import type { Contact as ContactInfo } from "@/lib/site";
 import type { Dict } from "@/data/i18n";
 import type { PagesDict } from "@/data/pages";
 
 const needImgs = ["/projects/october-250/05.webp", "/projects/el-nakhil-villa/01.webp"];
 
 /* Contact page: a three-step wizard (space -> need -> details) with a live progress rail. */
-export function ContactWizard({ t, p }: { t: Dict; p: PagesDict["contact"] }) {
+export function ContactWizard({ t, p, contact }: { t: Dict; p: PagesDict["contact"]; contact: ContactInfo }) {
   const c = t.contact;
   const [step, setStep] = useState(0);
   const [size, setSize] = useState("");

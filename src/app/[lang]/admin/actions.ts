@@ -4,7 +4,9 @@ import path from "node:path";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { refresh, updateTag } from "next/cache";
-import { audit, db, DATA_DIR, tx, type ProjectText } from "@/lib/db";
+import { audit, db, DATA_DIR, snapshot, tx, type ProjectText } from "@/lib/db";
+import { readSettings, seoPages, type SiteSettings } from "@/lib/site";
+import { norm, redirectProblem } from "@/lib/redirects";
 import { assertCan, clearFails, clientIp, currentUser, endAllSessions, hashPassword, locked, passwordProblem, recordFail, startSession, verifyPassword } from "@/lib/auth";
 import { roles, type Role } from "@/lib/perm";
 
@@ -67,6 +69,7 @@ export async function saveProject(fd: FormData) {
   const seo = { en: { title: s(fd, "seo_en_title", 70), description: s(fd, "seo_en_desc", 170) }, ar: { title: s(fd, "seo_ar_title", 70), description: s(fd, "seo_ar_desc", 170) } };
   const category = CATS.includes(s(fd, "category")) ? s(fd, "category") : "Apartment";
   const cover = s(fd, "cover", 300);
+  snapshot("project", id, db().prepare("SELECT slug,status,featured,sort,category,area,year,cover,en,ar,seo FROM projects WHERE id = ?").get(id), u.id, "before save");
   const okCover = !cover || !!db().prepare("SELECT 1 FROM project_images WHERE project_id = ? AND src = ?").get(id, cover);
   db().prepare("UPDATE projects SET slug=?, status=?, featured=?, sort=?, category=?, area=?, year=?, cover=?, en=?, ar=?, seo=?, updated_at=?, updated_by=? WHERE id=?")
     .run(slug, status, fd.get("featured") ? 1 : 0, Math.max(0, Math.min(999, Number(fd.get("sort")) || 0)), category, s(fd, "area", 40), s(fd, "year", 10), okCover ? cover : "", JSON.stringify(en), JSON.stringify(ar), JSON.stringify(seo), new Date().toISOString(), u.id, id);
@@ -198,4 +201,89 @@ export async function changePassword(_: { error?: string; ok?: boolean } | null,
   await startSession(u.id);
   audit(u.id, "user.password");
   return { ok: true };
+}
+
+/* ---------- phase 2: settings, page SEO, redirects, revisions ---------- */
+export async function saveSettings(fd: FormData) {
+  const lang = L(fd), u = await assertCan("settings.edit");
+  const phone = s(fd, "phone", 40), email = s(fd, "email", 120).toLowerCase(), whatsapp = s(fd, "whatsapp", 20).replace(/\D/g, ""), instagram = s(fd, "instagram", 200);
+  if (phone.replace(/\D/g, "").length < 8 || !EMAIL.test(email) || whatsapp.length < 10 || whatsapp.length > 15 || !/^https:\/\/(www\.)?instagram\.com\/[\w.]+\/?$/.test(instagram)) go(lang, "/settings", "error");
+  const next: SiteSettings = {
+    phone, email, whatsapp, instagram,
+    waText: { en: s(fd, "wa_en", 200), ar: s(fd, "wa_ar", 200) },
+    footer: { en: { tagline: s(fd, "tag_en", 80), sub: s(fd, "sub_en", 200) }, ar: { tagline: s(fd, "tag_ar", 80), sub: s(fd, "sub_ar", 200) } },
+  };
+  snapshot("settings", "site", readSettings(), u.id, "before save");
+  db().prepare("INSERT INTO settings (k, v, updated_at, updated_by) VALUES ('site', ?, ?, ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, updated_at = excluded.updated_at, updated_by = excluded.updated_by").run(JSON.stringify(next), new Date().toISOString(), u.id);
+  audit(u.id, "settings.save", "site");
+  updateTag("settings");
+  go(lang, "/settings", "saved");
+}
+
+export async function savePageSeo(fd: FormData) {
+  const lang = L(fd), u = await assertCan("seo.edit");
+  const page = s(fd, "page", 20);
+  if (!seoPages.includes(page as never)) go(lang, "/seo", "error");
+  const now = new Date().toISOString();
+  tx(db(), () => {
+    for (const l of ["en", "ar"] as const) {
+      const image = s(fd, `${l}_image`, 300);
+      // noindex hides a page from Google: it only sticks when the confirmation box is ticked too
+      const noindex = fd.get(`${l}_noindex`) && fd.get(`${l}_noindex_ok`) ? 1 : 0;
+      db().prepare("INSERT INTO page_seo (page, lang, title, description, image, noindex, updated_at) VALUES (?,?,?,?,?,?,?) ON CONFLICT(page, lang) DO UPDATE SET title=excluded.title, description=excluded.description, image=excluded.image, noindex=excluded.noindex, updated_at=excluded.updated_at")
+        .run(page, l, s(fd, `${l}_title`, 70), s(fd, `${l}_desc`, 170), /^\/[\w\-/.]+$/.test(image) ? image : "", noindex, now);
+    }
+  });
+  audit(u.id, "seo.save", page);
+  updateTag("seo");
+  go(lang, `/seo#${page}`, "saved");
+}
+
+export async function createRedirect(fd: FormData) {
+  const lang = L(fd), u = await assertCan("redirects.edit");
+  const src = norm(s(fd, "src", 300)), dest = s(fd, "dest", 500), code = [301, 302, 307, 308].includes(Number(fd.get("code"))) ? Number(fd.get("code")) : 301;
+  const problem = redirectProblem(src, dest);
+  if (problem) go(lang, "/redirects", problem);
+  db().prepare("INSERT INTO redirects (src, dest, code, created_at, created_by) VALUES (?,?,?,?,?)").run(src, dest, code, new Date().toISOString(), u.id);
+  audit(u.id, "redirect.create", src, `${code} → ${dest}`);
+  go(lang, "/redirects", "created");
+}
+export async function deleteRedirect(fd: FormData) {
+  const lang = L(fd), u = await assertCan("redirects.edit");
+  const id = Number(fd.get("id"));
+  const r = db().prepare("SELECT src FROM redirects WHERE id = ?").get(id) as { src: string } | undefined;
+  if (r) { db().prepare("DELETE FROM redirects WHERE id = ?").run(id); audit(u.id, "redirect.delete", r.src); }
+  go(lang, "/redirects", "deleted");
+}
+
+/* Restore a saved revision. The current state is snapshotted first, so a restore can be undone. */
+export async function restoreRevision(fd: FormData) {
+  const lang = L(fd), id = Number(fd.get("id"));
+  const rev = db().prepare("SELECT entity, entity_id, data FROM revisions WHERE id = ?").get(id) as { entity: string; entity_id: string; data: string } | undefined;
+  if (!rev) go(lang, "", "error");
+  const data = JSON.parse(rev!.data);
+  if (rev!.entity === "project") {
+    const u = await assertCan("projects.edit");
+    const pid = Number(rev!.entity_id);
+    const cur = db().prepare("SELECT slug,status,featured,sort,category,area,year,cover,en,ar,seo FROM projects WHERE id = ?").get(pid) as Record<string, unknown> | undefined;
+    if (!cur) go(lang, "/projects", "error");
+    let status = data.status;
+    if (status !== cur!.status) { try { await assertCan("projects.publish"); } catch { status = cur!.status; } }
+    const slugFree = !db().prepare("SELECT 1 FROM projects WHERE slug = ? AND id <> ?").get(data.slug, pid);
+    snapshot("project", pid, cur, u.id, `before restoring #${id}`);
+    db().prepare("UPDATE projects SET slug=?, status=?, featured=?, sort=?, category=?, area=?, year=?, cover=?, en=?, ar=?, seo=?, updated_at=?, updated_by=? WHERE id=?")
+      .run(slugFree ? data.slug : cur!.slug as string, status, data.featured, data.sort, data.category, data.area, data.year, data.cover, data.en, data.ar, data.seo, new Date().toISOString(), u.id, pid);
+    audit(u.id, "revision.restore", `project ${pid}`, `#${id}`);
+    updateTag("projects");
+    go(lang, `/projects/${pid}`, "restored");
+  }
+  if (rev!.entity === "settings") {
+    const u = await assertCan("settings.edit");
+    snapshot("settings", "site", readSettings(), u.id, `before restoring #${id}`);
+    db().prepare("INSERT INTO settings (k, v, updated_at, updated_by) VALUES ('site', ?, ?, ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, updated_at = excluded.updated_at, updated_by = excluded.updated_by").run(JSON.stringify(data), new Date().toISOString(), u.id);
+    audit(u.id, "revision.restore", "settings", `#${id}`);
+    updateTag("settings");
+    go(lang, "/settings", "restored");
+  }
+  go(lang, "", "error");
 }

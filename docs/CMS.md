@@ -1,4 +1,4 @@
-# Studio Baikal CMS — phase 1
+# Studio Baikal CMS (phases 1–2)
 
 Admin: `/en/admin` (English) or `/ar/admin` (Arabic, RTL). Not indexed by search engines.
 
@@ -13,12 +13,20 @@ Admin: `/en/admin` (English) or `/ar/admin` (Arabic, RTL). Not indexed by search
 | Account | Admin → My account | Change own password, sign out everywhere. |
 | Activity | Dashboard | Audit log of logins, saves, deletes, exports. |
 
+## Phase 2
+| Area | Where | Notes |
+|---|---|---|
+| Site settings | Admin → Site settings | Phone, email, WhatsApp number + opening message (EN/AR), Instagram, footer tagline/line (EN/AR). Used by the contact section and page, footer, WhatsApp button and structured data (cache tag `settings`). |
+| Page SEO | Admin → Page SEO | Title, description, share image and noindex for Home, Projects, Services, Studio, Contact in EN and AR. Empty fields keep the built-in copy. noindex only applies when its confirmation box is ticked too (cache tag `seo`). |
+| Redirects | Admin → Redirects | From path → path or https URL, 301/302/307/308, hit counter. Applied by `src/proxy.ts` before rendering. Refused: malformed paths, `/`, `/en`, `/ar`, admin, `_next`/`api`/`uploads`, duplicates and loops. |
+| History | Project editor, Site settings | Every save keeps the previous version; the list shows which fields differ from now; Restore keeps the current state first, so a restore can be undone. |
+
 ## Roles (enforced on the server in every action and API route)
 | Role | Projects | Publish / delete | Media | Inquiries | Users |
 |---|---|---|---|---|---|
-| Super admin | edit | yes / yes | upload, delete | view, edit, export | manage |
-| Administrator | edit | yes / yes | upload, delete | view, edit, export | — |
-| Editor | edit | publish / — | upload, delete | — | — |
+| Super admin | edit | yes / yes | upload, delete | view, edit, export | manage (+ settings, SEO, redirects) |
+| Administrator | edit | yes / yes | upload, delete | view, edit, export | settings, SEO, redirects |
+| Editor | edit | publish / — | upload, delete | — | SEO |
 | Author | view | — | upload | — | — |
 | Viewer | view | — | view | — | — |
 
@@ -56,5 +64,5 @@ npm run admin:create -- owner@baikalstudio.com "Owner Name"   # create / reset a
 - `DB_PATH` can point the database elsewhere (e.g. a persistent volume).
 - `sharp` is a direct dependency (image re-encoding); `npm ci` on the server installs the right binary.
 
-## Not in phase 1 (planned next)
-Pages / section builder, blog, navigation and global settings editors, design presets, redirects manager, revision history with restore, email notifications for new inquiries, password-reset by email.
+## Not built yet (next phases)
+Page section builder, blog / articles, navigation editor, design presets, email notifications for new inquiries (needs an SMTP or mail-API account), password reset by email (same).

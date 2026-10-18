@@ -31,7 +31,20 @@ const migrations: string[] = [
    CREATE INDEX inquiries_at ON inquiries(at DESC);
    CREATE TABLE audit (id INTEGER PRIMARY KEY, at TEXT NOT NULL, user_id INTEGER, action TEXT NOT NULL, target TEXT NOT NULL DEFAULT '', detail TEXT NOT NULL DEFAULT '');
    CREATE INDEX audit_at ON audit(at DESC);`,
+  // v2 — site settings, per-page SEO, redirects, revision history
+  `CREATE TABLE settings (k TEXT PRIMARY KEY, v TEXT NOT NULL, updated_at TEXT NOT NULL, updated_by INTEGER);
+   CREATE TABLE page_seo (page TEXT NOT NULL, lang TEXT NOT NULL CHECK (lang IN ('en','ar')), title TEXT NOT NULL DEFAULT '', description TEXT NOT NULL DEFAULT '',
+     image TEXT NOT NULL DEFAULT '', noindex INTEGER NOT NULL DEFAULT 0, updated_at TEXT, PRIMARY KEY (page, lang));
+   CREATE TABLE redirects (id INTEGER PRIMARY KEY, src TEXT NOT NULL UNIQUE, dest TEXT NOT NULL, code INTEGER NOT NULL DEFAULT 301 CHECK (code IN (301,302,307,308)),
+     hits INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL, created_by INTEGER);
+   CREATE TABLE revisions (id INTEGER PRIMARY KEY, entity TEXT NOT NULL, entity_id TEXT NOT NULL, data TEXT NOT NULL, at TEXT NOT NULL, user_id INTEGER, note TEXT NOT NULL DEFAULT '');
+   CREATE INDEX revisions_entity ON revisions(entity, entity_id, id DESC);`,
 ];
+
+/* Keeps the previous state of something before it is overwritten (projects, settings). */
+export function snapshot(entity: string, id: string | number, data: unknown, userId: number | null, note = "") {
+  db().prepare("INSERT INTO revisions (entity, entity_id, data, at, user_id, note) VALUES (?,?,?,?,?,?)").run(entity, String(id), JSON.stringify(data), new Date().toISOString(), userId, note.slice(0, 120));
+}
 
 export type ProjectText = { name: string; type: string; location: string; style: string; scope: string; blurb: string; story: string; materials: string[] };
 

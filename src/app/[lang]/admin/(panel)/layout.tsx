@@ -18,7 +18,7 @@ async function Panel({ children, params }: Props) {
   const { lang } = await params;
   const u = await requireUser(lang);
   const a = adminDict(lang);
-  const nav: [string, string, Perm | null][] = [[a.dashboard, "", null], [a.projects, "/projects", "projects.view"], [a.inquiries, "/inquiries", "inquiries.view"], [a.media, "/media", "media.view"], [a.users, "/users", "users.manage"], [a.account, "/account", null]];
+  const nav: [string, string, Perm | null][] = [[a.dashboard, "", null], [a.projects, "/projects", "projects.view"], [a.inquiries, "/inquiries", "inquiries.view"], [a.media, "/media", "media.view"], [a.settings, "/settings", "settings.edit"], [a.seo, "/seo", "seo.edit"], [a.redirects, "/redirects", "redirects.edit"], [a.users, "/users", "users.manage"], [a.account, "/account", null]];
   const links = nav.filter(([, , p]) => !p || can(u.role, p));
   return (
     <div className="lg:grid lg:min-h-[100svh] lg:grid-cols-[240px_1fr]">

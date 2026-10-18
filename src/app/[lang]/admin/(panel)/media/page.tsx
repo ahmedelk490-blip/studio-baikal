@@ -39,7 +39,7 @@ export default async function Media({ params, searchParams }: Props) {
               <p className="mt-2 truncate text-sm font-medium" title={m.name}>{m.name}</p>
               <p className="text-xs text-[var(--muted)]" dir="ltr">{fmtSize(m.size)}{m.w ? ` · ${m.w}×${m.h}` : ""} · {fmtDate(m.created_at, lang)}</p>
               {edit && (
-                <form action={updateMedia} className="mt-3 grid gap-2">
+                <form key={`${m.title}|${m.alt}|${m.caption}`} action={updateMedia} className="mt-3 grid gap-2">
                   <input type="hidden" name="lang" value={lang} /><input type="hidden" name="id" value={m.id} /><input type="hidden" name="q" value={q} />
                   <input name="title" defaultValue={m.title} placeholder={a.title} aria-label={a.title} maxLength={120} className={inp} />
                   <input name="alt" defaultValue={m.alt} placeholder={a.alt} aria-label={a.alt} maxLength={200} className={inp} />

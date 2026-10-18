@@ -5,10 +5,11 @@ import { ProjectsIndex } from "@/components/ProjectsIndex";
 import { listProjects } from "@/lib/content";
 import { dict, isLang } from "@/data/i18n";
 import { pages } from "@/data/pages";
+import { withSeo } from "@/lib/site";
 
 export const instant = false;
 type Props = { params: Promise<{ lang: string }> };
-export async function generateMetadata({ params }: Props): Promise<Metadata> { const { lang } = await params; const ar = lang === "ar"; return { title: isLang(lang) ? pages[lang].projects.eyebrow : "Projects", description: ar ? "كل مشاريع استوديو بايكال: فيلات وشقق وعيادات في القاهرة والجيزة والشيخ زايد والإسكندرية مع صور كل الغرف." : "All Studio Baikal projects: villas, apartments and clinics across Cairo, Giza, Sheikh Zayed and Alexandria, with every room photographed.", alternates: { canonical: `/${lang}/projects`, languages: { en: "/en/projects", ar: "/ar/projects" } } }; }
+export async function generateMetadata({ params }: Props): Promise<Metadata> { const { lang } = await params; const ar = lang === "ar"; const meta: Metadata = { title: isLang(lang) ? pages[lang].projects.eyebrow : "Projects", description: ar ? "كل مشاريع استوديو بايكال: فيلات وشقق وعيادات في القاهرة والجيزة والشيخ زايد والإسكندرية مع صور كل الغرف." : "All Studio Baikal projects: villas, apartments and clinics across Cairo, Giza, Sheikh Zayed and Alexandria, with every room photographed.", alternates: { canonical: `/${lang}/projects`, languages: { en: "/en/projects", ar: "/ar/projects" } } }; return isLang(lang) ? withSeo("projects", lang, meta) : meta; }
 
 export default async function Page({ params }: Props) {
   const { lang } = await params;

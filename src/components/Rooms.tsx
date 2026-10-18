@@ -17,12 +17,20 @@ export function Rooms({ t }: { t: Dict }) {
   const sec = useRef<HTMLElement>(null);
   const go = (k: number) => { if (k === cur.current) return; setPrev(cur.current); cur.current = k; setA(k); };
   useGSAP(() => {
-    ScrollTrigger.create({ trigger: sec.current, start: "top top", end: "+=" + scenes.length * 55 + "%", pin: true, anticipatePin: 1,
-      onUpdate: (st) => go(Math.min(scenes.length - 1, Math.floor(st.progress * scenes.length))) });
+    // equal scroll per room, and the page settles on the nearest room instead of stopping between two
+    const n = scenes.length - 1;
+    ScrollTrigger.create({ trigger: sec.current, start: "top top", end: "+=" + scenes.length * 60 + "%", pin: true, anticipatePin: 1,
+      snap: { snapTo: 1 / n, duration: { min: 0.2, max: 0.6 }, delay: 0.08, ease: "power2.inOut" },
+      onUpdate: (st) => go(Math.round(st.progress * n)) });
   }, { scope: sec });
   return (
     <section ref={sec} id="rooms" data-depth={t.gauge.rooms} data-meters="300 m" data-deep="1" className="relative h-[100svh] overflow-hidden bg-[var(--deeper)] text-[var(--surface)]">
-      <div className="grid h-full grid-rows-[minmax(0,1fr)_auto] gap-6 px-5 pb-8 pt-24 md:px-10 lg:grid-cols-12 lg:grid-rows-1 lg:items-center lg:gap-12 lg:pb-10 lg:pt-28">
+      {/* the room you are on, faint and full-bleed behind everything; crossfades with each change */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        {srcs.map((s, k) => <Image key={s} src={s} alt="" fill sizes="100vw" className={`object-cover transition-opacity duration-[1200ms] ${k === a ? "opacity-35" : "opacity-0"}`} />)}
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--deeper)] via-[var(--deeper)]/80 to-[var(--deeper)]/50 lg:bg-gradient-to-r lg:from-[var(--deeper)] lg:via-[var(--deeper)]/85 lg:to-[var(--deeper)]/40 rtl:lg:bg-gradient-to-l" />
+      </div>
+      <div className="relative grid h-full grid-rows-[minmax(0,1fr)_auto] gap-6 px-5 pb-8 pt-24 md:px-10 lg:grid-cols-12 lg:grid-rows-1 lg:items-center lg:gap-12 lg:pb-10 lg:pt-28">
         <div className="relative mx-auto h-full w-full max-w-[min(100%,46svh)] overflow-hidden rounded-b-2xl rounded-t-full bg-[var(--deep)] lg:order-2 lg:col-span-7 lg:max-w-[min(100%,74svh)]">
           <Image src={srcs[prev]} alt="" fill sizes="(min-width:1024px) 50vw, 90vw" className="object-cover" />
           <div key={a} className={`rv rv-${a % 5} absolute inset-0`}><Image src={srcs[a]} alt={scenes[a][0]} fill sizes="(min-width:1024px) 50vw, 90vw" className="ken object-cover" /></div>

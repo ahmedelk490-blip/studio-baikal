@@ -6,7 +6,7 @@ import type { Extras } from "@/data/extras";
    (ken) under a deep fade, with the invitation and a single button on the dark part of the frame. */
 export function ClosingCta({ c, href, src }: { c: Extras["cta"]; href: string; src: string }) {
   return (
-    <section className="relative flex min-h-[80svh] items-end overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
+    <section id="start" className="relative flex min-h-[80svh] items-end overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
       <Image src={src} alt="" fill sizes="100vw" className="ken object-cover" />
       <div className="absolute inset-0 bg-gradient-to-t from-[var(--deep)] via-[var(--deep)]/55 to-[var(--deep)]/10" />
       <div className="relative w-full px-5 pb-14 md:px-10 md:pb-20">

@@ -21,7 +21,7 @@ export function GrowFrame({ c, src }: { c: Extras["grow"]; src: string }) {
     });
   }, { scope: sec });
   return (
-    <section ref={sec} className="relative h-[100svh] overflow-hidden bg-[var(--surface)]">
+    <section ref={sec} id="frame" className="relative h-[100svh] overflow-hidden bg-[var(--surface)]">
       <div className="gf-win absolute inset-0 overflow-hidden">
         <Image src={src} alt={c.eyebrow} fill sizes="100vw" className="gf-img object-cover" />
         <div className="gf-shade absolute inset-0 bg-gradient-to-t from-[var(--deep)]/85 via-[var(--deep)]/15 to-transparent" />

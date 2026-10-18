@@ -30,7 +30,6 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
     gsap.timeline({ delay: 0.1 })
       .from(".h-stage", { scale: 1.25, duration: 2.2, ease: "expo.out" }, 0)
       .from(".h-veil", { opacity: 1, duration: 1.6, ease: "power2.out" }, 0.2)
-      .from(".h-eyebrow", { opacity: 0, x: lang === "ar" ? 20 : -20, duration: 0.8, ease: "power3.out" }, 0.5)
       .from(".h-word", { yPercent: 120, rotateX: -60, opacity: 0, duration: 1.1, ease: "power4.out", stagger: 0.07, transformOrigin: "50% 100%" }, 0.6)
       .from(".h-fade", { opacity: 0, y: 16, duration: 0.8, ease: "power3.out", stagger: 0.08 }, 1.3)
       .from(".h-hud > *", { opacity: 0, x: 20, duration: 0.7, ease: "power3.out", stagger: 0.06 }, 1.4);
@@ -74,7 +73,6 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
       </ul>
 
       <div className="h-copy relative flex min-h-[100svh] flex-col justify-end px-5 pb-28 pt-28 md:px-10 md:pb-24">
-        <p className={`h-eyebrow eyebrow ${u} text-[var(--bronze)]`}>{t.hero.eyebrow}</p>
         <h1 className="display mt-5 grid max-w-[14ch] text-[14vw] leading-[1.02] rtl:leading-[1.3] rtl:text-[11vw] md:text-[8vw] lg:text-[7vw] md:rtl:text-[6.4vw] lg:rtl:text-[5.4vw] md:max-w-[19ch]" style={{ perspective: "900px" }}>
           <span className="col-start-1 row-start-1">
             <span className="block">{words(t.hero.t1, !alt)}</span>

@@ -43,11 +43,11 @@ export function Contact({ t, contact }: { t: Dict; contact: ContactInfo }) {
           <Image src="/brand/hero-arch.webp" alt="" fill sizes="(min-width:1024px) 50vw, 100vw" className="ken object-cover opacity-55" />
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--deeper)] via-[var(--deeper)]/70 to-[var(--deeper)]/30" />
           <div className="glow pointer-events-none absolute -top-32 start-1/4 h-[50vh] w-[50vh] rounded-full bg-[radial-gradient(circle,rgba(196,154,92,.5),transparent_60%)]" aria-hidden />
-          <Contours className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 opacity-40" />
+          <Contours className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 opacity-20" />
           <div className="relative flex h-full flex-col justify-end gap-8 px-5 py-16 md:px-12 md:py-20">
             <div>
               <p className={`${lab} eyebrow text-[var(--bronze)]`}>{c.eyebrow}</p>
-              <h2 className="display mt-4 text-4xl md:text-6xl">{c.t1} <span className="italic text-[var(--bronze)]">{c.t2}</span></h2>
+              <h2 className="display mt-4 text-balance text-4xl md:text-6xl rtl:leading-[1.35] md:rtl:text-5xl">{c.t1} <span className="italic text-[var(--bronze)] rtl:not-italic">{c.t2}</span></h2>
               <p className="mt-4 max-w-md text-sm text-[var(--surface)]/75">{c.intro}</p>
             </div>
             <ul className="grid gap-px overflow-hidden rounded-2xl border border-[var(--surface)]/15 bg-[var(--surface)]/15 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
@@ -74,8 +74,8 @@ export function Contact({ t, contact }: { t: Dict; contact: ContactInfo }) {
           ) : (
             <form onSubmit={submit}>
               <p className={`${lab} text-[var(--bronze)]`}>{t.nav.book}</p>
-              <label className="mt-6 block border-b border-[var(--ink)]/15 pb-3"><span className={`${lab} text-[var(--muted)]`}>{c.name}</span><input name="name" required autoComplete="name" className="mt-2 min-h-11 w-full bg-transparent text-xl font-medium outline-none" /></label>
-              <label className="mt-6 block border-b border-[var(--ink)]/15 pb-3"><span className={`${lab} text-[var(--muted)]`}>{c.whatsapp}</span><input name="whatsapp" required inputMode="tel" autoComplete="tel" dir="ltr" className="mt-2 min-h-11 w-full bg-transparent text-xl font-medium outline-none rtl:text-right" /></label>
+              <label className="mt-6 block border-b border-[var(--ink)]/15 pb-2"><span className={`${lab} text-[var(--muted)]`}>{c.name}</span><input name="name" required autoComplete="name" placeholder={ar ? "اكتب اسمك" : "Your name"} className="mt-1 min-h-11 w-full bg-transparent text-lg font-medium outline-none placeholder:font-normal placeholder:text-[var(--ink)]/30" /></label>
+              <label className="mt-6 block border-b border-[var(--ink)]/15 pb-2"><span className={`${lab} text-[var(--muted)]`}>{c.whatsapp}</span><input name="whatsapp" required inputMode="tel" autoComplete="tel" dir="ltr" placeholder="01x xxxx xxxx" className="mt-1 min-h-11 w-full bg-transparent text-lg font-medium outline-none placeholder:font-normal placeholder:text-[var(--ink)]/30 rtl:text-right" /></label>
               <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
               <fieldset className="mt-6"><legend className={`${lab} text-[var(--muted)]`}>{c.size}</legend>
                 <div className="mt-3 flex flex-wrap gap-2">{c.sizes.map((s) => <button type="button" key={s} onClick={() => setSize(s)} aria-pressed={size === s} className={chip(size === s)}>{s}</button>)}</div>

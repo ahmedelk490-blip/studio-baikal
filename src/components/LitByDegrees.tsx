@@ -19,7 +19,6 @@ export function LitByDegrees({ t }: { t: Dict }) {
     tl.fromTo(".asm > span", { yPercent: (i: number) => (i % 2 ? 70 : -70), opacity: 0 }, { yPercent: 0, opacity: 1, stagger: 0.07, duration: 0.45, ease: "power2.out" }, 0)
       .to(".t-a", { opacity: 0, y: -20, duration: 0.1 }, 0.42).fromTo(".t-b", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.1 }, 0.5)
       .to(".cold", { opacity: 0, duration: 0.45, ease: "none" }, 0.52)
-      .fromTo(".glow-lamp", { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.05 }, 0.65);
   }, { scope: sec });
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   return (
@@ -29,7 +28,6 @@ export function LitByDegrees({ t }: { t: Dict }) {
       <div className="asm absolute inset-0 flex" dir="ltr" style={{ filter: "grayscale(.45) brightness(.78) contrast(1.05)" }}>
         {Array.from({ length: N }).map((_, i) => <span key={i} className="relative h-full flex-1 overflow-hidden"><span className="absolute inset-y-0 bg-cover bg-center" style={{ width: `${N * 100}%`, left: `-${i * 100}%`, backgroundImage: `url(${SRC}?v=2)` }} /><span className="absolute inset-0 bg-[#0b1620]/25" /></span>)}
       </div>
-      {[[30, 28], [62, 24], [78, 40]].map(([x, y], i) => <span key={i} className="glow-lamp pointer-events-none absolute h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(196,154,92,.45),transparent_60%)]" style={{ left: `${x}%`, top: `${y}%`, opacity: 0 }} aria-hidden />)}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[var(--deeper)] to-transparent" />
       <div className="absolute inset-x-5 bottom-10 md:inset-x-10 md:bottom-14">
         <p className={`${u} text-[var(--bronze)]`}>{t.lit.eyebrow}</p>

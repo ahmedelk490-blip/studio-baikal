@@ -56,7 +56,7 @@ html.is-deep { color-scheme: dark; }
 /* projects stand (home): overlapping 3:4 frames, reflection, spotlight, bronze glow on the focused one */
 .bk-stage::after { content: ""; pointer-events: none; position: absolute; inset: 0; background: radial-gradient(50% 45% at 50% 52%, rgba(184,140,90,.16), transparent 70%); }
 .bk-frame { width: clamp(200px, min(20vw, 40vh), 300px); margin-inline-end: calc(-1 * clamp(48px, 5.5vw, 92px)); transform-origin: 50% 50%; will-change: transform; }
-.bk-fig { aspect-ratio: 3 / 4.1; border-radius: 12px; background: #221e18; box-shadow: 0 30px 60px -20px rgba(0,0,0,.7); -webkit-box-reflect: below 10px linear-gradient(transparent 72%, rgba(255,255,255,.14)); transition: box-shadow .5s; }
+.bk-fig { aspect-ratio: 3 / 4.1; border-radius: 50% 50% 10px 10px / 36% 36% 10px 10px; cursor: pointer; background: #221e18; box-shadow: 0 30px 60px -20px rgba(0,0,0,.7); -webkit-box-reflect: below 10px linear-gradient(transparent 72%, rgba(255,255,255,.14)); transition: box-shadow .5s; }
 .bk-frame.is-focus .bk-fig { box-shadow: 0 30px 70px -18px rgba(0,0,0,.75), 0 0 0 1px rgba(184,140,90,.55), 0 0 60px -10px rgba(184,140,90,.45); }
 .bk-meta { background: linear-gradient(to top, rgba(12,10,8,.85), transparent); opacity: 0; transform: translateY(8px); transition: opacity .4s, transform .4s; }
 .bk-frame:hover .bk-meta, .bk-frame.is-focus .bk-meta { opacity: 1; transform: none; }
@@ -128,9 +128,9 @@ html.is-deep { color-scheme: dark; }
 
 /* WhatsApp button */
 .wa-ring { position: absolute; inset: 0; border-radius: 999px; border: 1.5px solid var(--bronze); pointer-events: none; animation: waRing 2.6s ease-out infinite; }
-@keyframes waRing { from { transform: scale(1); opacity: .8; } to { transform: scale(1.6); opacity: 0; } }
+@keyframes waRing { from { transform: scale(1); opacity: .8; } to { transform: scale(1.3); opacity: 0; } }
 .wa-label { transition: max-width .5s cubic-bezier(.76,0,.24,1), padding .5s; }
-@media (hover: hover) { .wa-fab:hover .wa-label { max-width: 140px; padding-inline-start: 20px; } }
+@media (hover: hover) { .wa-fab:hover .wa-label { max-width: 140px; padding-inline-start: 16px; } }
 @media (prefers-reduced-motion: reduce) { .wa-ring { animation: none; opacity: 0; } }
 
 /* v9: page components */

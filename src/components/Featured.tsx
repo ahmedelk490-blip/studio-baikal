@@ -20,7 +20,7 @@ function Tile({ p, lang, big = false }: { p: Project; lang: Lang; big?: boolean 
     <Link href={`/${lang}/projects/${p.slug}`} className="group block">
       <span className={`relative block overflow-hidden rounded-2xl bg-[var(--deep)] ${big ? "aspect-[16/10]" : "aspect-[16/9]"}`}>
         <Image src={p.cover} alt={`${p.name}, ${p.location}`} fill sizes={big ? "(min-width:1024px) 58vw, 100vw" : "(min-width:1024px) 38vw, 100vw"} className="object-cover" />
-        <video ref={v} className="absolute inset-0 h-full w-full object-cover" muted loop playsInline preload="none" poster={p.cover} aria-hidden><source src={projectVideo[p.slug]} type="video/mp4" /></video>
+        <video ref={v} className="absolute inset-0 h-full w-full object-cover" muted loop playsInline preload="none" poster={`${p.cover}?v=2`} aria-hidden><source src={projectVideo[p.slug]} type="video/mp4" /></video>
         <span className={`${u} absolute start-3 top-3 flex items-center gap-2 rounded-full bg-[var(--deep)]/70 px-3 py-1.5 text-[var(--surface)]`}><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--bronze)]" />{lang === "ar" ? "مشهد حي" : "In motion"}</span>
       </span>
       <span className="mt-3 flex items-baseline justify-between gap-4">

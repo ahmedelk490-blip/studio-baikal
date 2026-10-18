@@ -80,10 +80,11 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
             })}
           </div>
         </div>
-        <div key={f} className="hero-in px-5 pb-8 text-center md:pb-10" aria-live="polite">
-          <h3 className="display text-2xl md:text-3xl">{p.name}</h3>
-          <p className={`${u} mt-1 text-[var(--bronze)]`}>{p.type} · <span dir="ltr">{p.area}</span> · {p.location}</p>
-        </div>
+        <Link href={`/${lang}/projects/${p.slug}`} className="group relative z-[3] mx-auto block px-5 pb-8 text-center md:pb-10" aria-live="polite">
+          <span key={f} className="hero-in block"><h3 className="display text-2xl transition-colors group-hover:text-[var(--bronze)] md:text-3xl">{p.name}</h3>
+          <p className={`${u} mt-1 text-[var(--bronze)]`}>{p.type} · <span dir="ltr">{p.area}</span> · {p.location}</p></span>
+          <span className={`${u} mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--bronze)]/70 px-5 transition-colors group-hover:bg-[var(--bronze)] group-hover:text-[#15130F]`}>{t.project.open} {lang === "ar" ? "المشروع" : "project"} <span aria-hidden className="rtl:-scale-x-100">&#8594;</span></span>
+        </Link>
       </div>
     </section>
   );

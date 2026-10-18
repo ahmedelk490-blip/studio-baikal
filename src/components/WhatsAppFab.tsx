@@ -5,10 +5,10 @@ export const WA_PATH = "M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm
 /* Round bronze WhatsApp button with a breathing ring and a label that slides out on hover. */
 export function WhatsAppFab({ label }: { label: string }) {
   return (
-    <a href={contact.whatsapp} target="_blank" rel="noopener" aria-label={label} className="wa-fab group fixed bottom-5 end-5 z-40 flex h-14 items-center rounded-full bg-[var(--bronze)] text-[var(--deep)] shadow-[0_10px_30px_rgba(0,0,0,.35)] lg:bottom-6 lg:end-14">
+    <a href={contact.whatsapp} target="_blank" rel="noopener" aria-label={label} className="wa-fab group fixed bottom-3 end-3 z-40 flex h-11 items-center rounded-full bg-[var(--bronze)] text-[var(--deep)] shadow-[0_6px_18px_rgba(0,0,0,.3)] lg:bottom-5 lg:end-5">
       <span className="wa-ring" aria-hidden />
       <span className="wa-label max-w-0 overflow-hidden whitespace-nowrap text-xs font-semibold uppercase tracking-[0.16em] rtl:tracking-normal">WhatsApp</span>
-      <span className="grid h-14 w-14 place-items-center"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d={WA_PATH} /></svg></span>
+      <span className="grid h-11 w-11 place-items-center"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d={WA_PATH} /></svg></span>
     </a>
   );
 }

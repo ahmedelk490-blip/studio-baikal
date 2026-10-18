@@ -34,6 +34,7 @@ export function MirrorHall({ projects, t, lang }: { projects: Project[]; t: Dict
     const id = reduce ? 0 : window.setInterval(() => { if (seen && !document.hidden && Date.now() > hold.current) setA((k) => (k + 1) % n); }, 3600);
     return () => { clearInterval(id); io.disconnect(); removeEventListener("resize", fit); };
   }, [n, lang, projects, router]);
+  // stage height tracks the arch size (arch = 1.433 x its width, standing on the top 72%), so no width cuts it
   // swipe on the stage turns the hall one step
   const down = useRef<{ x: number; y: number } | null>(null);
   const rel = (k: number) => { let d = (k - a) % n; if (d > n / 2) d -= n; if (d < -n / 2) d += n; return d; };
@@ -48,7 +49,7 @@ export function MirrorHall({ projects, t, lang }: { projects: Project[]; t: Dict
       </div>
 
       <div
-        className="relative mx-auto mt-10 h-[340px] max-w-[1600px] touch-pan-y select-none overflow-x-clip [--step:31vw] md:[--step:min(19vw,300px)] md:mt-12 md:h-[440px]"
+        className="relative mx-auto mt-10 h-[clamp(300px,calc(72vw+24px),530px)] max-w-[1600px] touch-pan-y select-none overflow-x-clip [--step:31vw] md:[--step:min(19vw,300px)] md:mt-12 md:h-[clamp(300px,calc(32vw+24px),530px)]"
         style={{ perspective: "1500px" }}
         dir="ltr"
         onPointerDown={(e) => { down.current = { x: e.clientX, y: e.clientY }; }}

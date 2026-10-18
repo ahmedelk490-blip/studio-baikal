@@ -78,16 +78,11 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
           {[0, 1, 2, 3].map((k) => <span key={k} className="absolute end-0 h-px w-3 bg-[var(--surface)]/50" style={{ top: `${(k / 3) * 100}%` }} />)}
           <span className="absolute end-0 h-2 w-2 translate-x-1/2 rounded-full bg-[var(--bronze)] transition-[top] duration-700 ease-out" style={{ top: `${(i / 3) * 100}%`, transform: "translate(50%,-50%)" }} />
         </span>
-        <span className="display text-2xl">{t.hero.rooms[i]}</span>
         <span className={`${u} text-[var(--bronze)]`}>{i * 4} m</span>
       </div>
 
-      <ol className={`absolute inset-x-5 bottom-6 flex flex-wrap gap-x-6 gap-y-2 ${u} md:inset-x-10 md:pe-24`} aria-label={t.hero.youAreIn}>
-        {t.hero.rooms.map((r, k) => (
-          <li key={r} className={`relative pb-2 transition-opacity ${k === i ? "opacity-100" : "opacity-45"}`}>{r}{k === i && <span key={i} className="tour-line absolute bottom-0 start-0 h-px w-full bg-[var(--bronze)]" aria-hidden />}</li>
-        ))}
-        <li className="ms-auto hidden items-center gap-2 opacity-70 md:flex"><span className="sink inline-block">&#8595;</span> {t.hero.descend}</li>
-      </ol>
+      {/* the film names no room, so only the descend cue sits on the bottom edge */}
+      <p className={`absolute inset-x-5 bottom-6 hidden items-center justify-end gap-2 opacity-70 ${u} md:inset-x-10 md:flex`} aria-hidden><span className="sink inline-block">&#8595;</span> {t.hero.descend}</p>
     </section>
   );
 }

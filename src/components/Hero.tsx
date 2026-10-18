@@ -6,9 +6,10 @@ import type { Dict, Lang } from "@/data/i18n";
 import { Btn } from "./Btn";
 import { heroVideo } from "@/data/media";
 import { extras } from "@/data/extras";
+import { LakeSurface } from "./LakeSurface";
 
-/* Surface — one rounded panel, set in from the edges, with the film playing inside it and the words
-   centred over a soft dark falloff: a small pill, the headline, one line and two pill actions. The panel
+/* Surface — one rounded panel, set in from the edges, with the film playing under the lake's surface
+   (rings from the pointer, a finger, or on their own) and the words centred over a soft dark falloff: a small pill, the headline, one line and two pill actions. The panel
    settles in on load and sinks back a little as the page moves on; the next section shows under it. */
 export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
   const ref = useRef<HTMLElement>(null);
@@ -54,6 +55,8 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
               <source src={heroVideo.mp4} type="video/mp4" />
             </video>
           ) : <Image src={heroVideo.poster} alt="" fill priority sizes="100vw" className="object-cover" />}
+          {/* the lake: the film seen through its moving surface */}
+          {heroVideo.mp4 && <LakeSurface />}
         </div>
         {/* soft dark falloff so the centred words read on any frame of the film */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_65%_at_50%_52%,rgba(11,16,19,.72),rgba(11,16,19,.25)_70%,rgba(11,16,19,.55))]" />

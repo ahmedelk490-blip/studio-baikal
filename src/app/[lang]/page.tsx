@@ -16,6 +16,8 @@ import { pages } from "@/data/pages";
 import { Materials } from "@/components/Materials";
 import { Approach } from "@/components/Approach";
 import { Studio } from "@/components/Studio";
+import { GrowFrame } from "@/components/GrowFrame";
+import { extras } from "@/data/extras";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFab } from "@/components/WhatsAppFab";
@@ -55,6 +57,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
           <Materials t={t} />
           <DrawnToBuilt t={t} />
           <Approach t={t} />
+          <GrowFrame c={extras[lang].grow} src="/projects/el-nakhil-villa/01.webp" />
           <Studio t={t} />
           <Contact t={t} contact={await getContact(lang)} />
         </div>

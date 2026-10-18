@@ -6,6 +6,8 @@ import { Packages } from "@/components/Packages";
 import { ShapeCycle } from "@/components/ShapeCycle";
 import { Faq } from "@/components/Faq";
 import { Btn } from "@/components/Btn";
+import { BuildLayers } from "@/components/BuildLayers";
+import { extras } from "@/data/extras";
 import { JsonLd } from "@/components/JsonLd";
 import { dict, isLang } from "@/data/i18n";
 import { pages } from "@/data/pages";
@@ -39,6 +41,7 @@ export default async function Page({ params }: Props) {
       <section className="bg-[var(--surface)] px-5 py-16 text-[var(--ink)] md:px-10 md:py-24">
         <Packages packs={s.packages} labels={t.services.labels} forLabel={s.forLabel} included={s.included} />
       </section>
+      <BuildLayers c={extras[lang].layers} />
       <section className="bg-[var(--deep)] px-5 py-16 text-[var(--surface)] md:px-10 md:py-24">
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-4">

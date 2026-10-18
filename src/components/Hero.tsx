@@ -5,6 +5,7 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import type { Dict, Lang } from "@/data/i18n";
 import { Btn } from "./Btn";
 import { heroVideo } from "@/data/media";
+import { extras } from "@/data/extras";
 
 const srcs = ["/projects/october-250/01.webp", "/projects/el-nakhil-villa/01.webp", "/projects/maadi-285/01.webp", "/projects/maadi-180/05.webp"];
 const EVERY = 4200;
@@ -15,6 +16,15 @@ const bubbles = Array.from({ length: 14 }, (_, k) => ({ x: (k * 67) % 100, d: 9 
 export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
   const ref = useRef<HTMLElement>(null);
   const [i, setI] = useState(0);
+  // tablet/desktop: the headline hands over to the brand line while the film is on its second room
+  const [alt, setAlt] = useState(false);
+  useEffect(() => {
+    if (!matchMedia("(min-width: 768px) and (prefers-reduced-motion: no-preference)").matches) return;
+    const v = ref.current?.querySelector("video");
+    if (v) { const on = () => setAlt(v.currentTime >= 4.8 && v.currentTime < 9.4); v.addEventListener("timeupdate", on); return () => v.removeEventListener("timeupdate", on); }
+    const id = setInterval(() => setAlt((a) => !a), 5000);
+    return () => clearInterval(id);
+  }, []);
   useEffect(() => { const x = setInterval(() => setI((k) => (k + 1) % srcs.length), EVERY); return () => clearInterval(x); }, []);
   useGSAP(() => {
     gsap.timeline({ delay: 0.1 })
@@ -35,7 +45,14 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
     });
   }, { scope: ref });
 
-  const words = (s: string) => s.split(" ").map((w, k) => <span key={k} className="inline-block overflow-hidden px-[0.06em] -mx-[0.06em] py-[0.22em] -my-[0.22em] align-bottom"><span className="h-word inline-block will-change-transform">{w}&nbsp;</span></span>);
+  // each word sits in its own mask; the middle span carries the swap (the inner one keeps the intro)
+  const words = (s: string, show = true, away = -1, off = 0, intro = true) => s.split(" ").map((w, k) => (
+    <span key={k} className="inline-block overflow-hidden px-[0.06em] -mx-[0.06em] py-[0.22em] -my-[0.22em] align-bottom">
+      <span className="inline-block transition-transform duration-[900ms] ease-[cubic-bezier(.76,0,.24,1)]" style={{ transform: show ? "none" : `translateY(${away * 150}%)`, transitionDelay: `${(k + off) * 70}ms` }}>
+        <span className={`${intro ? "h-word " : ""}inline-block will-change-transform`}>{w}&nbsp;</span>
+      </span>
+    </span>
+  ));
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   return (
     <section ref={ref} data-depth={t.gauge.surface} data-meters="0 m" data-deep="1" className="relative min-h-[100svh] overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
@@ -58,9 +75,15 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
 
       <div className="h-copy relative flex min-h-[100svh] flex-col justify-end px-5 pb-28 pt-28 md:px-10 md:pb-24">
         <p className={`h-eyebrow eyebrow ${u} text-[var(--bronze)]`}>{t.hero.eyebrow}</p>
-        <h1 className="display mt-5 max-w-[14ch] text-[14vw] leading-[1.02] rtl:leading-[1.3] rtl:text-[11vw] md:text-[8vw] lg:text-[7vw] md:rtl:text-[6.4vw] lg:rtl:text-[5.4vw]" style={{ perspective: "900px" }}>
-          <span className="block">{words(t.hero.t1)}</span>
-          <span className="block italic text-[var(--bronze)]">{words(t.hero.t2)}</span>
+        <h1 className="display mt-5 grid max-w-[14ch] text-[14vw] leading-[1.02] rtl:leading-[1.3] rtl:text-[11vw] md:text-[8vw] lg:text-[7vw] md:rtl:text-[6.4vw] lg:rtl:text-[5.4vw] md:max-w-[19ch]" style={{ perspective: "900px" }}>
+          <span className="col-start-1 row-start-1">
+            <span className="block">{words(t.hero.t1, !alt)}</span>
+            <span className="block italic text-[var(--bronze)] lg:ps-[8vw]">{words(t.hero.t2, !alt, -1, 2)}</span>
+          </span>
+          <span className="col-start-1 row-start-1 max-md:hidden" aria-hidden>
+            <span className="block">{words(extras[lang].heroAlt[0], alt, 1, 0, false)}</span>
+            <span className="block italic text-[var(--bronze)] lg:ps-[8vw]">{words(extras[lang].heroAlt[1], alt, 1, 2, false)}</span>
+          </span>
         </h1>
         <div className="mt-6 grid gap-6 md:grid-cols-12 md:items-end">
           <p className="h-fade max-w-md text-sm leading-relaxed text-[var(--surface)]/80 md:col-span-6">{t.hero.intro}</p>

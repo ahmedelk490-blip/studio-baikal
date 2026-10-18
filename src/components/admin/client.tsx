@@ -1,6 +1,7 @@
 "use client";
 import { useActionState, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 import { changePassword, login } from "@/app/[lang]/admin/actions";
 import type { AdminDict } from "@/lib/admin-i18n";
 import { inp, btn } from "./ui";
@@ -33,7 +34,7 @@ export function PasswordForm({ a }: { a: AdminDict }) {
 
 /* Uploads go to a guarded route handler (multipart, size/type checked on the server); the page
    refreshes when every file has been answered, and failures are listed instead of hidden. */
-export function Uploader({ a }: { a: AdminDict }) {
+export function Uploader({ a, project }: { a: AdminDict; project?: number }) {
   const ref = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -44,7 +45,7 @@ export function Uploader({ a }: { a: AdminDict }) {
     setBusy(true); setMsg([]);
     const out: string[] = [];
     for (const f of files) {
-      const fd = new FormData(); fd.append("file", f);
+      const fd = new FormData(); fd.append("file", f); if (project) fd.append("project", String(project));
       const r = await fetch("/api/admin/media", { method: "POST", body: fd }).catch(() => null);
       if (!r || !r.ok) out.push(`${f.name}: ${r ? (await r.json().catch(() => ({ error: r.status }))).error : "network"}`);
     }
@@ -68,4 +69,17 @@ export function Uploader({ a }: { a: AdminDict }) {
 /* A submit button that asks first (destructive actions); the server still requires its own checks. */
 export function ConfirmButton({ label, ask, className }: { label: string; ask: string; className?: string }) {
   return <button className={className} onClick={(e) => { if (!confirm(ask)) e.preventDefault(); }}>{label}</button>;
+}
+
+/* Sidebar / tab links that know which page is open (exact match for the root link, prefix otherwise). */
+export function NavLinks({ links, root, className, activeClass, idleClass }: { links: [string, string][]; root: string; className: string; activeClass: string; idleClass: string }) {
+  const path = usePathname() ?? "";
+  return (
+    <>
+      {links.map(([l, h]) => {
+        const on = h === root ? path === h : path === h || path.startsWith(h + "/");
+        return <Link key={h} href={h} aria-current={on ? "page" : undefined} className={`${className} ${on ? activeClass : idleClass}`}>{l}</Link>;
+      })}
+    </>
+  );
 }

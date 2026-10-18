@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
+import { revalidateTag } from "next/cache";
 import { assertCan } from "@/lib/auth";
 import { audit, db, DATA_DIR } from "@/lib/db";
 
@@ -21,7 +22,8 @@ export async function POST(req: Request) {
   let user;
   try { user = await assertCan("media.upload"); } catch { return Response.json({ error: "forbidden" }, { status: 403 }); }
   if (Number(req.headers.get("content-length") ?? 0) > MAX + 64 * 1024) return Response.json({ error: "too large (15 MB max)" }, { status: 413 });
-  const f = (await req.formData().catch(() => null))?.get("file");
+  const form = await req.formData().catch(() => null);
+  const f = form?.get("file");
   if (!(f instanceof File)) return Response.json({ error: "no file" }, { status: 400 });
   if (f.size > MAX) return Response.json({ error: "too large (15 MB max)" }, { status: 413 });
   const raw = Buffer.from(await f.arrayBuffer());
@@ -43,5 +45,18 @@ export async function POST(req: Request) {
   const title = name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").trim().slice(0, 120);
   const id = Number(db().prepare("INSERT INTO media (path,name,mime,size,w,h,title,created_at,uploaded_by) VALUES (?,?,?,?,?,?,?,?,?)").run(`/uploads/${rel}`, name, mime, out.length, w, h, title, now.toISOString(), user.id).lastInsertRowid);
   audit(user.id, "media.upload", `/uploads/${rel}`, name);
+  // uploaded from a project's Images tab: attach it to that project (first image becomes the main one)
+  const pid = Number(form?.get("project"));
+  if (pid && k === "image") {
+    try { await assertCan("projects.edit"); } catch { return Response.json({ ok: true, id, path: `/uploads/${rel}`, attached: false }); }
+    const d = db();
+    if (d.prepare("SELECT 1 FROM projects WHERE id = ?").get(pid)) {
+      const n = (d.prepare("SELECT COALESCE(MAX(sort), -1) m FROM project_images WHERE project_id = ?").get(pid) as { m: number }).m;
+      d.prepare("INSERT INTO project_images (project_id, src, room_en, w, h, sort) VALUES (?,?,?,?,?,?)").run(pid, `/uploads/${rel}`, title, w, h, n + 1);
+      d.prepare("UPDATE projects SET cover = CASE WHEN cover = '' THEN ? ELSE cover END, updated_at = ?, updated_by = ? WHERE id = ?").run(`/uploads/${rel}`, now.toISOString(), user.id, pid);
+      audit(user.id, "gallery.upload", String(pid), name);
+      revalidateTag("projects", { expire: 0 });
+    }
+  }
   return Response.json({ ok: true, id, path: `/uploads/${rel}` });
 }

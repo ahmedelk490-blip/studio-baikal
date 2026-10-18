@@ -66,9 +66,11 @@ export async function saveProject(fd: FormData) {
   const en = text("en"), ar = text("ar");
   if (!en.name) go(lang, `/projects/${id}`, "error");
   if (!ar.name) ar.name = en.name;
-  const seo = { en: { title: s(fd, "seo_en_title", 70), description: s(fd, "seo_en_desc", 170) }, ar: { title: s(fd, "seo_ar_title", 70), description: s(fd, "seo_ar_desc", 170) } };
+  // Details and SEO live on separate tabs: a field that was not sent keeps its stored value
+  const curRow = db().prepare("SELECT cover, seo FROM projects WHERE id = ?").get(id) as { cover: string; seo: string };
+  const seo = fd.has("seo_en_title") ? { en: { title: s(fd, "seo_en_title", 70), description: s(fd, "seo_en_desc", 170) }, ar: { title: s(fd, "seo_ar_title", 70), description: s(fd, "seo_ar_desc", 170) } } : JSON.parse(curRow.seo || "{}");
   const category = CATS.includes(s(fd, "category")) ? s(fd, "category") : "Apartment";
-  const cover = s(fd, "cover", 300);
+  const cover = fd.has("cover") ? s(fd, "cover", 300) : curRow.cover;
   snapshot("project", id, db().prepare("SELECT slug,status,featured,sort,category,area,year,cover,en,ar,seo FROM projects WHERE id = ?").get(id), u.id, "before save");
   const okCover = !cover || !!db().prepare("SELECT 1 FROM project_images WHERE project_id = ? AND src = ?").get(id, cover);
   db().prepare("UPDATE projects SET slug=?, status=?, featured=?, sort=?, category=?, area=?, year=?, cover=?, en=?, ar=?, seo=?, updated_at=?, updated_by=? WHERE id=?")
@@ -111,7 +113,7 @@ export async function galleryAction(fd: FormData) {
   });
   audit(u.id, `gallery.${op || "save"}`, String(pid), String(iid));
   updateTag("projects");
-  go(lang, `/projects/${pid}#gallery`, "saved");
+  go(lang, `/projects/${pid}/images`, "saved");
 }
 
 export async function addImages(fd: FormData) {
@@ -129,7 +131,7 @@ export async function addImages(fd: FormData) {
   });
   audit(u.id, "gallery.add", String(pid), `${ids.length} images`);
   updateTag("projects");
-  go(lang, `/projects/${pid}#gallery`, "saved");
+  go(lang, `/projects/${pid}/images`, "saved");
 }
 
 /* ---------- inquiries ---------- */
@@ -286,4 +288,28 @@ export async function restoreRevision(fd: FormData) {
     go(lang, "/settings", "restored");
   }
   go(lang, "", "error");
+}
+
+/* Project workspace: main image and SEO tab. */
+export async function setCover(fd: FormData) {
+  const lang = L(fd), u = await assertCan("projects.edit");
+  const pid = Number(fd.get("project")), src = s(fd, "src", 300);
+  if (!db().prepare("SELECT 1 FROM project_images WHERE project_id = ? AND src = ?").get(pid, src)) go(lang, `/projects/${pid}/images`, "error");
+  snapshot("project", pid, db().prepare("SELECT slug,status,featured,sort,category,area,year,cover,en,ar,seo FROM projects WHERE id = ?").get(pid), u.id, "before cover change");
+  db().prepare("UPDATE projects SET cover = ?, updated_at = ?, updated_by = ? WHERE id = ?").run(src, new Date().toISOString(), u.id, pid);
+  audit(u.id, "project.cover", String(pid), src);
+  updateTag("projects");
+  go(lang, `/projects/${pid}/images`, "saved");
+}
+export async function saveProjectSeo(fd: FormData) {
+  const lang = L(fd), u = await assertCan("projects.edit");
+  const pid = Number(fd.get("project"));
+  const cur = db().prepare("SELECT slug,status,featured,sort,category,area,year,cover,en,ar,seo FROM projects WHERE id = ?").get(pid);
+  if (!cur) go(lang, "/projects", "error");
+  snapshot("project", pid, cur, u.id, "before SEO save");
+  const seo = { en: { title: s(fd, "seo_en_title", 70), description: s(fd, "seo_en_desc", 170) }, ar: { title: s(fd, "seo_ar_title", 70), description: s(fd, "seo_ar_desc", 170) } };
+  db().prepare("UPDATE projects SET seo = ?, updated_at = ?, updated_by = ? WHERE id = ?").run(JSON.stringify(seo), new Date().toISOString(), u.id, pid);
+  audit(u.id, "project.seo", String(pid));
+  updateTag("projects");
+  go(lang, `/projects/${pid}/seo`, "saved");
 }

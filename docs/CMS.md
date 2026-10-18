@@ -6,7 +6,8 @@ Admin: `/en/admin` (English) or `/ar/admin` (Arabic, RTL). Not indexed by search
 | Area | Where | Notes |
 |---|---|---|
 | Projects | Admin → Projects | EN + AR text, slug (unique, validated), category, area, year, order, featured, cover, SEO title/description per language, draft/published. Published changes appear on the public site on the next request (cache tag `projects`). |
-| Gallery | Project → Gallery | Reorder (↑/↓), room name EN/AR, caption, remove, add from the media library. |
+| Project workspace | Projects → a project card | Tabs: Details (status, basics, EN/AR text), Images, SEO, History. |
+| Images | Project → Images | Upload straight into the project (first upload becomes the main image if none), set any photo as the main image, download, move earlier/later, room name EN/AR, caption, remove, add from the media library. |
 | Media library | Admin → Media library | Upload JPG/PNG/WebP/PDF ≤ 15 MB. Type is checked from the file bytes; images are re-encoded to WebP (max 2400 px, EXIF stripped). Alt/title/caption editable. Delete is refused while a project uses the file. |
 | Inquiries | Admin → Inquiries | Every site form (`/api/leads`). Search, status filter (New / Contacted / In progress / Won / Lost / Spam), internal notes, WhatsApp / email buttons, CSV export (formula-injection safe). |
 | Users | Admin → Users (super admin) | Add users, change role, disable, set a new password (signs that user out everywhere). |

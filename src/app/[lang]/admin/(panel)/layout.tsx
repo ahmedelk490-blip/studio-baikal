@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { requireUser } from "@/lib/auth";
 import { can, type Perm } from "@/lib/perm";
 import { adminDict } from "@/lib/admin-i18n";
+import { NavLinks } from "@/components/admin/client";
 
 type Props = { children: React.ReactNode; params: Promise<{ lang: string }> };
 export const instant = false;
@@ -20,6 +21,7 @@ async function Panel({ children, params }: Props) {
   const a = adminDict(lang);
   const nav: [string, string, Perm | null][] = [[a.dashboard, "", null], [a.projects, "/projects", "projects.view"], [a.inquiries, "/inquiries", "inquiries.view"], [a.media, "/media", "media.view"], [a.settings, "/settings", "settings.edit"], [a.seo, "/seo", "seo.edit"], [a.redirects, "/redirects", "redirects.edit"], [a.users, "/users", "users.manage"], [a.account, "/account", null]];
   const links = nav.filter(([, , p]) => !p || can(u.role, p));
+  const full: [string, string][] = links.map(([l, h]) => [l, `/${lang}/admin${h}`]);
   return (
     <div className="lg:grid lg:min-h-[100svh] lg:grid-cols-[240px_1fr]">
       <aside className="border-b border-[var(--ink)]/10 bg-[var(--deep)] text-[var(--surface)] lg:border-b-0">
@@ -33,11 +35,11 @@ async function Panel({ children, params }: Props) {
             {a.menu}<span aria-hidden className="transition-transform group-open:rotate-180">▾</span>
           </summary>
           <nav aria-label="Admin" className="mt-2 grid gap-1">
-            {links.map(([l, h]) => <Link key={h} href={`/${lang}/admin${h}`} className="flex min-h-11 items-center rounded-lg px-4 text-sm text-[var(--surface)]/85 hover:bg-white/10">{l}</Link>)}
+            <NavLinks links={full} root={`/${lang}/admin`} className="flex min-h-11 items-center rounded-lg px-4 text-sm transition-colors" activeClass="bg-white/12 text-[var(--surface)] font-medium" idleClass="text-[var(--surface)]/75 hover:bg-white/10" />
           </nav>
         </details>
         <nav aria-label="Admin" className="hidden flex-col gap-1 px-3 pb-3 lg:flex">
-          {links.map(([l, h]) => <Link key={h} href={`/${lang}/admin${h}`} className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm text-[var(--surface)]/80 transition-colors hover:bg-white/10 hover:text-[var(--surface)]">{l}</Link>)}
+          <NavLinks links={full} root={`/${lang}/admin`} className="relative inline-flex min-h-11 items-center rounded-lg px-3 text-sm transition-colors" activeClass="bg-white/12 font-medium text-[var(--surface)] before:absolute before:inset-y-2 before:start-0 before:w-0.5 before:rounded before:bg-[var(--bronze)]" idleClass="text-[var(--surface)]/75 hover:bg-white/10 hover:text-[var(--surface)]" />
         </nav>
       </aside>
       <div className="min-w-0">

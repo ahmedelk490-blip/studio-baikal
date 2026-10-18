@@ -65,8 +65,10 @@ html.is-deep { color-scheme: dark; }
 @media (min-width: 2400px) { html { font-size: 20px; } }
 @media (min-width: 2200px) { .md\:px-10 { padding-inline: max(2.5rem, calc((100vw - 2080px) / 2)); } }
 /* one eyebrow system for every section: bronze lead-in line, 0.2em spacing (none in Arabic) */
-.eyebrow { display: flex; align-items: center; gap: .75rem; letter-spacing: .2em; }
-.eyebrow::before { content: ""; flex: none; width: 2rem; height: 1px; background: currentColor; opacity: .8; }
+/* section tags: a small pill with a dot (one system for every section) */
+.eyebrow { display: inline-flex; align-items: center; gap: .55rem; letter-spacing: .16em; line-height: 1; padding: .45rem .85rem; border: 1px solid color-mix(in srgb, currentColor 35%, transparent); border-radius: 999px; }
+.eyebrow::before { content: ""; flex: none; width: .375rem; height: .375rem; border-radius: 999px; background: currentColor; }
+[dir="rtl"] .eyebrow { letter-spacing: normal; }
 /* shape reveals: each new image opens through its own shape over the previous one (Rooms, Materials) */
 .rv { animation: rvArch 1s cubic-bezier(.76,0,.24,1) both; }
 .rv-1 { animation-name: rvCircle; } .rv-2 { animation-name: rvDiamond; } .rv-3 { animation-name: rvWipe; } .rv-4 { animation-name: rvSplit; }

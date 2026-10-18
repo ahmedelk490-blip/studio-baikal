@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Project } from "@/data/projects";
 import type { Dict, Lang } from "@/data/i18n";
+import { extras } from "@/data/extras";
 
 /* Projects — the mirror hall. Every home stands in a Baikal arch along a gentle curve over a dark,
    still floor that reflects it like the lake. The hall turns by itself; the one in front lights up
@@ -42,10 +43,14 @@ export function MirrorHall({ projects, t, lang }: { projects: Project[]; t: Dict
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   return (
     <section ref={sec} id="projects" data-depth={t.gauge.projects} data-meters="80 m" data-deep="1" className="relative overflow-hidden bg-[radial-gradient(ellipse_at_50%_30%,#17252c,#05080A_72%)] px-5 py-16 text-[var(--surface)] md:px-10 md:py-24">
-      <div className="mx-auto max-w-2xl text-center">
-        <p className={`${u} eyebrow justify-center text-[var(--bronze)]`}>{t.gauge.projects}</p>
-        <h2 className="display mt-3 text-4xl md:text-6xl">{t.strata.title}</h2>
-        <p className="mx-auto mt-4 max-w-md text-sm text-[var(--surface)]/65">{t.strata.intro}</p>
+      {/* section head: tag, title and line on one side, the way to every project on the other */}
+      <div className="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p className={`${u} eyebrow text-[var(--bronze)]`}>{t.gauge.projects}</p>
+          <h2 className="display mt-4 text-4xl md:text-6xl">{t.strata.title}</h2>
+          <p className="mt-4 max-w-md text-sm text-[var(--surface)]/65">{t.strata.intro}</p>
+        </div>
+        <Link href={`/${lang}/projects`} className="inline-flex min-h-11 items-center gap-2 text-sm text-[var(--surface)]/75 transition-colors [@media(hover:hover)]:hover:text-[var(--surface)]">{t.project.all} <span aria-hidden>{lang === "ar" ? "←" : "→"}</span></Link>
       </div>
 
       <div
@@ -83,6 +88,9 @@ export function MirrorHall({ projects, t, lang }: { projects: Project[]; t: Dict
       <div key={a} className="hero-in mt-6 text-center md:mt-8">
         <p className="display text-3xl md:text-5xl">{cur.name}</p>
         <p className={`${u} mt-3 text-[var(--bronze)]`}>{cur.type} · {cur.location}</p>
+      </div>
+      <div className="mt-8 flex justify-center">
+        <Link href={`/${lang}/projects`} className="inline-flex min-h-11 items-center rounded-full border border-[var(--surface)]/20 bg-[var(--surface)]/5 px-6 text-sm transition-colors [@media(hover:hover)]:hover:border-[var(--bronze)]">{extras[lang].explore}</Link>
       </div>
     </section>
   );

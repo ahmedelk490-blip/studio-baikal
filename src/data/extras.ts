@@ -8,6 +8,8 @@ export type Extras = {
   grow: { eyebrow: string; line: string };
   cta: { eyebrow: string; title: string; note: string; btn: string };
   heroAlt: [string, string];
+  heroChip: string;
+  explore: string;
 };
 
 export const extras: Record<Lang, Extras> = {
@@ -27,6 +29,8 @@ export const extras: Record<Lang, Extras> = {
     grow: { eyebrow: "El Nakhil Villa · New Cairo", line: "A room should feel like it was always there" },
     cta: { eyebrow: "Your space", title: "Ready to shape your space?", note: "Tell us about the place. We call you back within one working day, and the first consultation is free.", btn: "Book a free consultation" },
     heroAlt: ["Drawn with care,", "built to last"],
+    heroChip: "Free first consultation · we reply within one working day",
+    explore: "Explore all projects",
   },
   ar: {
     layers: {
@@ -44,5 +48,7 @@ export const extras: Record<Lang, Extras> = {
     grow: { eyebrow: "فيلا النخيل · القاهرة الجديدة", line: "الغرفة الجيدة تبدو وكأنها كانت هنا دائمًا" },
     cta: { eyebrow: "مساحتك", title: "جاهز نصمم مساحتك؟", note: "احكِ لنا عن المكان، ونتصل بك خلال يوم عمل واحد. الاستشارة الأولى مجانية", btn: "احجز استشارة مجانية" },
     heroAlt: ["نرسمها بعناية،", "ونبنيها لتدوم"],
+    heroChip: "استشارة أولى مجانية · نرد خلال يوم عمل",
+    explore: "استكشف كل المشاريع",
   },
 };

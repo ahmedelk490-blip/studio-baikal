@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import type { Dict, Lang } from "@/data/i18n";
 import { Btn } from "./Btn";
-import { Contours } from "./Contours";
 import { heroVideo } from "@/data/media";
 
 const srcs = ["/projects/october-250/01.webp", "/projects/el-nakhil-villa/01.webp", "/projects/maadi-285/01.webp", "/projects/maadi-180/05.webp"];
@@ -23,7 +22,6 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
       .from(".h-veil", { opacity: 1, duration: 1.6, ease: "power2.out" }, 0.2)
       .from(".h-eyebrow", { opacity: 0, x: lang === "ar" ? 20 : -20, duration: 0.8, ease: "power3.out" }, 0.5)
       .from(".h-word", { yPercent: 120, rotateX: -60, opacity: 0, duration: 1.1, ease: "power4.out", stagger: 0.07, transformOrigin: "50% 100%" }, 0.6)
-      .from(".h-rule", { scaleX: 0, duration: 1.2, ease: "expo.inOut" }, 1.1)
       .from(".h-fade", { opacity: 0, y: 16, duration: 0.8, ease: "power3.out", stagger: 0.08 }, 1.3)
       .from(".h-hud > *", { opacity: 0, x: 20, duration: 0.7, ease: "power3.out", stagger: 0.06 }, 1.4);
     gsap.to(".h-stage", { yPercent: 16, ease: "none", scrollTrigger: { trigger: ref.current, start: "top top", end: "bottom top", scrub: true } });
@@ -52,7 +50,6 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
       <div className="caustic caustic-a" aria-hidden /><div className="caustic caustic-b" aria-hidden />
       <div className="absolute inset-0 bg-gradient-to-t from-[var(--deep)] via-[var(--deep)]/35 to-[var(--deep)]/20" />
       <div className="absolute inset-0 bg-gradient-to-r from-[var(--deep)]/70 via-transparent to-transparent rtl:bg-gradient-to-l" />
-      <Contours className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%] opacity-70" />
       <div className="h-veil pointer-events-none absolute inset-0 bg-[var(--deep)] opacity-0" />
       <ul className="bubbles pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
         {bubbles.map((b, k) => <li key={k} style={{ left: `${b.x}%`, width: b.s, height: b.s, animationDuration: `${b.d}s`, animationDelay: `-${b.delay}s` }} />)}
@@ -64,7 +61,6 @@ export function Hero({ t, lang }: { t: Dict; lang: Lang }) {
           <span className="block">{words(t.hero.t1)}</span>
           <span className="block italic text-[var(--bronze)]">{words(t.hero.t2)}</span>
         </h1>
-        <span className="h-rule mt-6 block h-px w-full origin-left bg-[var(--bronze)]/70 rtl:origin-right md:w-2/3" aria-hidden />
         <div className="mt-6 grid gap-6 md:grid-cols-12 md:items-end">
           <p className="h-fade max-w-md text-sm leading-relaxed text-[var(--surface)]/80 md:col-span-6">{t.hero.intro}</p>
           <div className={`h-fade flex flex-wrap items-center gap-x-6 gap-y-3 ${u} md:col-span-6 md:justify-end`}>

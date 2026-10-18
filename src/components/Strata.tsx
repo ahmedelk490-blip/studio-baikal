@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import type { Project } from "@/data/projects";
 import type { Dict, Lang } from "@/data/i18n";
@@ -14,6 +15,7 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
   const track = useRef<HTMLDivElement>(null);
   const [f, setF] = useState(0);
   const step = useRef<(d: number) => void>(() => {});
+  const router = useRouter();
   // portrait renders only when they are sharp enough (some are 559px wide); else the 1920px cover
   const pick = (p: Project) => p.images.find((i) => i.h > i.w && i.w >= 1000) ?? p.images.find((i) => i.src === p.cover) ?? p.images[0];
 
@@ -34,8 +36,17 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
           if (Date.now() < hold || document.hidden || r.bottom < 0 || r.top > innerHeight) return;
           go((cur + 1) % frames.length);
         }, 3800);
-        el.addEventListener("scroll", mark, { passive: true }); el.addEventListener("touchstart", pause, { passive: true }); el.addEventListener("pointerdown", pause); mark();
-        return () => { clearInterval(auto); step.current = () => {}; el.removeEventListener("scroll", mark); el.removeEventListener("touchstart", pause); el.removeEventListener("pointerdown", pause); };
+        // a tap while the row is still gliding is eaten by the browser as "stop scrolling", so a short,
+        // still press on a frame opens that frame's project ourselves
+        let down: { x: number; y: number; t: number; a: HTMLAnchorElement | null } | null = null;
+        const press = (e: PointerEvent) => { pause(); down = { x: e.clientX, y: e.clientY, t: Date.now(), a: (e.target as HTMLElement).closest("a.bk-frame") }; };
+        const lift = (e: PointerEvent) => {
+          const d = down; down = null;
+          if (!d?.a || Date.now() - d.t > 500 || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 10) return;
+          router.push(d.a.getAttribute("href")!);
+        };
+        el.addEventListener("scroll", mark, { passive: true }); el.addEventListener("touchstart", pause, { passive: true }); el.addEventListener("pointerdown", press); el.addEventListener("pointerup", lift); mark();
+        return () => { clearInterval(auto); step.current = () => {}; el.removeEventListener("scroll", mark); el.removeEventListener("touchstart", pause); el.removeEventListener("pointerdown", press); el.removeEventListener("pointerup", lift); };
       }
       if (!ctx.conditions!.desk) return;
       const FAN = 28, STEP_Z = 30;
@@ -93,12 +104,9 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
           </div>
         </div>
         <div dir="ltr" className="relative z-[3] flex items-start justify-center gap-2 px-3 pb-8 md:px-5 md:pb-10">
-        <button type="button" onClick={() => step.current(-1)} aria-label={lang === "ar" ? "المشروع السابق" : "Previous project"} className="mt-8 grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--surface)]/30 md:hidden"><span aria-hidden>&#8592;</span></button>
         <Link href={`/${lang}/projects/${p.slug}`} dir={t.dir} className="group block min-w-0 text-center" aria-live="polite">
-          <span key={f} className="hero-in block"><h3 className="display text-2xl transition-colors group-hover:text-[var(--bronze)] md:text-3xl">{p.name}</h3></span>
           <span className={`${u} mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--bronze)]/70 px-5 transition-colors group-hover:bg-[var(--bronze)] group-hover:text-[#15130F]`}>{t.project.open} {lang === "ar" ? "المشروع" : "project"} <span aria-hidden className="rtl:-scale-x-100">&#8594;</span></span>
         </Link>
-        <button type="button" onClick={() => step.current(1)} aria-label={lang === "ar" ? "المشروع التالي" : "Next project"} className="mt-8 grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--surface)]/30 md:hidden"><span aria-hidden>&#8594;</span></button>
         </div>
       </div>
     </section>

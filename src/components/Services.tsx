@@ -22,12 +22,15 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
     // whose shape turns arch -> circle -> rounded frame, with a light parallax inside each room
     gsap.matchMedia().add("(max-width: 1023px) and (prefers-reduced-motion: no-preference)", () => {
       const win = sec.current!.querySelector<HTMLElement>(".svc-win")!;
-      const shapes = () => { const W = win.offsetWidth, H = win.offsetHeight, D = Math.min(W, H) * 0.92, y = (H - D) / 2, x = (W - D) / 2;
-        return [`inset(0px 0px 0px 0px round ${W / 2}px ${W / 2}px 14px 14px)`, `inset(${y}px ${x}px ${y}px ${x}px round ${D / 2}px ${D / 2}px ${D / 2}px ${D / 2}px)`, `inset(${H * 0.06}px 0px ${H * 0.06}px 0px round 22px 22px 22px 22px)`]; };
+      // same box throughout, only the four corner radii change (tweened one by one so nothing is misread):
+      // arch (half-round top) -> stadium -> soft frame
+      const corners = (tl: number, bl: number) => ({ borderTopLeftRadius: tl, borderTopRightRadius: tl, borderBottomLeftRadius: bl, borderBottomRightRadius: bl });
+      const arch = () => corners(Math.min(win.offsetWidth / 2, win.offsetHeight), 16);
+      const pill = () => { const P = Math.min(win.offsetWidth, win.offsetHeight) / 2; return corners(P, P); };
       const n = items.length - 1;
       tl.current = gsap.timeline({ scrollTrigger: { trigger: ".svc-phone", start: "top 72px", end: "+=" + n * 110 + "%", pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true, onUpdate: (st) => setA(Math.round(st.progress * n)) } })
-        .fromTo(win, { clipPath: () => shapes()[0] }, { clipPath: () => shapes()[1], ease: "power2.inOut", duration: 1 }, 0)
-        .to(win, { clipPath: () => shapes()[2], ease: "power2.inOut", duration: 1 }, 1)
+        .fromTo(win, { ...arch() }, { ...pill(), ease: "power2.inOut", duration: 1, immediateRender: true }, 0)
+        .to(win, { ...corners(24, 24), ease: "power2.inOut", duration: 1 }, 1)
         // each next room wipes in over the last one (nothing waits outside the window)
         .fromTo(".svc-pane-1", { clipPath: "inset(0% 0% 0% 100%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.inOut", duration: 1 }, 0)
         .fromTo(".svc-pane-2", { clipPath: "inset(0% 0% 0% 100%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.inOut", duration: 1 }, 1)
@@ -52,7 +55,7 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
               <button key={k} onClick={() => take(k)} aria-current={a === k} className={`min-h-11 flex-1 rounded-full border px-2 text-xs transition-colors duration-500 ${a === k ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--surface)]" : "border-[var(--ink)]/20 text-[var(--ink)]/70"}`}>{t.services.labels[k]}</button>
             ))}
           </div>
-          <div className="svc-win relative mx-auto mt-5 h-[44svh] max-h-[460px] w-full max-w-[560px] overflow-hidden rounded-t-full bg-[var(--deep)]">
+          <div className="svc-win relative mx-auto mt-5 h-[44svh] max-h-[460px] w-full max-w-[560px] overflow-hidden bg-[var(--deep)]" style={{ borderRadius: "999px 999px 16px 16px" }}>
             <div className="absolute inset-0" dir="ltr">
               {srcs.map((src, k) => (
                 <div key={src} className={`svc-pane-${k} absolute inset-0 overflow-hidden`} style={k ? { clipPath: "inset(0% 0% 0% 100%)" } : undefined}>

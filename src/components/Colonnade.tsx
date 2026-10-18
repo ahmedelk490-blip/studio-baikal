@@ -1,30 +1,29 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { ScrollTrigger, useGSAP } from "@/lib/gsap";
 import type { Dict } from "@/data/i18n";
 
 const IMGS = ["/brand/hero-arch.webp", "/projects/maadi-180/05.webp", "/projects/october-250/05.webp", "/projects/el-nakhil-villa/01.webp"];
 
-/* How we work — the colonnade. Four columns, one per step, each holding a faint arch outline; a lit
-   Baikal arch window glides from column to column on its own and shows that step's room while the
-   step's name and line change beside the title. Tapping a column jumps to it. */
+/* How we work — the colonnade. Four columns, one per step, each holding a faint arch outline. The page
+   holds on this section and each stretch of scroll moves the lit Baikal arch window to the next column,
+   showing that step's room while the step's name and line change beside the title. A tap goes there. */
 export function Colonnade({ t }: { t: Dict }) {
   const ap = t.approach, n = ap.steps.length;
   const [a, setA] = useState(0);
-  const hold = useRef(0);
   const sec = useRef<HTMLElement>(null);
-  useEffect(() => {
-    let seen = false;
-    const io = new IntersectionObserver(([e]) => { seen = e.isIntersecting; }, { threshold: 0.3 });
-    io.observe(sec.current!);
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const id = reduce ? 0 : window.setInterval(() => { if (seen && !document.hidden && Date.now() > hold.current) setA((k) => (k + 1) % n); }, 3400);
-    return () => { clearInterval(id); io.disconnect(); };
-  }, [n]);
-  const pick = (k: number) => { hold.current = Date.now() + 7000; setA(k); };
+  const st = useRef<ScrollTrigger | null>(null);
+  useGSAP(() => {
+    st.current = ScrollTrigger.create({ trigger: sec.current, start: "top top", end: "+=" + n * 70 + "%", pin: true, anticipatePin: 1,
+      onUpdate: (s) => setA(Math.min(n - 1, Math.floor(s.progress * n))) });
+    return () => { st.current = null; };
+  }, { scope: sec });
+  // a tap scrolls to the middle of that step's stretch, so the pin and the choice agree
+  const pick = (k: number) => { setA(k); const s = st.current; if (s) window.scrollTo({ top: s.start + ((s.end - s.start) * (k + 0.5)) / n, behavior: "smooth" }); };
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   return (
-    <section ref={sec} id="approach" data-depth={t.gauge.approach} data-meters="1,100 m" data-deep="1" className="bg-[#15130F] px-5 py-16 text-[var(--surface)] md:px-10 md:py-24">
+    <section ref={sec} id="approach" data-depth={t.gauge.approach} data-meters="1,100 m" data-deep="1" className="flex min-h-[100svh] flex-col justify-center bg-[#15130F] px-5 py-12 text-[var(--surface)] md:px-10 lg:py-12">
       <div className="grid gap-8 md:grid-cols-12 md:items-end">
         <div className="md:col-span-7">
           <p className={`${u} eyebrow text-[var(--bronze)]`}>{t.gauge.approach}</p>
@@ -38,9 +37,9 @@ export function Colonnade({ t }: { t: Dict }) {
         </div>
       </div>
 
-      <div className="relative mt-10 grid h-[46vh] min-h-[320px] grid-cols-4 border-y border-[var(--surface)]/12 md:mt-14 md:h-[56vh]">
+      <div className="relative mt-8 grid h-[38svh] min-h-[260px] grid-cols-4 border-y border-[var(--surface)]/12 md:mt-12 md:h-[50svh]">
         {ap.steps.map(([name], k) => (
-          <button key={name} onClick={() => pick(k)} onMouseEnter={() => pick(k)} aria-current={a === k} aria-label={name}
+          <button key={name} onClick={() => pick(k)} aria-current={a === k} aria-label={name}
             className="relative border-s border-[var(--surface)]/12 first:border-s-0">
             {/* the empty arch of this column */}
             <span className="absolute inset-x-2 bottom-12 top-4 rounded-b-lg rounded-t-full border border-[var(--surface)]/10 md:inset-x-4" aria-hidden />

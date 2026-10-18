@@ -36,17 +36,26 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
           if (Date.now() < hold || document.hidden || r.bottom < 0 || r.top > innerHeight) return;
           go((cur + 1) % frames.length);
         }, 3800);
-        // a tap while the row is still gliding is eaten by the browser as "stop scrolling", so a short,
-        // still press on a frame opens that frame's project ourselves
+        // taps are handled here (the browser eats a tap on a gliding row as "stop scrolling"): a short,
+        // still press on the centred frame opens its project; a tap anywhere left or right of it steps
+        // the row one project that way
         let down: { x: number; y: number; t: number; a: HTMLAnchorElement | null } | null = null;
         const press = (e: PointerEvent) => { pause(); down = { x: e.clientX, y: e.clientY, t: Date.now(), a: (e.target as HTMLElement).closest("a.bk-frame") }; };
         const lift = (e: PointerEvent) => {
           const d = down; down = null;
-          if (!d?.a || Date.now() - d.t > 500 || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 10) return;
-          router.push(d.a.getAttribute("href")!);
+          if (!d || Date.now() - d.t > 500 || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 10) return;
+          if (d.a && frames.indexOf(d.a) === cur) { router.push(d.a.getAttribute("href")!); return; }
+          step.current(d.x < innerWidth / 2 ? -1 : 1);
         };
-        el.addEventListener("scroll", mark, { passive: true }); el.addEventListener("touchstart", pause, { passive: true }); el.addEventListener("pointerdown", press); el.addEventListener("pointerup", lift); mark();
-        return () => { clearInterval(auto); step.current = () => {}; el.removeEventListener("scroll", mark); el.removeEventListener("touchstart", pause); el.removeEventListener("pointerdown", press); el.removeEventListener("pointerup", lift); };
+        // pointer clicks on frames never navigate natively (the tap above decides); keyboard Enter
+        // (click with detail 0) still opens the focused link
+        const stop = (e: MouseEvent) => { if (e.detail > 0 && (e.target as HTMLElement).closest("a.bk-frame")) e.preventDefault(); };
+        // the tap opens through router.push, so fetch every project page as the row comes near: the
+        // project then opens at once instead of waiting on the server
+        const near = new IntersectionObserver(([en]) => { if (!en.isIntersecting) return; near.disconnect(); frames.forEach((fr) => router.prefetch(fr.getAttribute("href")!)); }, { rootMargin: "600px 0px" });
+        near.observe(el);
+        el.addEventListener("scroll", mark, { passive: true }); el.addEventListener("touchstart", pause, { passive: true }); el.addEventListener("pointerdown", press); el.addEventListener("pointerup", lift); el.addEventListener("click", stop); mark();
+        return () => { clearInterval(auto); near.disconnect(); step.current = () => {}; el.removeEventListener("scroll", mark); el.removeEventListener("touchstart", pause); el.removeEventListener("pointerdown", press); el.removeEventListener("pointerup", lift); el.removeEventListener("click", stop); };
       }
       if (!ctx.conditions!.desk) return;
       const FAN = 28, STEP_Z = 30;

@@ -57,12 +57,13 @@ export async function Footer({ t, lang }: { t: Dict; lang: Lang }) {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-[var(--surface)]/10 py-4 pe-16 text-xs text-[var(--surface)]/60 md:pe-20">
-          <span>© 2026 {t.footer.rights}</span>
-          <a href="#top" className="inline-flex min-h-11 items-center gap-2 whitespace-nowrap text-[var(--surface)]/80 transition-colors hover:text-[var(--surface)]">{t.footer.top} <span aria-hidden>&#8593;</span></a>
-          <a href="https://qmarketingeg.com/" target="_blank" rel="noopener" className="group inline-flex min-h-11 items-center gap-2 text-[var(--surface)]/75 transition-colors hover:text-[var(--surface)]">
-            <span className="relative inline-block h-5 w-5" aria-hidden><span className="absolute inset-0 rounded-full border border-[var(--bronze)]/70" /><span className="absolute -left-0.5 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-[var(--bronze)] transition-transform duration-700 group-hover:rotate-180" style={{ transformOrigin: "12px 0" }} /></span>
-            <span>{lang === "ar" ? "تصميم وبرمجة شركة " : "Designed & built by "}<b className="font-semibold">Q Marketing</b></span>
+        {/* bottom line: rights at the start, the studio credit at the end, side by side at every width */}
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-x-4 border-t border-[var(--surface)]/10 py-3 text-xs text-[var(--surface)]/60 md:pe-20">
+          <span className="inline-flex min-h-11 items-center whitespace-nowrap">© 2026 {t.footer.rights}</span>
+          <a href="https://qmarketingeg.com/" target="_blank" rel="noopener" className="group inline-flex min-h-11 items-center gap-2 whitespace-nowrap text-[var(--surface)]/75 transition-colors hover:text-[var(--surface)]">
+            <span className="relative hidden h-5 w-5 sm:inline-block" aria-hidden><span className="absolute inset-0 rounded-full border border-[var(--bronze)]/70" /><span className="absolute -left-0.5 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-[var(--bronze)] transition-transform duration-700 group-hover:rotate-180" style={{ transformOrigin: "12px 0" }} /></span>
+            {/* shorter wording on phones so both items share one line */}
+            <span><span className="sm:hidden">{lang === "ar" ? "تنفيذ " : "Built by "}</span><span className="hidden sm:inline">{lang === "ar" ? "تصميم وبرمجة شركة " : "Designed & built by "}</span><b className="font-semibold">Q Marketing</b></span>
           </a>
         </div>
       </div>

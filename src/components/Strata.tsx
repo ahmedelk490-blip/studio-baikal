@@ -86,11 +86,11 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
           <p className="max-w-sm text-sm text-[var(--surface)]/65">{t.strata.intro}</p>
         </div>
         <div className="relative flex flex-1 items-center py-8 md:py-0" style={{ perspective: "1350px", perspectiveOrigin: "50% 42%" }}>
-          <div ref={track} dir="ltr" className="bk-track flex items-center max-md:w-full max-md:snap-x max-md:snap-mandatory max-md:gap-4 max-md:overflow-x-auto max-md:px-[15vw] max-md:pb-2" style={{ transformStyle: "preserve-3d" }}>
+          <div ref={track} dir="ltr" className="bk-track flex items-center md:pointer-events-none max-md:w-full max-md:snap-x max-md:snap-mandatory max-md:gap-4 max-md:overflow-x-auto max-md:px-[15vw] max-md:pb-2" style={{ transformStyle: "preserve-3d" }}>
             {projects.map((pr) => {
               const im = pick(pr);
               return (
-                <Link key={pr.slug} href={`/${lang}/projects/${pr.slug}`} className="bk-frame group relative shrink-0 max-md:snap-center">
+                <Link key={pr.slug} href={`/${lang}/projects/${pr.slug}`} className="bk-frame group relative shrink-0 md:pointer-events-auto max-md:snap-center">
                   <span className="bk-fig relative block overflow-hidden">
                     <Image src={im.src} alt={`${pr.name}, ${im.room}`} fill sizes="(min-width:768px) 330px, 70vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
                     <span dir={t.dir} className="bk-meta absolute inset-x-0 bottom-0 z-[2] block px-4 pb-3 pt-12">

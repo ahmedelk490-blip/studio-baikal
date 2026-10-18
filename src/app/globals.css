@@ -15,6 +15,8 @@
   --font-ar: Alexandria, system-ui, sans-serif;
 }
 html { font-family: var(--font-sans), system-ui, sans-serif; }
+/* never let the page scroll sideways (clip, not hidden, so sticky/pinned sections keep working) */
+html, body { overflow-x: clip; }
 body { background: var(--surface); color: var(--ink); }
 .display { font-family: var(--font-display), Georgia, serif; font-variation-settings: "opsz" 144, "SOFT" 60, "WONK" 1; }
 /* Q Marketing verdicts: Arabic is never letter-spaced, headings breathe (line-height >= 1.3), 12px floor */
@@ -78,6 +80,8 @@ html.is-deep { color-scheme: dark; }
 .bk-frame.is-focus .bk-fig { box-shadow: 0 30px 70px -18px rgba(0,0,0,.75), 0 0 0 1px rgba(184,140,90,.55), 0 0 60px -10px rgba(184,140,90,.45); }
 .bk-meta { background: linear-gradient(to top, rgba(12,10,8,.85), transparent); opacity: 0; transform: translateY(8px); transition: opacity .4s, transform .4s; }
 .bk-frame:hover .bk-meta, .bk-frame.is-focus .bk-meta { opacity: 1; transform: none; }
+/* frames sit behind the track's plane in 3D, so the track must not swallow their clicks */
+@media (min-width: 768px) { .bk-track { pointer-events: none; } .bk-frame { pointer-events: auto; } }
 @media (max-width: 767px) { .bk-frame { width: 70vw; margin-inline-end: 0; } .bk-fig { -webkit-box-reflect: none; } .bk-track { scrollbar-width: none; } }
 /* film grain on the deep sections (static svg noise, no blend modes) */
 .grain { position: relative; }

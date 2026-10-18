@@ -10,14 +10,16 @@ import type { Dict } from "@/data/i18n";
 export function ArchSlider({ images, name, t, onOpen }: { images: Img[]; name: string; t: Dict; onOpen: (k: number) => void }) {
   const [k, setK] = useState(0);
   const [prev, setPrev] = useState(0);
-  const [hold, setHold] = useState(false);
   const cur = useRef(0);
+  const hold = useRef(0);
   const go = (n: number) => { const i = (n + images.length) % images.length; if (i === cur.current) return; setPrev(cur.current); cur.current = i; setK(i); };
-  useEffect(() => { if (hold) return; const iv = setInterval(() => go(cur.current + 1), 4200); return () => clearInterval(iv); }, [hold, images.length]);
+  // plays on its own; a manual step (arrow / thumbnail) only pauses it for 7 s
+  const setHold = (_: boolean) => { hold.current = Date.now() + 7000; };
+  useEffect(() => { const iv = setInterval(() => { if (Date.now() > hold.current && !document.hidden) go(cur.current + 1); }, 4200); return () => clearInterval(iv); }, [images.length]);
   const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
   const im = images[k];
   return (
-    <div onMouseEnter={() => setHold(true)} onMouseLeave={() => setHold(false)}>
+    <div>
       <div className="grid items-end gap-6 lg:grid-cols-12">
         <div className="lg:col-span-4">
           <p className={`${u} text-[var(--bronze)]`}>{t.project.diveLog}</p>

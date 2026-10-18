@@ -10,7 +10,9 @@ export function FilmStrip({ images, name, t }: { images: Img[]; name: string; t:
   const box = useRef<HTMLDivElement>(null);
   const cur = useRef(0);
   const [k, setK] = useState(0);
-  const [hold, setHold] = useState(false);
+  // plays on its own; touching, wheeling or an arrow only pauses it for 7 s
+  const hold = useRef(0);
+  const setHold = (_: boolean) => { hold.current = Date.now() + 7000; };
   const go = (n: number) => {
     const el = box.current; if (!el) return;
     const i = (n + images.length) % images.length;
@@ -19,13 +21,12 @@ export function FilmStrip({ images, name, t }: { images: Img[]; name: string; t:
     cur.current = i; setK(i);
   };
   useEffect(() => {
-    if (hold) return;
     let seen = false;
     const io = new IntersectionObserver(([e]) => { seen = e.isIntersecting; }, { threshold: 0.4 });
     if (box.current) io.observe(box.current);
-    const iv = setInterval(() => { if (seen) go(cur.current + 1); }, 3800);
+    const iv = setInterval(() => { if (seen && Date.now() > hold.current && !document.hidden) go(cur.current + 1); }, 3800);
     return () => { clearInterval(iv); io.disconnect(); };
-  }, [hold]);
+  }, []);
   const onScroll = () => {
     const el = box.current; if (!el) return;
     let best = 0, d = Infinity;

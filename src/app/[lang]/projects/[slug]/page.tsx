@@ -5,7 +5,6 @@ import type { Metadata } from "next";
 import { PageShell } from "@/components/PageShell";
 import { ProjectGallery } from "@/components/ProjectGallery";
 import { MaskReveal } from "@/components/MaskReveal";
-import { Contours } from "@/components/Contours";
 import { Btn } from "@/components/Btn";
 import { Clip } from "@/components/Clip";
 import { JsonLd } from "@/components/JsonLd";
@@ -26,8 +25,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${p.name}, ${p.location}`, description: `${p.blurb} ${p.type} · ${p.area} · ${p.style}.`, alternates: { canonical: `/${lang}/projects/${slug}`, languages: { en: `/en/projects/${slug}`, ar: `/ar/projects/${slug}` } }, openGraph: { images: [p.cover] } };
 }
 
-/* Three hero treatments rotate by project (full-bleed / split / centred over a contained cover);
-   the body is the same calm system: story + details panel, then the uncropped mosaic. */
+/* One calm, organised layout for every project: split hero (text beside the cover or walkthrough clip,
+   never over it), story + details panel, the autoplaying arch slider, then a split "next project" row. */
 export default async function ProjectPage({ params }: Props) {
   const { lang, slug } = await params;
   const base = getProject(slug);
@@ -35,7 +34,6 @@ export default async function ProjectPage({ params }: Props) {
   const t = dict[lang];
   const p = localize(base, lang);
   const idx = projects.findIndex((x) => x.slug === p.slug);
-  const v = idx % 3;
   const next = localize(projects[(idx + 1) % projects.length], lang);
   const f = t.project.facts;
   const facts = [[f.type, p.type], [f.area, p.area], [f.rooms, `${p.images.length}`], [f.year, p.year], [f.style, p.style], [f.scope, p.scope]];
@@ -45,50 +43,29 @@ export default async function ProjectPage({ params }: Props) {
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   const back = <Link href={`/${lang}/projects`} className={`${u} inline-block py-3 opacity-70`}>{t.project.all}</Link>;
   return (
-    <PageShell lang={lang} dark={v !== 1}>
+    <PageShell lang={lang}>
       <JsonLd lang={lang} extra={[crumbs]} />
-      {v === 0 && (
-        <section className="relative h-[92svh] overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
-          <Clip src={video} poster={p.cover} alt={`${p.name}, ${p.location}`} priority className={`ph-hero absolute inset-0 ${video ? "" : "ken"}`} />
-          <div className="absolute inset-0 bg-gradient-to-t from-[var(--deep)] via-[var(--deep)]/30 to-transparent" />
-          <div className="hero-in absolute inset-x-0 bottom-0 px-5 pb-10 md:px-10 md:pb-14">
+      <section className="relative overflow-hidden bg-[var(--surface)] px-5 pb-12 pt-24 text-[var(--ink)] md:px-10 md:pb-16 md:pt-32">
+        <div className="relative grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
+          <div className="hero-in lg:col-span-5">
             {back}
-            <h1 className="display text-[12vw] leading-[1.02] rtl:leading-[1.3] md:text-[7vw]">{p.name}</h1>
-            <p className="mt-2 text-sm uppercase tracking-[0.18em] rtl:tracking-normal text-[var(--surface)]/80">{p.location}</p>
+            <p className={`${u} eyebrow mt-2 text-[var(--bronze)]`}>{p.type} · <span dir="ltr">{p.area}</span></p>
+            <h1 className="display mt-3 text-5xl leading-[1.05] rtl:leading-[1.3] md:text-7xl">{p.name}</h1>
+            <p className="mt-4 text-sm text-[var(--muted)]">{p.location}</p>
+            <p className="mt-6 max-w-md text-lg leading-relaxed">{p.blurb}</p>
           </div>
-        </section>
-      )}
-      {v === 1 && (
-        <section className="relative overflow-hidden bg-[var(--surface)] px-5 pb-12 pt-24 text-[var(--ink)] md:px-10 md:pt-32">
-          <Contours className="pointer-events-none absolute inset-x-0 top-10 h-1/2 opacity-40" />
-          <div className="relative grid items-center gap-10 lg:grid-cols-12">
-            <div className="hero-in lg:col-span-5">
-              {back}
-              <p className={`${u} text-[var(--bronze)]`}>{p.type} · {p.area}</p>
-              <h1 className="display mt-3 text-6xl leading-[1.02] rtl:leading-[1.3] md:text-8xl">{p.name}</h1>
-              <p className="mt-4 text-sm text-[var(--muted)]">{p.location}</p>
-              <p className="mt-6 max-w-md text-lg">{p.blurb}</p>
-            </div>
-            <MaskReveal className="relative lg:col-span-7"><Image src={cover.src} alt={`${p.name}, ${cover.room}`} width={cover.w} height={cover.h} priority sizes="(min-width:1024px) 58vw, 100vw" className="mx-auto h-auto max-h-[80vh] w-auto max-w-full" /></MaskReveal>
-          </div>
-        </section>
-      )}
-      {v === 2 && (
-        <section className="relative overflow-hidden bg-[var(--deep)] px-5 pb-0 pt-28 text-center text-[var(--surface)] md:px-10 md:pt-36">
-          <Contours className="pointer-events-none absolute inset-x-0 top-0 h-2/3 opacity-40" />
-          <div className="hero-in relative">
-            {back}
-            <h1 className="display mx-auto max-w-5xl text-6xl leading-[1.02] rtl:leading-[1.3] md:text-9xl">{p.name}</h1>
-            <p className="mt-4 text-sm uppercase tracking-[0.18em] rtl:tracking-normal text-[var(--surface)]/75">{p.location} · {p.style}</p>
-          </div>
-          <MaskReveal className="relative mx-auto mt-12 max-w-6xl translate-y-16">{video ? <Clip src={video} poster={cover.src} alt={`${p.name}, ${cover.room}`} priority className="aspect-[16/9] w-full" /> : <Image src={cover.src} alt={`${p.name}, ${cover.room}`} width={cover.w} height={cover.h} priority sizes="(min-width:1024px) 72rem, 100vw" className="h-auto w-full" />}</MaskReveal>
-        </section>
-      )}
+          <MaskReveal className="relative overflow-hidden rounded-2xl lg:col-span-7">
+            {video
+              ? <Clip src={video} poster={cover.src} alt={`${p.name}, ${cover.room}`} priority className="aspect-[16/10] w-full" sizes="(min-width:1024px) 58vw, 100vw" />
+              : <Image src={cover.src} alt={`${p.name}, ${cover.room}`} width={cover.w} height={cover.h} priority sizes="(min-width:1024px) 58vw, 100vw" className="h-auto max-h-[78vh] w-full object-contain" />}
+          </MaskReveal>
+        </div>
+      </section>
 
-      <section className={`bg-[var(--surface)] px-5 text-[var(--ink)] md:px-10 ${v === 2 ? "pt-28 md:pt-32" : "pt-14 md:pt-20"} pb-14 md:pb-20`}>
+      <section className="border-t border-[var(--ink)]/10 bg-[var(--surface)] px-5 pb-14 pt-14 text-[var(--ink)] md:px-10 md:pb-20 md:pt-20">
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-7">
-            <p className={`${u} text-[var(--bronze)]`}>{t.project.story}</p>
+            <p className={`${u} eyebrow text-[var(--bronze)]`}>{t.project.story}</p>
             <p className="display mt-4 text-3xl leading-[1.2] rtl:leading-[1.5] md:text-5xl">{p.blurb}</p>
             <p className="mt-6 max-w-2xl text-base text-[var(--muted)] md:text-lg">{p.story}</p>
           </div>
@@ -108,19 +85,22 @@ export default async function ProjectPage({ params }: Props) {
       </section>
 
       <section className="bg-[var(--surface)] px-5 pb-20 text-[var(--ink)] md:px-10 md:pb-24">
-        <ProjectGallery images={p.images} name={p.name} t={t} variant={v} />
+        <ProjectGallery images={p.images} name={p.name} t={t} variant={0} />
       </section>
 
-      <section className="relative overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
-        <Image src={next.cover} alt="" fill sizes="100vw" className="object-cover opacity-35" />
-        <div className="relative flex flex-wrap items-end justify-between gap-6 px-5 py-20 md:px-10 md:py-28">
-          <Link href={`/${lang}/projects/${next.slug}`} className="group block">
-            <p className={`${u} text-[var(--bronze)]`}>{t.project.next}</p>
-            <p className="display mt-2 text-5xl transition-transform duration-500 group-hover:translate-x-2 md:text-7xl">{next.name}</p>
-            <p className="mt-2 text-sm text-[var(--surface)]/75">{next.location}</p>
+      {/* next project: text beside its cover in a Baikal arch (no text over the photo) */}
+      <section className="bg-[var(--deep)] px-5 py-16 text-[var(--surface)] md:px-10 md:py-24">
+        <div className="grid items-center gap-10 md:grid-cols-12">
+          <Link href={`/${lang}/projects/${next.slug}`} className="group order-2 block md:order-1 md:col-span-7">
+            <p className={`${u} eyebrow text-[var(--bronze)]`}>{t.project.next}</p>
+            <p className="display mt-3 text-5xl transition-colors duration-500 group-hover:text-[var(--bronze)] md:text-7xl">{next.name}</p>
+            <p className="mt-3 text-sm text-[var(--surface)]/70">{next.location}</p>
           </Link>
-          <Btn href={`/${lang}/contact`}>{t.project.start}</Btn>
+          <Link href={`/${lang}/projects/${next.slug}`} aria-label={next.name} className="group relative order-1 mx-auto block aspect-[4/5] w-full max-w-xs overflow-hidden rounded-b-2xl rounded-t-full ring-1 ring-[var(--bronze)]/35 md:order-2 md:col-span-5">
+            <Image src={next.cover} alt={next.name} fill sizes="(min-width:768px) 30vw, 80vw" className="object-cover transition-transform duration-[1200ms] group-hover:scale-105" />
+          </Link>
         </div>
+        <div className="mt-12 border-t border-[var(--surface)]/10 pt-8"><Btn href={`/${lang}/contact`}>{t.project.start}</Btn></div>
       </section>
     </PageShell>
   );

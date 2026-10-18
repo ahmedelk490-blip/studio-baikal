@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import { ShapeCycle } from "./ShapeCycle";
 import { contact } from "@/data/projects";
 import type { Dict } from "@/data/i18n";
 import type { PagesDict } from "@/data/pages";
@@ -26,26 +25,25 @@ export function ContactWizard({ t, p }: { t: Dict; p: PagesDict["contact"] }) {
   const tile = (on: boolean) => `rounded-2xl border p-5 text-start text-lg transition-colors ${on ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--surface)]" : "border-[var(--ink)]/15 hover:border-[var(--ink)]/40"}`;
   return (
     <section className="relative min-h-[100svh] overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
-      <div className="relative grid gap-12 px-5 pb-16 pt-28 md:px-10 md:pt-36 lg:grid-cols-12">
+      {/* one balanced screen: intro + compact step rail on one side, the form card centred beside it */}
+      <div className="relative grid gap-12 px-5 pb-16 pt-28 md:px-10 md:pt-32 lg:min-h-[100svh] lg:grid-cols-12 lg:items-center lg:gap-16 lg:pb-16">
         <div className="hero-in lg:col-span-5">
           <p className={`${u} eyebrow text-[var(--bronze)]`}>{p.eyebrow}</p>
-          <h1 className="display mt-4 text-5xl md:text-7xl">{p.title}</h1>
+          <h1 className="display mt-4 text-5xl md:text-6xl">{p.title}</h1>
           <p className="mt-5 max-w-md text-sm text-[var(--surface)]/75">{p.intro}</p>
-          <ol className="mt-10 grid gap-4">
+          <ol className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-3">
             {p.steps.map((s, k) => (
-              <li key={s} className="flex items-center gap-4">
-                <span className={`grid h-9 w-9 place-items-center rounded-full border text-xs transition-colors ${k <= step ? "border-[var(--bronze)] bg-[var(--bronze)] text-[var(--deep)]" : "border-[var(--surface)]/30"}`}>{k + 1}</span>
-                <span className="relative h-px flex-1 bg-[var(--surface)]/15"><span className="absolute inset-y-0 start-0 bg-[var(--bronze)] transition-[width] duration-700" style={{ width: k < step || state === "done" ? "100%" : k === step ? "35%" : "0%" }} /></span>
-                <span className={`${u} w-28 ${k <= step ? "text-[var(--surface)]" : "text-[var(--surface)]/45"}`}>{s}</span>
+              <li key={s} className="flex items-center gap-3">
+                <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border text-xs transition-colors ${k <= step || state === "done" ? "border-[var(--bronze)] bg-[var(--bronze)] text-[var(--deep)]" : "border-[var(--surface)]/30"}`}>{k + 1}</span>
+                <span className={`${u} ${k <= step ? "text-[var(--surface)]" : "text-[var(--surface)]/45"}`}>{s}</span>
+                {k < p.steps.length - 1 && <span className="relative mx-1 h-px w-8 bg-[var(--surface)]/15" aria-hidden><span className="absolute inset-y-0 start-0 bg-[var(--bronze)] transition-[width] duration-700" style={{ width: k < step || state === "done" ? "100%" : "0%" }} /></span>}
               </li>
             ))}
           </ol>
-          <div className="mt-10 grid gap-1 text-sm text-[var(--surface)]/80">
-            <a href={contact.phoneHref} dir="ltr" className="block w-fit py-2">{contact.phone}</a>
-            <a href={`mailto:${contact.email}`} className="block w-fit py-2">{contact.email}</a>
+          <div className="mt-10 flex flex-wrap gap-x-8 gap-y-1 border-t border-[var(--surface)]/10 pt-6 text-sm text-[var(--surface)]/80">
+            <a href={contact.phoneHref} dir="ltr" className="inline-flex min-h-11 items-center">{contact.phone}</a>
+            <a href={`mailto:${contact.email}`} className="inline-flex min-h-11 items-center">{contact.email}</a>
           </div>
-          {/* a small Baikal arch that keeps showing finished rooms while the visitor fills the form */}
-          <ShapeCycle imgs={needImgs.concat(["/projects/maadi-180/05.webp", "/projects/zayed-160/02.webp"])} sizes="200px" className="mt-10 hidden aspect-[4/5] w-44 rounded-b-xl rounded-t-full ring-1 ring-[var(--bronze)]/30 lg:block" />
         </div>
         <div className="lg:col-span-7">
           <div className="rounded-3xl bg-[var(--surface)] p-6 text-[var(--ink)] md:p-10">

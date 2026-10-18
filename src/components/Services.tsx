@@ -24,21 +24,23 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
           <div className="md:col-span-7"><p className="eyebrow text-xs uppercase tracking-[0.2em] rtl:tracking-normal text-[var(--bronze)]">{t.gauge.services}</p><h2 className="display mt-3 text-4xl md:text-6xl">{t.services.title}</h2></div>
           <p className="max-w-sm text-sm text-[var(--muted)] md:col-span-5">{t.services.intro}</p>
         </div>
-        <div className="mt-10 flex flex-col gap-3 lg:h-[58vh] lg:flex-row">
+        <div className="mt-10 flex flex-col gap-3 lg:h-[64vh] lg:flex-row">
           {items.map((it, k) => {
             const [title, d, list] = it as [string, string, string[]];
             const on = a === k;
             return (
               <button key={title} onMouseEnter={() => { setA(k); setHold(true); }} onClick={() => { setA(k); setHold(true); }} aria-current={on}
-                className={`relative min-h-[24rem] overflow-hidden text-start text-[var(--surface)] transition-[flex-grow] duration-700 ease-[cubic-bezier(.76,0,.24,1)] lg:min-h-0 lg:basis-0 ${on ? "lg:grow-[3]" : "lg:grow"}`}>
-                <Image src={srcs[k]} alt="" fill sizes="(min-width:1024px) 60vw, 100vw" className={`object-cover transition-transform duration-[1600ms] ${on ? "scale-100" : "scale-110"}`} />
-                <span className="absolute inset-0 bg-gradient-to-t from-[var(--deep)]/90 via-[var(--deep)]/35 to-[var(--deep)]/10" />
-                <span className="relative flex h-full flex-col justify-between p-6 md:p-8">
+                className={`flex flex-col overflow-hidden rounded-2xl bg-[var(--deep)] text-start text-[var(--surface)] transition-[flex-grow] duration-700 ease-[cubic-bezier(.76,0,.24,1)] lg:basis-0 ${on ? "lg:grow-[3]" : "lg:grow"}`}>
+                {/* photo on top with nothing written on it; the words live on the dark card below */}
+                <span className="relative block h-52 shrink-0 overflow-hidden md:h-64 lg:h-auto lg:min-h-0 lg:flex-1">
+                  <Image src={srcs[k]} alt="" fill sizes="(min-width:1024px) 60vw, 100vw" className={`object-cover transition-transform duration-[1600ms] ${on ? "scale-100" : "scale-110"}`} />
+                </span>
+                <span className="flex flex-col gap-4 p-6 md:p-7">
                   <span>
                     <span className={`${u} text-[var(--bronze)]`}>{t.services.labels[k]}</span>
-                    <span className="display mt-3 block text-3xl md:text-4xl">{title}</span>
+                    <span className="display mt-2 block text-2xl md:text-3xl">{title}</span>
                   </span>
-                  <span className={`block transition-opacity duration-500 ${on ? "opacity-100 delay-300" : "lg:opacity-0"}`}>
+                  <span className={`block transition-opacity duration-500 ${on ? "opacity-100 delay-300" : "lg:hidden"}`}>
                     <span className="block max-w-md text-sm opacity-90">{d}</span>
                     <span className={`${u} mt-5 flex flex-wrap gap-x-4 gap-y-1 opacity-80`}>{list.map((l) => <span key={l}>{l}</span>)}</span>
                     {on && <span key={a} className="svc-progress mt-5 block h-px bg-[var(--bronze)]" aria-hidden />}

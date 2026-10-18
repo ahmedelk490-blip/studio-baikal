@@ -45,7 +45,7 @@ export default async function ProjectPage({ params }: Props) {
   const video = projectVideo[p.slug];
   const crumbs = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Studio Baikal", item: `https://baikalstudio.com/${lang}` }, { "@type": "ListItem", position: 2, name: t.project.all, item: `https://baikalstudio.com/${lang}/projects` }, { "@type": "ListItem", position: 3, name: p.name, item: `https://baikalstudio.com/${lang}/projects/${p.slug}` }] };
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
-  const back = <Link href={`/${lang}/projects`} className={`${u} inline-block py-3 opacity-70`}>{t.project.all}</Link>;
+  const back = <Link href={`/${lang}/projects`} className={`${u} inline-block whitespace-nowrap py-3 opacity-70`}>{t.project.all}</Link>;
   return (
     <PageShell lang={lang}>
       <JsonLd lang={lang} extra={[crumbs]} />

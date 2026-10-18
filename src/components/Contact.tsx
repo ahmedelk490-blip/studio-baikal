@@ -50,7 +50,7 @@ export function Contact({ t, contact }: { t: Dict; contact: ContactInfo }) {
               <h2 className="display mt-4 text-4xl md:text-6xl">{c.t1} <span className="italic text-[var(--bronze)]">{c.t2}</span></h2>
               <p className="mt-4 max-w-md text-sm text-[var(--surface)]/75">{c.intro}</p>
             </div>
-            <ul className="grid gap-px overflow-hidden rounded-2xl border border-[var(--surface)]/15 bg-[var(--surface)]/15 sm:grid-cols-2">
+            <ul className="grid gap-px overflow-hidden rounded-2xl border border-[var(--surface)]/15 bg-[var(--surface)]/15 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
               {rows.map(([k, label, value, href]) => (
                 <li key={k} className="bg-[var(--deeper)]/85">
                   <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener" className="flex items-center gap-4 p-4 transition-colors hover:bg-[var(--deep)]">

@@ -23,7 +23,7 @@ export function Studio({ t }: { t: Dict }) {
           <p className="st-t eyebrow text-xs uppercase tracking-[0.2em] rtl:tracking-normal text-[var(--bronze)]">{t.studio.eyebrow}</p>
           <h2 className="st-t display mt-4 text-4xl md:text-6xl">{t.studio.title}</h2>
           <p className="st-t mt-6 text-base text-[var(--muted)] md:text-lg">{t.studio.text}</p>
-          <dl className="mt-10 grid gap-5 sm:grid-cols-3">
+          <dl className="mt-10 grid gap-5 sm:grid-cols-3 md:grid-cols-1 xl:grid-cols-3">
             {t.studio.values.map(([v, d]) => (
               <div key={v} className="st-t border-t border-[var(--ink)]/15 pt-4"><dt className="display text-2xl">{v}</dt><dd className="mt-1 text-sm text-[var(--muted)]">{d}</dd></div>
             ))}

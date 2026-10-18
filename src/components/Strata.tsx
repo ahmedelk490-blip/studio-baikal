@@ -95,8 +95,7 @@ export function Strata({ projects, t, lang }: { projects: Project[]; t: Dict; la
         <div dir="ltr" className="relative z-[3] flex items-start justify-center gap-2 px-3 pb-8 md:px-5 md:pb-10">
         <button type="button" onClick={() => step.current(-1)} aria-label={lang === "ar" ? "المشروع السابق" : "Previous project"} className="mt-8 grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--surface)]/30 md:hidden"><span aria-hidden>&#8592;</span></button>
         <Link href={`/${lang}/projects/${p.slug}`} dir={t.dir} className="group block min-w-0 text-center" aria-live="polite">
-          <span key={f} className="hero-in block"><h3 className="display text-2xl transition-colors group-hover:text-[var(--bronze)] md:text-3xl">{p.name}</h3>
-          <p className={`${u} mt-1 text-[var(--bronze)]`}>{p.type} · <span dir="ltr">{p.area}</span> · {p.location}</p></span>
+          <span key={f} className="hero-in block"><h3 className="display text-2xl transition-colors group-hover:text-[var(--bronze)] md:text-3xl">{p.name}</h3></span>
           <span className={`${u} mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--bronze)]/70 px-5 transition-colors group-hover:bg-[var(--bronze)] group-hover:text-[#15130F]`}>{t.project.open} {lang === "ar" ? "المشروع" : "project"} <span aria-hidden className="rtl:-scale-x-100">&#8594;</span></span>
         </Link>
         <button type="button" onClick={() => step.current(1)} aria-label={lang === "ar" ? "المشروع التالي" : "Next project"} className="mt-8 grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--surface)]/30 md:hidden"><span aria-hidden>&#8594;</span></button>

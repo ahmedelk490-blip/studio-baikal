@@ -28,8 +28,10 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
       tl.current = gsap.timeline({ scrollTrigger: { trigger: ".svc-phone", start: "top 72px", end: "+=" + n * 110 + "%", pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true, onUpdate: (st) => setA(Math.round(st.progress * n)) } })
         .fromTo(win, { clipPath: () => shapes()[0] }, { clipPath: () => shapes()[1], ease: "power2.inOut", duration: 1 }, 0)
         .to(win, { clipPath: () => shapes()[2], ease: "power2.inOut", duration: 1 }, 1)
-        .fromTo(".svc-strip", { xPercent: 0 }, { xPercent: -100 * (n / (n + 1)), ease: "power2.inOut", duration: n }, 0)
-        .fromTo(".svc-par", { xPercent: -10 }, { xPercent: 10, ease: "none", duration: n }, 0);
+        // each next room wipes in over the last one (nothing waits outside the window)
+        .fromTo(".svc-pane-1", { clipPath: "inset(0% 0% 0% 100%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.inOut", duration: 1 }, 0)
+        .fromTo(".svc-pane-2", { clipPath: "inset(0% 0% 0% 100%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.inOut", duration: 1 }, 1)
+        .fromTo(".svc-par img", { objectPosition: "30% 50%" }, { objectPosition: "70% 50%", ease: "none", duration: n }, 0);
       return () => { tl.current = null; };
     });
     gsap.matchMedia().add("(min-width: 1024px)", () => { ScrollTrigger.create({ trigger: sec.current, start: "top top", end: "+=" + items.length * 45 + "%", pin: true, anticipatePin: 1, onUpdate: (st) => setA(Math.min(items.length - 1, Math.floor(st.progress * items.length))) }); }); 
@@ -51,10 +53,10 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
             ))}
           </div>
           <div className="svc-win relative mx-auto mt-5 h-[44svh] max-h-[460px] w-full max-w-[560px] overflow-hidden rounded-t-full bg-[var(--deep)]">
-            <div className="svc-strip absolute inset-y-0 left-0 flex" style={{ width: `${items.length * 100}%` }} dir="ltr">
+            <div className="absolute inset-0" dir="ltr">
               {srcs.map((src, k) => (
-                <div key={src} className="relative h-full overflow-hidden" style={{ width: `${100 / items.length}%` }}>
-                  <div className="svc-par absolute -inset-x-[12%] inset-y-0"><Image src={src} alt="" fill sizes="100vw" className="object-cover" /></div>
+                <div key={src} className={`svc-pane-${k} absolute inset-0 overflow-hidden`} style={k ? { clipPath: "inset(0% 0% 0% 100%)" } : undefined}>
+                  <div className="svc-par absolute inset-0"><Image src={src} alt="" fill sizes="100vw" className="object-cover" /></div>
                   {k === 0 && <div className="draw-sweep absolute inset-0"><Image src="/brand/drawing-october.webp" alt="" fill sizes="100vw" className="object-cover" /></div>}
                 </div>
               ))}

@@ -49,7 +49,7 @@ export default async function ProjectPage({ params }: Props) {
       <JsonLd lang={lang} extra={[crumbs]} />
       {v === 0 && (
         <section className="relative h-[92svh] overflow-hidden bg-[var(--deep)] text-[var(--surface)]">
-          <Clip src={video} poster={p.cover} alt={`${p.name}, ${p.location}`} priority className={`absolute inset-0 ${video ? "" : "ken"}`} />
+          <Clip src={video} poster={p.cover} alt={`${p.name}, ${p.location}`} priority className={`ph-hero absolute inset-0 ${video ? "" : "ken"}`} />
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--deep)] via-[var(--deep)]/30 to-transparent" />
           <div className="hero-in absolute inset-x-0 bottom-0 px-5 pb-10 md:px-10 md:pb-14">
             {back}

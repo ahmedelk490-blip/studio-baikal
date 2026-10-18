@@ -36,7 +36,7 @@ export function Footer({ t, lang }: { t: Dict; lang: Lang }) {
         </div>
       </div>
       <Wordmark />
-      <div className="relative flex flex-wrap items-center justify-between gap-3 border-t border-[var(--surface)]/10 px-5 py-5 text-xs text-[var(--surface)]/60 md:px-10">
+      <div className="relative flex flex-wrap items-center justify-between gap-3 border-t border-[var(--surface)]/10 px-5 py-5 pe-20 text-xs text-[var(--surface)]/60 md:px-10 md:pe-24">
         <span>© 2026 {t.footer.rights}</span>
         <a href="https://qmarketingeg.com/" target="_blank" rel="noopener" className="group inline-flex min-h-11 items-center gap-2 text-[var(--surface)]/75 transition-colors hover:text-[var(--surface)]">
           <span className="relative inline-block h-5 w-5" aria-hidden><span className="absolute inset-0 rounded-full border border-[var(--bronze)]/70" /><span className="absolute -left-0.5 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-[var(--bronze)] transition-transform duration-700 group-hover:rotate-180" style={{ transformOrigin: "12px 0" }} /></span>

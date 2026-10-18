@@ -38,6 +38,7 @@
     ".ken",
     ".lens-pan",
     ".ph-img",
+    ".ph-hero",
     ".room-tag",
     ".rt-scene",
     ".rt-scene img",
@@ -63,13 +64,13 @@
     {
       "page": "/en",
       "name": "menu",
-      "click": "button[aria-label=Menu]",
+      "steps": [{ "wait": 1500 }, { "click": "header button[aria-expanded]" }, { "wait": 900 }],
       "maxWidth": 1023
     },
     {
       "page": "/ar",
       "name": "menu-ar",
-      "click": "header button[aria-expanded]",
+      "steps": [{ "wait": 1500 }, { "click": "header button[aria-expanded]" }, { "wait": 900 }],
       "maxWidth": 1023
     }
   ]

@@ -53,9 +53,15 @@ html.is-deep { color-scheme: dark; }
 .strata-row { position: relative; }
 .strata-row::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: currentColor; opacity: .18; }
 @media (prefers-reduced-motion: reduce) { .preloader { display: none; } .ken, .hero-in > *, .reveal, .glow, .sink, .tour-line, .svc-progress, .waterline::after, .page-enter { animation: none !important; transition: none !important; opacity: 1; transform: none; } }
+/* large screens: the rem scale grows so copy stays readable at 1600/1920/ultrawide (mobile untouched);
+   past 2200px every md:px-10 row lines up on a centred ~2080px column while backgrounds stay full-bleed */
+@media (min-width: 1600px) { html { font-size: 17px; } }
+@media (min-width: 1920px) { html { font-size: 18px; } }
+@media (min-width: 2400px) { html { font-size: 20px; } }
+@media (min-width: 2200px) { .md\:px-10 { padding-inline: max(2.5rem, calc((100vw - 2080px) / 2)); } }
 /* projects stand (home): overlapping 3:4 frames, reflection, spotlight, bronze glow on the focused one */
 .bk-stage::after { content: ""; pointer-events: none; position: absolute; inset: 0; background: radial-gradient(50% 45% at 50% 52%, rgba(184,140,90,.16), transparent 70%); }
-.bk-frame { width: clamp(200px, min(20vw, 40vh), 300px); margin-inline-end: calc(-1 * clamp(48px, 5.5vw, 92px)); transform-origin: 50% 50%; will-change: transform; }
+.bk-frame { width: clamp(200px, min(20vw, 40vh), 380px); margin-inline-end: calc(-1 * clamp(48px, 5.5vw, 92px)); transform-origin: 50% 50%; will-change: transform; }
 .bk-fig { aspect-ratio: 3 / 4.1; border-radius: 50% 50% 10px 10px / 36% 36% 10px 10px; cursor: pointer; background: #221e18; box-shadow: 0 30px 60px -20px rgba(0,0,0,.7); -webkit-box-reflect: below 10px linear-gradient(transparent 72%, rgba(255,255,255,.14)); transition: box-shadow .5s; }
 .bk-frame.is-focus .bk-fig { box-shadow: 0 30px 70px -18px rgba(0,0,0,.75), 0 0 0 1px rgba(184,140,90,.55), 0 0 60px -10px rgba(184,140,90,.45); }
 .bk-meta { background: linear-gradient(to top, rgba(12,10,8,.85), transparent); opacity: 0; transform: translateY(8px); transition: opacity .4s, transform .4s; }

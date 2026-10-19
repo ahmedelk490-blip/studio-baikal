@@ -3,23 +3,35 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ScrollTrigger, useGSAP } from "@/lib/gsap";
 import type { Project } from "@/data/projects";
 import type { Dict, Lang } from "@/data/i18n";
 
 /* Projects — the mirror hall. Every home stands in a Baikal arch along a gentle curve over a dark,
-   still floor that reflects it like the lake. The hall turns by itself; the one in front lights up
-   and its name settles under the floor. Tap a side arch (or swipe) to turn, the front one to open. */
+   still floor that reflects it like the lake. The scroll walks the hall one home at a time; the one in
+   front lights up with its name on the floor. Tap a side arch (or swipe) to turn, the front one to open. */
 export function MirrorHall({ projects, t, lang }: { projects: Project[]; t: Dict; lang: Lang }) {
   const [a, setA] = useState(0);
   // how many arches each side are worth drawing at this width (the rest are hidden, not just faded)
   const [span, setSpan] = useState(2);
-  const hold = useRef(0);
   const sec = useRef<HTMLElement>(null);
   const router = useRouter();
   const n = projects.length;
   // portrait renders only when sharp enough; else the cover
   const pick = (p: Project) => p.images.find((i) => i.h > i.w && i.w >= 1000) ?? p.images.find((i) => i.src === p.cover) ?? p.images[0];
-  const go = (k: number) => { hold.current = Date.now() + 7000; setA(((k % n) + n) % n); };
+  const st = useRef<ScrollTrigger | null>(null);
+  // the page holds on the hall and the scroll walks it one project per step; a swipe or a tap on a side
+  // arch scrolls to that project's step, so the pin and the choice always agree
+  useGSAP(() => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    st.current = ScrollTrigger.create({ trigger: sec.current, start: "top top", end: "+=" + (n - 1) * 22 + "%", pin: true, anticipatePin: 1,
+      snap: { snapTo: 1 / (n - 1), duration: { min: 0.15, max: 0.4 }, delay: 0.05 }, onUpdate: (s) => setA(Math.round(s.progress * (n - 1))) });
+    return () => { st.current = null; };
+  }, { scope: sec });
+  const go = (k: number) => {
+    const to = ((k % n) + n) % n, s = st.current;
+    if (s) window.scrollTo({ top: s.start + ((s.end - s.start) * to) / (n - 1) + 1, behavior: "smooth" }); else setA(to);
+  };
   useEffect(() => {
     const fit = () => setSpan(innerWidth < 768 ? 1 : 2);
     fit(); addEventListener("resize", fit);
@@ -30,18 +42,17 @@ export function MirrorHall({ projects, t, lang }: { projects: Project[]; t: Dict
       if (seen && !fetched) { fetched = true; projects.forEach((p) => router.prefetch(`/${lang}/projects/${p.slug}`)); }
     }, { rootMargin: "300px 0px" });
     io.observe(sec.current!);
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const id = reduce ? 0 : window.setInterval(() => { if (seen && !document.hidden && Date.now() > hold.current) setA((k) => (k + 1) % n); }, 3600);
-    return () => { clearInterval(id); io.disconnect(); removeEventListener("resize", fit); };
+    return () => { io.disconnect(); removeEventListener("resize", fit); };
   }, [n, lang, projects, router]);
   // stage height tracks the arch size (arch = 1.433 x its width, standing on the top 72%), so no width cuts it
   // swipe on the stage turns the hall one step
   const down = useRef<{ x: number; y: number } | null>(null);
-  const rel = (k: number) => { let d = (k - a) % n; if (d > n / 2) d -= n; if (d < -n / 2) d += n; return d; };
+  // offset of each arch from the front one (no wrap: the scroll runs first to last)
+  const rel = (k: number) => k - a;
   const cur = projects[a];
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   return (
-    <section ref={sec} id="projects" aria-label={t.strata.title} data-depth={t.gauge.projects} data-meters="80 m" data-deep="1" className="relative overflow-hidden bg-[radial-gradient(ellipse_at_50%_30%,#17252c,#05080A_72%)] px-5 py-16 text-[var(--surface)] md:px-10 md:py-24">
+    <section ref={sec} id="projects" aria-label={t.strata.title} data-depth={t.gauge.projects} data-meters="80 m" data-deep="1" className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden bg-[radial-gradient(ellipse_at_50%_30%,#17252c,#05080A_72%)] px-5 py-10 text-[var(--surface)] md:px-10">
       {/* no heading: the hall itself opens the section; only the way to every project stays, small */}
       <div className="flex justify-end">
         <Link href={`/${lang}/projects`} className="inline-flex min-h-11 items-center gap-2 text-sm text-[var(--surface)]/75 transition-colors [@media(hover:hover)]:hover:text-[var(--surface)]">{t.project.all} <span aria-hidden>{lang === "ar" ? "←" : "→"}</span></Link>

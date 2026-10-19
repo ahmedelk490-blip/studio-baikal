@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/Header";
-import { Preloader } from "@/components/Preloader";
 import { DepthGauge } from "@/components/DepthGauge";
 import { Hero } from "@/components/Hero";
 import { HeroLight } from "@/components/HeroLight";
+import { HeroBeam } from "@/components/HeroBeam";
 import { Manifesto } from "@/components/Manifesto";
 import { Services } from "@/components/Services";
 import { LitByDegrees } from "@/components/LitByDegrees";
@@ -32,12 +32,12 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   const list = await listProjects(lang);
   return (
     <>
-      <Preloader label={t.preloader} />
       <DepthGauge />
       <Header t={t} lang={lang} dark />
       <main>
-        {/* the light finds the room (chosen hero); NEXT_PUBLIC_HERO=arch still serves the arch dive */}
-        {process.env.NEXT_PUBLIC_HERO === "arch" ? <Hero t={t} lang={lang} /> : <HeroLight t={t} lang={lang} />}
+        {/* the opening (mark to header, column of light to arch to full film); NEXT_PUBLIC_HERO=arch|light
+            still serves the earlier heroes for comparing */}
+        {process.env.NEXT_PUBLIC_HERO === "arch" ? <Hero t={t} lang={lang} /> : process.env.NEXT_PUBLIC_HERO === "light" ? <HeroLight t={t} lang={lang} /> : <HeroBeam t={t} lang={lang} />}
         <Manifesto t={t} />
         {/* eight rooms, each with its own ground, layout and motion */}
         <MirrorHall projects={list} t={t} lang={lang} />

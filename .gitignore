@@ -52,3 +52,6 @@ public/refs/
 
 # second dev server build (hero B preview)
 .next-light/
+
+# throwaway hero previews (not shipped)
+public/previews/

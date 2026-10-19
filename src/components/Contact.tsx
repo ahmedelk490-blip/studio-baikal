@@ -1,9 +1,9 @@
 "use client";
-import Image from "next/image";
 import { useState } from "react";
 import type { Contact as ContactInfo } from "@/lib/site";
 import type { Dict } from "@/data/i18n";
 import { Contours } from "./Contours";
+import { DepthField } from "./DepthField";
 import { WA_PATH } from "./wa-path";
 
 const ic = {
@@ -18,7 +18,7 @@ const ic = {
 export function Contact({ t, contact }: { t: Dict; contact: ContactInfo }) {
   const c = t.contact;
   const ar = t.dir === "rtl";
-  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [state, setState] = useState<"idle" | "sending" | "sent" | "done" | "error">("idle");
   const [size, setSize] = useState(c.sizes[1]);
   const [need, setNeed] = useState(c.needs[1]);
   async function submit(e: React.FormEvent<HTMLFormElement>) {
@@ -26,7 +26,8 @@ export function Contact({ t, contact }: { t: Dict; contact: ContactInfo }) {
     const f = new FormData(e.currentTarget);
     setState("sending");
     const r = await fetch("/api/leads", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: f.get("name"), whatsapp: f.get("whatsapp"), size, need, website: f.get("website") }) }).catch(() => null);
-    setState(r && r.ok ? "done" : "error");
+    // the button itself confirms (a check) for a moment before the thank-you replaces the form
+    if (r && r.ok) { setState("sent"); setTimeout(() => setState("done"), 1400); } else setState("error");
   }
   const rows: [keyof typeof ic, string, string, string][] = [
     ["phone", ar ? "اتصل بنا" : "Call us", contact.phone, contact.phoneHref],
@@ -44,7 +45,8 @@ export function Contact({ t, contact }: { t: Dict; contact: ContactInfo }) {
     <section id="contact" data-depth={t.gauge.contact} data-meters="1,642 m" data-deep="1" className="relative overflow-hidden bg-[var(--deeper)] text-[var(--surface)]">
       <div className="grid lg:grid-cols-2">
         <div className="relative overflow-hidden">
-          <Image src="/brand/hero-arch.webp" alt="" fill sizes="(min-width:1024px) 50vw, 100vw" className="ken object-cover opacity-55" />
+          {/* gold dust drifting towards the viewer, the same dust as the opening */}
+          <DepthField />
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--deeper)] via-[var(--deeper)]/70 to-[var(--deeper)]/30" />
           <div className="glow pointer-events-none absolute -top-32 start-1/4 h-[50vh] w-[50vh] rounded-full bg-[radial-gradient(circle,rgba(196,154,92,.5),transparent_60%)]" aria-hidden />
           <Contours className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 opacity-20" />
@@ -94,10 +96,16 @@ export function Contact({ t, contact }: { t: Dict; contact: ContactInfo }) {
               <fieldset className="mt-6"><legend className={`${lab} text-[var(--surface)]/55`}>{c.need}</legend>
                 <div className="mt-3 flex flex-wrap gap-2">{c.needs.map((s) => <button type="button" key={s} onClick={() => setNeed(s)} aria-pressed={need === s} className={chip(need === s)}>{s}</button>)}</div>
               </fieldset>
-              <button disabled={state === "sending"} className="btn btn-primary mt-8 w-full justify-between disabled:opacity-60">
-                <span className="btn-roll"><span>{state === "sending" ? c.sending : c.send}</span><span aria-hidden>{state === "sending" ? c.sending : c.send}</span></span>
-                <span className="btn-ico" aria-hidden />
-              </button>
+              {state === "sent" ? (
+                <p role="status" className="btn btn-primary mt-8 w-full justify-center gap-3">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path className="check-draw" d="M5 12.5l4.5 4.5L19 7.5" pathLength={1} /></svg>{c.thanks}
+                </p>
+              ) : (
+                <button disabled={state === "sending"} className="btn btn-primary mt-8 w-full justify-between disabled:opacity-60">
+                  <span className="btn-roll"><span>{state === "sending" ? c.sending : c.send}</span><span aria-hidden>{state === "sending" ? c.sending : c.send}</span></span>
+                  <span className="btn-ico" aria-hidden />
+                </button>
+              )}
               {state === "error" && <p className="mt-3 text-sm text-[#e0a383]">{c.error}</p>}
             </form>
           )}

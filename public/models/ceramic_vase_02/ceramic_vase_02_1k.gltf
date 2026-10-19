@@ -15,13 +15,13 @@
   "nodes": [
     {
       "mesh": 0,
-      "name": "ArmChair_01"
+      "name": "ceramic_vase_02"
     }
   ],
   "materials": [
     {
       "doubleSided": true,
-      "name": "Armchair_01",
+      "name": "ceramic_vase_02",
       "normalTexture": {
         "index": 0
       },
@@ -29,6 +29,7 @@
         "baseColorTexture": {
           "index": 1
         },
+        "metallicFactor": 0,
         "metallicRoughnessTexture": {
           "index": 2
         }
@@ -37,7 +38,7 @@
   ],
   "meshes": [
     {
-      "name": "Cylinder.001",
+      "name": "Cylinder.003",
       "primitives": [
         {
           "attributes": {
@@ -68,76 +69,76 @@
   "images": [
     {
       "mimeType": "image/jpeg",
-      "name": "Armchair_01_nor_gl",
-      "uri": "textures/Armchair_01_nor_gl_1k.jpg"
+      "name": "ceramic_vase_02_nor_gl",
+      "uri": "textures/ceramic_vase_02_nor_gl_1k.jpg"
     },
     {
       "mimeType": "image/jpeg",
-      "name": "Armchair_01_diff",
-      "uri": "textures/Armchair_01_diff_1k.jpg"
+      "name": "ceramic_vase_02_diff",
+      "uri": "textures/ceramic_vase_02_diff_1k.jpg"
     },
     {
       "mimeType": "image/jpeg",
-      "name": "Armchair_01_arm",
-      "uri": "textures/Armchair_01_arm_1k.jpg"
+      "name": "ceramic_vase_02_rough",
+      "uri": "textures/ceramic_vase_02_rough_1k.jpg"
     }
   ],
   "accessors": [
     {
       "bufferView": 0,
       "componentType": 5126,
-      "count": 3758,
+      "count": 7094,
       "max": [
-        0.4242154657840729,
-        1.064656138420105,
-        0.34845367074012756
+        0.10918987542390823,
+        0.3103283941745758,
+        0.10919087380170822
       ],
       "min": [
-        -0.4242154359817505,
-        -0.0004314967372920364,
-        -0.4173066020011902
+        -0.10918986052274704,
+        0.0011435861233621836,
+        -0.10919084399938583
       ],
       "type": "VEC3"
     },
     {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 3758,
+      "count": 7094,
       "type": "VEC3"
     },
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 3758,
+      "count": 7094,
       "type": "VEC2"
     },
     {
       "bufferView": 3,
       "componentType": 5123,
-      "count": 16878,
+      "count": 33384,
       "type": "SCALAR"
     }
   ],
   "bufferViews": [
     {
       "buffer": 0,
-      "byteLength": 45096,
+      "byteLength": 85128,
       "byteOffset": 0
     },
     {
       "buffer": 0,
-      "byteLength": 45096,
-      "byteOffset": 45096
+      "byteLength": 85128,
+      "byteOffset": 85128
     },
     {
       "buffer": 0,
-      "byteLength": 30064,
-      "byteOffset": 90192
+      "byteLength": 56752,
+      "byteOffset": 170256
     },
     {
       "buffer": 0,
-      "byteLength": 33756,
-      "byteOffset": 120256
+      "byteLength": 66768,
+      "byteOffset": 227008
     }
   ],
   "samplers": [
@@ -148,8 +149,8 @@
   ],
   "buffers": [
     {
-      "byteLength": 154012,
-      "uri": "ArmChair_01.bin"
+      "byteLength": 293776,
+      "uri": "ceramic_vase_02.bin"
     }
   ]
 }

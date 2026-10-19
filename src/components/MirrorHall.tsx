@@ -58,7 +58,9 @@ export function MirrorHall({ projects, t, lang }: { projects: Project[]; t: Dict
         <Link href={`/${lang}/projects`} className="inline-flex min-h-11 items-center gap-2 text-sm text-[var(--surface)]/75 transition-colors [@media(hover:hover)]:hover:text-[var(--surface)]">{t.project.all} <span aria-hidden>{lang === "ar" ? "←" : "→"}</span></Link>
       </div>
       <div
-        className="relative mx-auto mt-10 h-[clamp(300px,calc(72vw+24px),530px)] max-w-[1600px] touch-pan-y select-none overflow-x-clip [--step:31vw] md:[--step:min(19vw,300px)] md:mt-12 md:h-[clamp(300px,calc(32vw+24px),530px)]"
+        className="relative mx-auto mt-10 h-[clamp(300px,calc(72vw+24px),530px)] max-w-[1600px] touch-pan-y select-none [--step:31vw] md:[--step:min(19vw,300px)] md:mt-12 md:h-[clamp(300px,calc(32vw+24px),530px)]"
+        // no clipping on the 3D stage itself (overflow or clip-path here makes GPU Chrome drop the arches);
+        // the section clips, and only arches that fit on screen are drawn
         style={{ perspective: "1500px" }}
         dir="ltr"
         onPointerDown={(e) => { down.current = { x: e.clientX, y: e.clientY }; }}
@@ -70,7 +72,7 @@ export function MirrorHall({ projects, t, lang }: { projects: Project[]; t: Dict
         </div>
         {/* the front home's name and kind, on the floor right under its arch */}
         <div key={a} className="hero-in pointer-events-none absolute inset-x-0 bottom-[28%] z-30 flex translate-y-full justify-center pt-3 text-center">
-          <span className="rounded-2xl bg-[#05080A]/70 px-4 py-2">
+          <span className="w-max max-w-[88vw] rounded-2xl bg-[#05080A]/70 px-4 py-2">
             <span className="display block text-xl md:text-2xl">{cur.name}</span>
             <span className={`${u} mt-1 block text-[var(--bronze)]`}>{cur.type} · {cur.location}</span>
           </span>

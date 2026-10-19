@@ -2,11 +2,14 @@
 import { useEffect, useRef } from "react";
 import type { Mesh } from "three";
 
-/* One lit stage for one real piece of furniture (CC0 glTF from Poly Haven): warm key light from the
-   window side, a soft fill, a contact shadow on an invisible floor. The piece turns slowly on its own
-   and a little further with the scroll. It draws only while on screen (and once, at rest, with
+// one piece of the arrangement: its glTF, the height it should stand at, and where on the floor
+export type Piece = { src: string; h: number; x: number; z?: number };
+
+/* One lit stage for a small arrangement of real pieces (CC0 glTF from Poly Haven): warm key light from
+   the window side, a soft fill, contact shadows on an invisible floor. The arrangement turns slowly on
+   its own and a little further with the scroll. It draws only while on screen (and once, at rest, with
    reduced motion); three.js loads on the client only, when the stage first comes near. */
-export function ModelStage({ src, className = "" }: { src: string; className?: string }) {
+export function ModelStage({ pieces, className = "" }: { pieces: Piece[]; className?: string }) {
   const box = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = box.current!;
@@ -35,12 +38,22 @@ export function ModelStage({ src, className = "" }: { src: string; className?: s
       const pivot = new THREE.Group(); scene.add(pivot);
       const fit = () => { const w = el.clientWidth, h = el.clientHeight; renderer.setSize(w, h); cam.aspect = w / h; cam.updateProjectionMatrix(); };
       fit();
-      const gltf = await new GLTFLoader().loadAsync(src);
-      const model = gltf.scene;
-      model.traverse((o) => { const m = o as Mesh; if (m.isMesh) { m.castShadow = true; m.receiveShadow = true; } });
-      // centre it on the floor and frame it whatever its size
-      const b = new THREE.Box3().setFromObject(model), size = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3());
-      model.position.set(-c.x, -b.min.y, -c.z); pivot.add(model);
+      // each piece scaled to its height and set on the floor at its place; then frame the whole group
+      const loader = new GLTFLoader();
+      for (const pc of pieces) {
+        // a piece that fails to load is left out quietly; the stage never throws on the page
+        const gl = await loader.loadAsync(pc.src).catch(() => null);
+        if (!gl) continue;
+        const model = gl.scene;
+        model.traverse((o) => { const m = o as Mesh; if (m.isMesh) { m.castShadow = true; m.receiveShadow = true; } });
+        const b0 = new THREE.Box3().setFromObject(model), k = pc.h / b0.getSize(new THREE.Vector3()).y;
+        model.scale.setScalar(k);
+        const b1 = new THREE.Box3().setFromObject(model), c1 = b1.getCenter(new THREE.Vector3());
+        model.position.set(pc.x - c1.x, -b1.min.y, (pc.z ?? 0) - c1.z); pivot.add(model);
+      }
+      if (!pivot.children.length) { renderer.dispose(); renderer.domElement.remove(); return; }
+      const b = new THREE.Box3().setFromObject(pivot), size = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3());
+      pivot.children.forEach((m) => { m.position.x -= c.x; m.position.z -= c.z; });
       const r = Math.max(size.x, size.y, size.z);
       cam.position.set(0, size.y * 0.75, r * 2.6); cam.lookAt(0, size.y * 0.42, 0);
       let scrollTurn = 0, visible = true, raf = 0;
@@ -57,6 +70,6 @@ export function ModelStage({ src, className = "" }: { src: string; className?: s
     }, { rootMargin: "400px 0px" });
     io.observe(el);
     return () => { io.disconnect(); stop(); };
-  }, [src]);
+  }, [pieces]);
   return <div ref={box} className={`relative [&>canvas]:block [&>canvas]:h-full [&>canvas]:w-full ${className}`} aria-hidden />;
 }

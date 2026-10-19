@@ -45,9 +45,9 @@ export function LitByDegrees({ t }: { t: Dict }) {
           <h2 className="t-a display col-start-1 row-start-1">{t.lit.t1}</h2>
           <h2 className="t-b display col-start-1 row-start-1 opacity-0">{t.lit.t2}</h2>
         </div>
-        <div className="mt-4 flex items-end justify-between gap-6">
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
           <p className="max-w-md text-sm text-[var(--surface)]/75">{t.lit.note}</p>
-          <p className="display text-3xl text-[var(--bronze)] md:text-5xl" dir="ltr"><span ref={k}>6500 K</span></p>
+          <p className="display shrink-0 whitespace-nowrap text-2xl text-[var(--bronze)] sm:text-3xl md:text-5xl" dir="ltr"><span ref={k}>6500 K</span></p>
         </div>
       </div>
     </section>

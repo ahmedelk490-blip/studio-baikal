@@ -22,7 +22,7 @@ export function Wordmark() {
     </span>
   );
   return (
-    <div ref={ref} aria-hidden dir="ltr" style={{ fontFamily: "var(--font-display), Georgia, serif" }} className="wordmark display pointer-events-none relative -mb-[0.2em] h-[0.92em] select-none whitespace-nowrap px-5 text-center text-[22vw] leading-none md:px-10">
+    <div ref={ref} aria-hidden dir="ltr" style={{ fontFamily: "var(--font-display), Georgia, serif" }} className="wordmark display pointer-events-none relative -mb-[0.2em] h-[0.92em] select-none whitespace-nowrap px-5 text-center text-[14vw] leading-none md:px-10 md:text-[11vw]">
       {word("wm-base")}
       {word("wm-lit")}
     </div>

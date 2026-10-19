@@ -75,7 +75,7 @@ export function MirrorHall({ projects, t, lang }: { projects: Project[]; t: Dict
         </div>
         {/* the front home's name and kind, on the floor right under its arch */}
         <div key={a} className="hero-in pointer-events-none absolute inset-x-0 bottom-[28%] z-30 flex translate-y-full justify-center pt-3 text-center">
-          <span className="w-max max-w-[88vw] rounded-2xl bg-[#05080A]/70 px-4 py-2">
+          <span className="w-max max-w-[88vw] [text-shadow:0_2px_14px_rgba(5,8,10,.9)]">
             <span className="display block text-xl md:text-2xl">{cur.name}</span>
             <span className={`${u} mt-1 block text-[var(--bronze)]`}>{cur.type} · {cur.location}</span>
           </span>

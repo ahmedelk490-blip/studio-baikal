@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { Contours } from "./Contours";
+import { ModelStage } from "./ModelStage";
 import type { Dict } from "@/data/i18n";
 
 /* 20 m: the statement over flowing contour lines, words light up as you read; below it a round
@@ -19,8 +20,10 @@ export function Manifesto({ t }: { t: Dict }) {
   return (
     <section ref={ref} data-depth={t.gauge.statement} data-meters="20 m" className="relative overflow-hidden bg-[var(--surface)] text-[var(--ink)]">
       <Contours className="pointer-events-none absolute inset-x-0 top-10 h-[46%] opacity-45" />
-      <div className="relative mx-auto max-w-5xl px-5 pt-20 text-center md:pt-28">
-        <p className="m-text display mt-6 text-3xl leading-[1.22] rtl:leading-[1.5] md:text-5xl lg:text-[3.4rem]">
+      {/* the statement beside one real piece on a lit stage (CC0 armchair, turning with the scroll) */}
+      <div className="relative mx-auto grid max-w-7xl items-center gap-4 px-5 pt-16 md:px-10 md:pt-24 lg:grid-cols-12 lg:gap-10">
+        <ModelStage src="/models/ArmChair_01/ArmChair_01_1k.gltf" className="mx-auto h-[300px] w-full max-w-[420px] lg:order-2 lg:col-span-5 lg:h-[520px] lg:max-w-none" />
+        <p className="m-text display text-center text-3xl leading-[1.22] rtl:leading-[1.5] md:text-5xl lg:col-span-7 lg:text-start lg:text-[3.2rem]">
           {t.statement.text.split(" ").map((w, k) => <span key={k} className="w inline-block opacity-[.14]">{w}&nbsp;</span>)}
         </p>
       </div>

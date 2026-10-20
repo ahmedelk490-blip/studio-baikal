@@ -58,3 +58,6 @@ public/previews/
 
 # second home version build (v2 preview on :3910)
 .next-v2*/
+
+# Blender sources and raw renders for the hero (big; the site ships only public/hero-frames)
+/art/

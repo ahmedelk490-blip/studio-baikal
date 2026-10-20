@@ -5,6 +5,7 @@ import { DepthGauge } from "@/components/DepthGauge";
 import { Hero } from "@/components/Hero";
 import { HeroLight } from "@/components/HeroLight";
 import { HeroBeam } from "@/components/HeroBeam";
+import { HeroModel } from "@/components/HeroModel";
 import { Manifesto } from "@/components/Manifesto";
 import { Services } from "@/components/Services";
 import { LitByDegrees } from "@/components/LitByDegrees";
@@ -57,7 +58,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       <main>
         {/* the opening (mark to header, column of light to arch to full film); NEXT_PUBLIC_HERO=arch|light
             still serves the earlier heroes for comparing */}
-        {process.env.NEXT_PUBLIC_HERO === "arch" ? <Hero t={t} lang={lang} /> : process.env.NEXT_PUBLIC_HERO === "light" ? <HeroLight t={t} lang={lang} /> : <HeroBeam t={t} lang={lang} />}
+        {process.env.NEXT_PUBLIC_HERO === "arch" ? <Hero t={t} lang={lang} /> : process.env.NEXT_PUBLIC_HERO === "light" ? <HeroLight t={t} lang={lang} /> : process.env.NEXT_PUBLIC_HERO === "beam" ? <HeroBeam t={t} lang={lang} /> : <HeroModel t={t} lang={lang} />}
         <Manifesto t={t} />
         {/* eight rooms, each with its own ground, layout and motion */}
         <MirrorHall projects={list} t={t} lang={lang} />

@@ -10,6 +10,7 @@ export type Extras = {
   heroAlt: [string, string];
   heroChip: string;
   explore: string;
+  enter: string;
 };
 
 export const extras: Record<Lang, Extras> = {
@@ -31,6 +32,7 @@ export const extras: Record<Lang, Extras> = {
     heroAlt: ["Drawn with care,", "built to last"],
     heroChip: "Free first consultation · we reply within one working day",
     explore: "Explore all projects",
+    enter: "Scroll to step inside",
   },
   ar: {
     layers: {
@@ -50,5 +52,6 @@ export const extras: Record<Lang, Extras> = {
     heroAlt: ["نرسمها بعناية،", "ونبنيها لتدوم"],
     heroChip: "استشارة أولى مجانية · نرد خلال يوم عمل",
     explore: "استكشف كل المشاريع",
+    enter: "مرّر لتدخل المساحة",
   },
 };

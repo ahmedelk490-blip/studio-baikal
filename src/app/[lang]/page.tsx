@@ -11,6 +11,7 @@ import { LitByDegrees } from "@/components/LitByDegrees";
 import { Studio } from "@/components/Studio";
 import { MirrorHall } from "@/components/MirrorHall";
 import { Colonnade } from "@/components/Colonnade";
+import { HeroV2, ProjectIndex, MaterialExplorer, DetailReveal, ChapterRail } from "@/components/v2/HomeV2";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFab } from "@/components/WhatsAppFab";
@@ -30,6 +31,25 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   if (!isLang(lang)) notFound();
   const t = dict[lang];
   const list = await listProjects(lang);
+  // second home version (npm run dev:v2 on :3910): editorial and light, no video or WebGL
+  if (process.env.NEXT_PUBLIC_HOME === "v2") {
+    return (
+      <>
+        <Header t={t} lang={lang} dark />
+        <ChapterRail lang={lang} />
+        <main>
+          <HeroV2 t={t} lang={lang} />
+          <ProjectIndex projects={list} t={t} lang={lang} />
+          <MaterialExplorer t={t} lang={lang} />
+          <DetailReveal projects={list} lang={lang} />
+          <Studio t={t} />
+          <Contact t={t} contact={await getContact(lang)} />
+        </main>
+        <Footer t={t} lang={lang} />
+        <WhatsAppFab label={t.contact.fab} lang={lang} />
+      </>
+    );
+  }
   return (
     <>
       <DepthGauge />

@@ -55,3 +55,6 @@ public/refs/
 
 # throwaway hero previews (not shipped)
 public/previews/
+
+# second home version build (v2 preview on :3910)
+.next-v2*/

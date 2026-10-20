@@ -242,3 +242,19 @@ html.is-deep { color-scheme: dark; }
 .check-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: checkDraw .6s cubic-bezier(.65,0,.35,1) .1s forwards; }
 @keyframes checkDraw { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { .check-draw { animation: none; stroke-dashoffset: 0; } }
+
+/* home v2: hero depth (pointer moves the room and its closer crop in opposite directions) */
+.hv-front { transform: translate3d(calc(var(--px, 0) * 22px), calc(var(--py, 0) * 16px), 0); will-change: transform; }
+.hv-frame-in { animation: hvFrame 1.3s cubic-bezier(.76,0,.24,1) both; }
+@keyframes hvFrame { from { clip-path: inset(0 0 100% 0 round 24px); } to { clip-path: inset(0 0 0 0 round 24px); } }
+/* lines rise out of their masks, then the rest fades up */
+.lr > span { display: inline-block; animation: lrUp 1s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 110ms + .35s); }
+@keyframes lrUp { from { transform: translateY(105%); } }
+.lr-fade { animation: lrFade .9s ease .75s both; }
+@keyframes lrFade { from { opacity: 0; transform: translateY(14px); } }
+/* project index: the photo beside the list opens upwards; pointer layout only on wide pointer screens */
+.wipe-up { animation: wipeUp .7s cubic-bezier(.76,0,.24,1) both; }
+@keyframes wipeUp { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+.fine-only { display: none; }
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) { .fine-only { display: block; } .touch-only { display: none; } }
+@media (prefers-reduced-motion: reduce) { .hv-front { transform: none; } .hv-frame-in, .lr > span, .lr-fade, .wipe-up { animation: none; } }

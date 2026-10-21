@@ -6,7 +6,8 @@ import { projects as seedProjects, localize } from "@/data/projects";
 /* One SQLite file (.data/baikal.db, or DB_PATH) shared by the public site and /admin.
    Migrations are append-only and versioned in `meta.schema`; the first run seeds the current
    projects and the old leads.jsonl (backed up first) and never touches rows that already exist. */
-export const DATA_DIR = path.join(process.cwd(), ".data");
+// on the host the data lives outside the app folder (DATA_DIR), so a deploy never touches it
+export const DATA_DIR = process.env.DATA_DIR || path.join(process.cwd(), ".data");
 const FILE = process.env.DB_PATH || path.join(DATA_DIR, "baikal.db");
 
 const migrations: string[] = [

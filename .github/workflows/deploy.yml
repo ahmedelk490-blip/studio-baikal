@@ -1,0 +1,36 @@
+# Every push to master builds the site on GitHub (Linux) and ships it to Hostinger over SSH.
+# Needs one repository secret: HOSTINGER_SSH_KEY (the private deploy key whose public half is on the host).
+name: Deploy to Hostinger
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+concurrency: { group: deploy, cancel-in-progress: false }
+env:
+  HOST: u768758130@157.173.209.88
+  PORT: "65002"
+  SITE: lightcoral-penguin-341733.hostingersite.com
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run build
+      - name: Pack the standalone app
+        run: |
+          cp -r .next/static .next/standalone/.next/static
+          cp -r public .next/standalone/public
+          cp scripts/deploy/start.js .next/standalone/start.js
+          tar --exclude=./.data -czf deploy.tgz -C .next/standalone .
+      - name: Ship
+        run: |
+          mkdir -p ~/.ssh && echo "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          scp -P $PORT -o StrictHostKeyChecking=no -o BatchMode=yes deploy.tgz scripts/deploy/remote.sh $HOST:domains/$SITE/
+          ssh -p $PORT -o StrictHostKeyChecking=no -o BatchMode=yes $HOST "bash domains/$SITE/remote.sh $SITE && rm domains/$SITE/remote.sh"
+      - name: Check the site answers
+        run: |
+          sleep 15
+          for i in 1 2 3 4 5 6; do c=$(curl -s -o /dev/null -w "%{http_code}" "https://$SITE/en"); echo "/en -> $c"; [ "$c" = 200 ] && exit 0; sleep 10; done; exit 1

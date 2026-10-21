@@ -61,3 +61,4 @@ public/previews/
 
 # Blender sources and raw renders for the hero (big; the site ships only public/hero-frames)
 /art/
+/.next-ship/

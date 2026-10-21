@@ -9,7 +9,7 @@ import { Btn } from "@/components/Btn";
 import { Clip } from "@/components/Clip";
 import { JsonLd } from "@/components/JsonLd";
 import { projectVideo } from "@/data/media";
-import { findProject } from "@/lib/content";
+import { findProject, listProjects } from "@/lib/content";
 import { db } from "@/lib/db";
 import { dict, isLang, langs } from "@/data/i18n";
 
@@ -39,6 +39,8 @@ export default async function ProjectPage({ params }: Props) {
   if (!hit) notFound();
   const t = dict[lang];
   const { p, next } = hit;
+  // each project walks its rooms in its own way, in turn, so neighbouring projects never repeat
+  const walk = Math.max(0, (await listProjects(lang)).findIndex((x) => x.slug === p.slug)) % 3;
   const f = t.project.facts;
   const facts = [[f.type, p.type], [f.area, p.area], [f.rooms, `${p.images.length}`], [f.year, p.year], [f.style, p.style], [f.scope, p.scope]];
   const cover = p.images.find((i) => i.src === p.cover && i.w >= i.h) ?? p.images.find((i) => i.w >= i.h) ?? p.images[0];
@@ -88,8 +90,8 @@ export default async function ProjectPage({ params }: Props) {
         </div>
       </section>
 
-      <section className="bg-[var(--surface)] px-5 pb-20 text-[var(--ink)] md:px-10 md:pb-24">
-        <ProjectGallery images={p.images} name={p.name} t={t} variant={0} />
+      <section className="bg-[var(--surface)] text-[var(--ink)]">
+        <ProjectGallery images={p.images} name={p.name} t={t} variant={walk} />
       </section>
 
       {/* next project: text beside its cover in a Baikal arch (no text over the photo) */}

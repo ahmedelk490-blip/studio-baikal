@@ -9,7 +9,15 @@ import { extras } from "@/data/extras";
 // the finished room behind the model's door: October Home's living room
 const ROOM = "/projects/october-250/04.webp";
 const ROOM_NAME = { en: "October Home · 6th of October City", ar: "بيت أكتوبر · مدينة 6 أكتوبر" };
-const FRAMES = 150, INTRO = 30; // rendered in Blender (scripts/hero-render): 30 opening frames, 120 for the walk
+const FRAMES = 150, INTRO = 30;
+// three renders, one per screen shape, each with the open doorway's place in its frame (pixels)
+const SETS = {
+  desk: { w: 1280, h: 720, door: [537, 67, 754, 610] },
+  tab: { w: 600, h: 800, door: [185, 74, 426, 678] },
+  phone: { w: 540, h: 960, door: [132, 89, 422, 814] },
+} as const;
+type SetName = keyof typeof SETS;
+const pickSet = (): SetName => { const a = innerWidth / innerHeight; return a < 0.66 ? "phone" : a < 1 ? "tab" : "desk"; }; // rendered in Blender (scripts/hero-render): 30 opening frames, 120 for the walk
 
 /* Surface — the scale model. A Baikal home stands as an architect's model on a dark plinth, cut open so
    every room shows, with drawing lines round it. It is path-traced offline in Blender Cycles (real bounce
@@ -29,7 +37,7 @@ export function HeroModel({ t, lang }: { t: Dict; lang: Lang }) {
   useEffect(() => {
     const cv = canvas.current!, ctx = cv.getContext("2d")!;
     // portrait screens get the phone render (model above the words), the rest the wide one (model beside them)
-    let set = innerWidth / innerHeight < 1 ? "phone" : "desk";
+    let set: SetName = pickSet();
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const imgs: (HTMLImageElement | null)[] = Array(FRAMES).fill(null);
     let want = 0, shown = -1, introLoaded = 0, introDone = false, dead = false, raf = 0;
@@ -81,7 +89,8 @@ export function HeroModel({ t, lang }: { t: Dict; lang: Lang }) {
     // the manifest says how many frames each render has (a render may still be in progress)
     fetch("/hero-frames/manifest.json").then((r) => r.json()).catch(() => ({})).then((m: Record<string, number>) => {
       if (dead) return;
-      if (!m[set] && m.desk) set = "desk";
+      // a set not rendered yet falls back to the nearest one that is
+      if (!m[set]) set = (["tab", "phone", "desk"] as SetName[]).find((x) => m[x]) ?? set;
       count = Math.min(FRAMES, m[set] || 0);
       if (!count) { setFailed(true); gsap.set(ref.current!.querySelector(".hm-photo"), { opacity: 1, clipPath: "none" }); return; }
       for (let i = 0; i < Math.min(INTRO, count); i++) push(i);
@@ -117,10 +126,11 @@ export function HeroModel({ t, lang }: { t: Dict; lang: Lang }) {
         .call(() => setIntro(false));
       // the walk: the page holds while the camera goes in; the finished room takes over when the door opens
       // where the open doorway sits on screen when the room takes over: its place in the rendered frame
-      // (1280x720, door x 41-59 %, y 10-89 %), through the same cover-fit the canvas uses
-      const W = innerWidth, H = sec.clientHeight, k = Math.max(W / 1280, H / 720), ox = (W - 1280 * k) / 2, oy = (H - 720 * k) / 2;
+      // (SETS), through the same cover-fit the canvas uses
+      const g = SETS[pickSet()], [dx0, dy0, dx1, dy1] = g.door;
+      const W = innerWidth, H = sec.clientHeight, k = Math.max(W / g.w, H / g.h), ox = (W - g.w * k) / 2, oy = (H - g.h * k) / 2;
       const pc = (v: number, of: number) => `${Math.max(0, (v / of) * 100).toFixed(1)}%`;
-      const door = `inset(${pc(oy + 72 * k, H)} ${pc(W - (ox + 755 * k), W)} ${pc(H - (oy + 641 * k), H)} ${pc(ox + 525 * k, W)})`;
+      const door = `inset(${pc(oy + dy0 * k, H)} ${pc(W - (ox + dx1 * k), W)} ${pc(H - (oy + dy1 * k), H)} ${pc(ox + dx0 * k, W)})`;
       const dive = { p: 0 };
       gsap.timeline({ scrollTrigger: { trigger: sec, start: "top top", end: "+=190%", pin: true, scrub: 0.8, anticipatePin: 1 } })
         .to(dive, { p: 1, ease: "none", duration: 0.86, onUpdate: () => { prog.current = dive.p; kick.current(); } }, 0)

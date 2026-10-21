@@ -57,9 +57,18 @@ export function ModelStage({ pieces, className = "" }: { pieces: Piece[]; classN
       const r = Math.max(size.x, size.y, size.z);
       cam.position.set(0, size.y * 0.75, r * 2.6); cam.lookAt(0, size.y * 0.42, 0);
       let scrollTurn = 0, visible = true, raf = 0;
+      // a drag left or right turns the pieces by hand; let go and they coast to a stop, then keep turning slowly
+      let dragTurn = 0, spin = 0, lastX: number | null = null;
       const t0 = performance.now();
-      const draw = () => { pivot.rotation.y = -0.6 + (reduce ? 0 : ((performance.now() - t0) / 1000) * 0.18) + scrollTurn; renderer.render(scene, cam); };
-      const loop = () => { draw(); raf = visible && !reduce ? requestAnimationFrame(loop) : 0; };
+      const draw = () => {
+        if (lastX === null && Math.abs(spin) > 0.0005) { dragTurn += spin; spin *= 0.94; }
+        pivot.rotation.y = -0.6 + (reduce ? 0 : ((performance.now() - t0) / 1000) * 0.18) + scrollTurn + dragTurn; renderer.render(scene, cam);
+      };
+      const loop = () => { draw(); raf = visible && (!reduce || lastX !== null || Math.abs(spin) > 0.0005) ? requestAnimationFrame(loop) : 0; };
+      el.style.touchAction = "pan-y"; el.style.cursor = "grab";
+      el.onpointerdown = (e) => { lastX = e.clientX; spin = 0; el.setPointerCapture(e.pointerId); el.style.cursor = "grabbing"; if (!raf) loop(); };
+      el.onpointermove = (e) => { if (lastX === null) return; const d = (e.clientX - lastX) * 0.012; dragTurn += d; spin = d; lastX = e.clientX; };
+      el.onpointerup = el.onpointercancel = () => { lastX = null; el.style.cursor = "grab"; if (!raf) loop(); };
       const onScroll = () => { const rr = el.getBoundingClientRect(); scrollTurn = (1 - (rr.top + rr.height / 2) / innerHeight) * 1.2; if (reduce) draw(); };
       const seen = new IntersectionObserver(([x]) => { visible = x.isIntersecting && !document.hidden; if (visible && !raf && !reduce) loop(); });
       seen.observe(el);
@@ -71,5 +80,5 @@ export function ModelStage({ pieces, className = "" }: { pieces: Piece[]; classN
     io.observe(el);
     return () => { io.disconnect(); stop(); };
   }, [pieces]);
-  return <div ref={box} className={`relative [&>canvas]:block [&>canvas]:h-full [&>canvas]:w-full ${className}`} aria-hidden />;
+  return <div ref={box} className={`relative select-none [&>canvas]:block [&>canvas]:h-full [&>canvas]:w-full ${className}`} aria-hidden />;
 }

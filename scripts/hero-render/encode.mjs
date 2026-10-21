@@ -7,7 +7,7 @@ import { join } from "node:path";
 const FF = process.env.FFMPEG || "D:/dev-cache/tools/ffmpeg/ffmpeg.exe";
 const q = process.argv[2] || "74";
 const manifest = {}; // frames ready per set, so the page only asks for what exists
-for (const set of ["desk", "phone"]) {
+for (const set of ["desk", "tab", "phone"]) {
   const src = join("art/frames", set), out = join("public/hero-frames", set);
   if (!existsSync(src) || !readdirSync(src).some((f) => f.endsWith(".png"))) continue;
   mkdirSync(out, { recursive: true });

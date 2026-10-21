@@ -12,9 +12,9 @@ const ROOM_NAME = { en: "October Home · 6th of October City", ar: "بيت أك�
 const FRAMES = 150, INTRO = 30;
 // three renders, one per screen shape, each with the open doorway's place in its frame (pixels)
 const SETS = {
-  desk: { w: 1280, h: 720, door: [537, 67, 754, 610] },
-  tab: { w: 600, h: 800, door: [185, 74, 426, 678] },
-  phone: { w: 540, h: 960, door: [132, 89, 422, 814] },
+  desk: { w: 1280, h: 720, door: [560, 68, 753, 610] },
+  tab: { w: 600, h: 800, door: [211, 76, 426, 678] },
+  phone: { w: 540, h: 960, door: [163, 91, 421, 814] },
 } as const;
 type SetName = keyof typeof SETS;
 const pickSet = (): SetName => { const a = innerWidth / innerHeight; return a < 0.66 ? "phone" : a < 1 ? "tab" : "desk"; }; // rendered in Blender (scripts/hero-render): 30 opening frames, 120 for the walk
@@ -46,7 +46,15 @@ export function HeroModel({ t, lang }: { t: Dict; lang: Lang }) {
       const k = nearest(want); if (k < 0 || (k === shown && !force)) return;
       const im = imgs[k]!, W = cv.width, H = cv.height, s = Math.max(W / im.naturalWidth, H / im.naturalHeight);
       const w = im.naturalWidth * s, h = im.naturalHeight * s;
-      ctx.drawImage(im, (W - w) / 2, (H - h) / 2, w, h); shown = k;
+      // wide screens: the model stands a little smaller at the far side from the words while it is a model,
+      // and grows back to the full frame as the camera goes in; in Arabic the words are on the right, so the
+      // render is mirrored (it has no writing in it) and the model stands on the left
+      const wide = set === "desk" && innerWidth >= 1024, f = wide ? Math.min(1, Math.max(0, 1 - (k - (INTRO - 1)) / 18)) : 0, z = 1 - 0.34 * f;
+      ctx.fillStyle = "#0B1013"; ctx.fillRect(0, 0, W, H);
+      ctx.save();
+      if (wide && lang === "ar") { ctx.translate(W, 0); ctx.scale(-1, 1); }
+      ctx.translate(0.97 * W, 0.55 * H); ctx.scale(z, z); ctx.translate(-0.97 * W, -0.55 * H);
+      ctx.drawImage(im, (W - w) / 2, (H - h) / 2, w, h); ctx.restore(); shown = k;
     };
     const fit = () => { const d = Math.min(2, devicePixelRatio || 1); cv.width = cv.clientWidth * d; cv.height = cv.clientHeight * d; draw(true); };
     // on load the model comes forward and settles by itself (the first frames), then the scroll takes over
@@ -99,7 +107,7 @@ export function HeroModel({ t, lang }: { t: Dict; lang: Lang }) {
     });
     const ro = new ResizeObserver(fit); ro.observe(cv); fit();
     return () => { dead = true; cancelAnimationFrame(raf); ro.disconnect(); };
-  }, []);
+  }, [lang]);
 
   useGSAP(() => {
     const sec = ref.current!;
@@ -127,7 +135,8 @@ export function HeroModel({ t, lang }: { t: Dict; lang: Lang }) {
       // the walk: the page holds while the camera goes in; the finished room takes over when the door opens
       // where the open doorway sits on screen when the room takes over: its place in the rendered frame
       // (SETS), through the same cover-fit the canvas uses
-      const g = SETS[pickSet()], [dx0, dy0, dx1, dy1] = g.door;
+      const g = SETS[pickSet()], mirror = lang === "ar" && pickSet() === "desk" && innerWidth >= 1024;
+      const [dx0, dy0, dx1, dy1] = mirror ? [g.w - g.door[2], g.door[1], g.w - g.door[0], g.door[3]] : g.door;
       const W = innerWidth, H = sec.clientHeight, k = Math.max(W / g.w, H / g.h), ox = (W - g.w * k) / 2, oy = (H - g.h * k) / 2;
       const pc = (v: number, of: number) => `${Math.max(0, (v / of) * 100).toFixed(1)}%`;
       const door = `inset(${pc(oy + dy0 * k, H)} ${pc(W - (ox + dx1 * k), W)} ${pc(H - (oy + dy1 * k), H)} ${pc(ox + dx0 * k, W)})`;

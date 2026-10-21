@@ -3,19 +3,13 @@ import Image from "next/image";
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { Contours } from "./Contours";
-import { ModelStage, type Piece } from "./ModelStage";
-
-// calm matte stoneware, the kind of pieces that dress Baikal's own rooms (CC0, Poly Haven)
-const VASES: Piece[] = [
-  { src: "/models/ceramic_vase_02/ceramic_vase_02_1k.gltf", h: 0.62, x: 0 },
-  { src: "/models/ceramic_vase_01/ceramic_vase_01_1k.gltf", h: 0.9, x: -0.42, z: -0.22 },
-  { src: "/models/ceramic_vase_04/ceramic_vase_04_1k.gltf", h: 0.5, x: 0.4, z: 0.12 },
-];
-import type { Dict } from "@/data/i18n";
+import { HouseTurn } from "./HouseTurn";
+import { extras } from "@/data/extras";
+import type { Dict, Lang } from "@/data/i18n";
 
 /* 20 m: the statement over flowing contour lines, words light up as you read; below it a round
    porthole opens to full screen as it scrolls into view and drops you into the projects. */
-export function Manifesto({ t }: { t: Dict }) {
+export function Manifesto({ t, lang }: { t: Dict; lang: Lang }) {
   const ref = useRef<HTMLElement>(null);
   useGSAP(() => {
     gsap.to(".w", { opacity: 1, stagger: 0.05, ease: "none", scrollTrigger: { trigger: ".m-text", start: "top 80%", end: "bottom 45%", scrub: 0.5 } });
@@ -27,9 +21,9 @@ export function Manifesto({ t }: { t: Dict }) {
   return (
     <section ref={ref} data-depth={t.gauge.statement} data-meters="20 m" className="relative overflow-hidden bg-[var(--surface)] text-[var(--ink)]">
       <Contours className="pointer-events-none absolute inset-x-0 top-10 h-[46%] opacity-45" />
-      {/* the statement beside three stoneware vases on a lit stage (CC0, turning with the scroll) */}
+      {/* the statement beside a Baikal villa as an architect's model, turning on its own or by hand */}
       <div className="relative mx-auto grid max-w-7xl items-center gap-4 px-5 pt-16 md:px-10 md:pt-24 lg:grid-cols-12 lg:gap-10">
-        <ModelStage pieces={VASES} className="mx-auto h-[300px] w-full max-w-[420px] lg:order-2 lg:col-span-5 lg:h-[520px] lg:max-w-none" />
+        <HouseTurn hint={extras[lang].turn} className="mx-auto h-[320px] w-full max-w-[460px] lg:order-2 lg:col-span-5 lg:h-[540px] lg:max-w-none" />
         <p className="m-text display text-center text-3xl leading-[1.22] rtl:leading-[1.5] md:text-5xl lg:col-span-7 lg:text-start lg:text-[3.2rem]">
           {t.statement.text.split(" ").map((w, k) => <span key={k} className="w inline-block opacity-[.14]">{w}&nbsp;</span>)}
         </p>

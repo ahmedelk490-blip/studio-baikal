@@ -11,6 +11,7 @@ export type Extras = {
   heroChip: string;
   explore: string;
   enter: string;
+  turn: string;
 };
 
 export const extras: Record<Lang, Extras> = {
@@ -33,6 +34,7 @@ export const extras: Record<Lang, Extras> = {
     heroChip: "Free first consultation · we reply within one working day",
     explore: "Explore all projects",
     enter: "Scroll to step inside",
+    turn: "Drag to turn the house",
   },
   ar: {
     layers: {
@@ -53,5 +55,6 @@ export const extras: Record<Lang, Extras> = {
     heroChip: "استشارة أولى مجانية · نرد خلال يوم عمل",
     explore: "استكشف كل المشاريع",
     enter: "مرّر لتدخل المساحة",
+    turn: "اسحب لتلف البيت",
   },
 };

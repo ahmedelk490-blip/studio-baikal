@@ -117,7 +117,7 @@ box(HW * 2, 0.022, 0.028, AX, F + 0.5, FZ, steel, 0.004); box(HW * 2, 0.022, 0.0
 bpy.ops.curve.primitive_bezier_circle_add(radius=HW - 0.011, location=V(AX, SPRING, FZ), rotation=(math.pi / 2, 0, 0))
 arc = bpy.context.active_object; arc.data.bevel_depth = 0.012; arc.data.bevel_factor_start = 0.0; arc.data.bevel_factor_end = 0.5
 arc.data.materials.append(steel)
-box(2.2, 1.4, 0.01, AX, F + 0.7, -2.6, glow, 0, name="sky")  # warm daylight beyond the arch
+box(2.2, 1.1, 0.01, AX, F + 0.58, -2.6, glow, 0, name="sky")  # warm daylight beyond the arch
 box(3.1, H, T, 1.45, WY, FZ)                        # bedroom back wall
 box(T, H, 4 + T, -3 - T / 2, WY, -T / 2)            # left wall
 box(T, H, 4, -0.1, WY, 0)                           # dining | corridor
@@ -133,6 +133,8 @@ box(0.62, 0.008, 2.36, 0.25, F + 0.004, 0.8, stone, 0.002)
 for px in (-0.054, 0.554):
     for i, z in enumerate((1.7, 1.12, 0.54, -0.06)):
         box(0.014, H - 0.14, 0.54, px, F + (H - 0.14) / 2 + 0.02, z, walnut if i % 2 else stone, 0.004)
+        if i < 3:  # a thin line of light in each joint, like the reference corridor
+            box(0.006, H - 0.3, 0.012, px + (0.009 if px < 0.25 else -0.009), F + (H - 0.3) / 2 + 0.1, z - 0.29, glow, 0)
 ceil = box(0.72, 0.03, 2.4, 0.25, F + H + 0.015, 0.8, plaster, 0.004, name="ceiling")
 strip = box(0.025, 0.01, 2.3, 0.25, F + H - 0.002, 0.8, glow, 0, name="strip")
 # dining: walnut slats, rug, pendant
@@ -140,8 +142,6 @@ z = -1.85
 while z < 1.75:
     box(0.03, H - 0.04, 0.05, -2.945, WY, z, walnut, 0.006); z += 0.1
 box(2.2, 0.012, 1.6, AX, F + 0.006, -0.45, wool, 0.004)
-bpy.ops.mesh.primitive_uv_sphere_add(radius=0.1, location=V(AX, F + 0.95, -0.45)); bpy.context.active_object.data.materials.append(lampm); bpy.ops.object.shade_smooth()
-box(0.006, 0.4, 0.006, AX, F + 1.25, -0.45, brass, 0)
 # living rug; bedroom bed
 box(1.4, 0.012, 1.25, 1.55, F + 0.006, 0.85, wool, 0.004)
 box(1.1, 0.16, 1.22, 1.75, F + 0.08, -1.37, walnut, 0.01)
@@ -197,14 +197,23 @@ for dx in xs:
     place(chair, AX + dx, -0.45 - Dg / 2 - 0.05, 0); place(chair, AX + dx, -0.45 + Dg / 2 + 0.05, math.pi)
 place(plant, -2.65, -1.7)
 place(sofa, 0.98, 0.85, math.pi / 2, tint=(0.62, 0.56, 0.48)); place(coffee, 1.55, 0.85); place(arm, 2.35, 0.85, -math.pi / 2)
-place(plant, 2.7, -0.1); place(side, 0.86, 1.82)
+place(side, 0.86, 1.82)
 place(pillows, 1.75, -1.72, math.pi, F + 0.28, tint=(0.78, 0.72, 0.64)); place(side, 0.95, -1.8); place(side, 2.55, -1.8)
+# the details that make it lived in: a sideboard and a vase in the dining room, a lamp over the table,
+# art over the sofa, an ottoman, more plants
+cab, vase, art, otto, plant4, tree, hang = (load(n) for n in (
+    "modern_wooden_cabinet", "ceramic_vase_03", "hanging_picture_frame_02", "Ottoman_01", "potted_plant_04", "pachira_aquatica_01", "modern_ceiling_lamp_01"))
+place(cab, -0.27, -1.35, -math.pi / 2)
+place(vase, AX, -0.45, 0, mx.z)
+place(hang, AX, -0.45, 0, F + 0.92)
+place(art, 0.66, 0.85, math.pi / 2, F + 0.62)
+place(otto, 2.0, 1.55, 0, F, tint=(0.66, 0.58, 0.48)); place(plant4, 0.8, -0.72); place(tree, 2.72, -0.12)
 
 # ---------- light and world ----------
 world = bpy.data.worlds.new("w"); sc.world = world; world.use_nodes = True
 wn = world.node_tree.nodes; wl = world.node_tree.links; wn.clear()
 env = wn.new("ShaderNodeTexEnvironment"); env.image = bpy.data.images.load(os.path.join(SRC, "brown_photostudio_02", "brown_photostudio_02_1k.hdr"))
-bg_l = wn.new("ShaderNodeBackground"); bg_l.inputs["Strength"].default_value = 0.45; wl.new(env.outputs["Color"], bg_l.inputs["Color"])
+bg_l = wn.new("ShaderNodeBackground"); bg_l.inputs["Strength"].default_value = 0.3; wl.new(env.outputs["Color"], bg_l.inputs["Color"])
 # what the camera itself sees: the page's navy, lighter round the model
 tc = wn.new("ShaderNodeTexCoord"); mp = wn.new("ShaderNodeMapping")
 cxp, cyp = (0.62, 0.6) if not PORTRAIT else (0.5, 0.68)
@@ -219,17 +228,23 @@ wl.new(lp.outputs["Is Camera Ray"], mix.inputs["Fac"]); wl.new(bg_l.outputs["Bac
 wl.new(mix.outputs["Shader"], out.inputs["Surface"])
 
 bpy.ops.object.light_add(type="SUN"); sun = bpy.context.active_object
-sun.data.energy = 5.0; sun.data.angle = math.radians(3); sun.data.color = (1, 0.8, 0.6)
-sun.rotation_euler = (V(-1.55, 0, 0.4) - V(-2.6, 4.4, -6.5)).normalized().to_track_quat("-Z", "Y").to_euler()
+sun.data.energy = 4.2; sun.data.angle = math.radians(3); sun.data.color = (1, 0.72, 0.48)  # late afternoon
+sun.rotation_euler = (V(-1.55, 0, 0.4) - V(-2.6, 2.9, -6.5)).normalized().to_track_quat("-Z", "Y").to_euler()
 bpy.ops.object.light_add(type="POINT", location=V(0.25, F + 1.15, 0.6)); cor = bpy.context.active_object
 cor.data.energy = 0; cor.data.color = (1, 0.85, 0.65); cor.data.shadow_soft_size = 0.3
-bpy.ops.object.light_add(type="POINT", location=V(AX, F + 0.8, -0.45)); pl = bpy.context.active_object
-pl.data.energy = 10; pl.data.color = (1, 0.8, 0.55); pl.data.shadow_soft_size = 0.1
+for (lx, ly, lz, e) in ((0.86, F + 0.5, 1.82, 3), (0.95, F + 0.42, -1.8, 1.5), (2.55, F + 0.42, -1.8, 1.5)):  # table lamps
+    bpy.ops.object.light_add(type="POINT", location=V(lx, ly, lz)); lt = bpy.context.active_object
+    lt.data.energy = e; lt.data.color = (1, 0.78, 0.5); lt.data.shadow_soft_size = 0.06
+bpy.ops.object.light_add(type="POINT", location=V(AX, F + 0.86, -0.45)); pl = bpy.context.active_object
+pl.data.energy = 12; pl.data.color = (1, 0.8, 0.55); pl.data.shadow_soft_size = 0.1
 bpy.ops.mesh.primitive_plane_add(size=40, location=(0, 0, -0.16)); bpy.context.active_object.is_shadow_catcher = True
 
 # ---------- camera path (same as the web version) ----------
 bpy.ops.object.camera_add(); cam = bpy.context.active_object; sc.camera = cam
 cam.data.sensor_fit = "VERTICAL"; cam.data.clip_start = 0.02
+# a shallow focus on what the camera looks at, like a real lens on a scale model
+bpy.ops.object.empty_add(location=(0, 0, 0)); focus = bpy.context.active_object
+cam.data.dof.use_dof = True; cam.data.dof.focus_object = focus
 R = 0.8 * 12.5 * min(2.3, max(1.0, 1.45 / (W / H_PX)))
 P0 = Vector((0.62, 0.6, 0.78)).normalized(); C = Vector((0.25, 2.4, 5.6)); P1 = Vector((0.25, 0.62, 1.85))
 L0 = Vector((0, 0.25, 0)); L1 = Vector((0.25, 0.6, -0.4))
@@ -240,10 +255,12 @@ def rot_y(v, a):
 def key(f, pos, look, fov, side, door_a, inside):
     loc = V(*pos); cam.location = loc; cam.rotation_euler = (V(*look) - loc).to_track_quat("-Z", "Y").to_euler()
     cam.data.angle_y = math.radians(fov)
+    focus.location = V(*look); focus.keyframe_insert("location", frame=f)
+    cam.data.dof.aperture_fstop = 3.2 if inside < 0.5 else 2.2; cam.data.keyframe_insert("dof.aperture_fstop", frame=f)
     if PORTRAIT: cam.data.shift_x, cam.data.shift_y = 0, -0.15 * side
     else: cam.data.shift_x, cam.data.shift_y = -0.17 * side, 0
     door.rotation_euler = (0, 0, door_a)
-    sun.data.energy = 5.0 * (1 - 0.9 * inside); cor.data.energy = 6 * inside
+    sun.data.energy = 4.2 * (1 - 0.9 * inside); cor.data.energy = 6 * inside
     for o in (ceil, strip): o.hide_render = inside < 0.5
     for o, path in ((cam, "location"), (cam, "rotation_euler"), (door, "rotation_euler"), (ceil, "hide_render"), (strip, "hide_render")):
         o.keyframe_insert(path, frame=f)

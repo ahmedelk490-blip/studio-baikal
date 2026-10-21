@@ -18,4 +18,12 @@ for (const set of ["desk", "tab", "phone"]) {
 }
 mkdirSync("public/hero-frames", { recursive: true });
 writeFileSync("public/hero-frames/manifest.json", JSON.stringify(manifest));
+// the house turn keeps its transparent ground (WebP with alpha) and has its own folder
+if (existsSync("art/frames/house") && readdirSync("art/frames/house").some((f) => f.endsWith(".png"))) {
+  mkdirSync("public/house-frames", { recursive: true });
+  execFileSync(FF, ["-v", "error", "-y", "-i", "art/frames/house/%04d.png", "-c:v", "libwebp", "-pix_fmt", "yuva420p", "-quality", q, "-compression_level", "6", "public/house-frames/%04d.webp"]);
+  const n = readdirSync("public/house-frames").filter((f) => f.endsWith(".webp")).length;
+  writeFileSync("public/house-frames/manifest.json", JSON.stringify({ house: n }));
+  console.log("house:", n, "frames");
+}
 console.log("manifest", JSON.stringify(manifest));

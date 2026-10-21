@@ -36,7 +36,7 @@ export function Manifesto({ t }: { t: Dict }) {
       </div>
       <div className="ph-wrap relative mt-10 h-[80svh] md:mt-14 md:h-[100svh]">
         <div className="ph absolute inset-0" style={{ clipPath: "circle(22% at 50% 50%)" }}>
-          <Image src="/projects/el-nakhil-villa/01.webp" alt="" fill sizes="100vw" className="ph-img scale-[1.35] object-cover" />
+          <Image src="/projects/nasr-city-108/02.webp" alt="" fill sizes="100vw" className="ph-img scale-[1.35] object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--deep)] via-[var(--deep)]/25 to-transparent" />
           {/* no words on the photo: one bronze ring with an arrow sinking down to the projects */}
           <div className="ph-cap absolute inset-x-0 bottom-[10%] flex justify-center">

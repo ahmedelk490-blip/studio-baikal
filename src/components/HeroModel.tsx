@@ -6,16 +6,19 @@ import type { Dict, Lang } from "@/data/i18n";
 import { Btn } from "./Btn";
 import { extras } from "@/data/extras";
 
-const ROOM = "/projects/el-nakhil-villa/01.webp";
+// the finished room behind the model's door: October Home's living room
+const ROOM = "/projects/october-250/04.webp";
+const ROOM_NAME = { en: "October Home · 6th of October City", ar: "بيت أكتوبر · مدينة 6 أكتوبر" };
+const FRAMES = 150, INTRO = 30; // rendered in Blender (scripts/hero-render): 30 opening frames, 120 for the walk
 
-/* Surface — the scale model. A Baikal home stands as an architect's rendered model on a travertine
-   plinth (hero-scene.ts: real CC0 furniture, PBR surfaces, studio light and ambient occlusion), cut open
-   so every room shows, with drawing lines round it, and turns gently. Scrolling dives the camera into the
-   entrance corridor (travertine and walnut, a line of light) and walks it to the walnut door; the door
-   swings open and the finished room takes over (the photo). The scene draws only while it moves. */
+/* Surface — the scale model. A Baikal home stands as an architect's model on a dark plinth, cut open so
+   every room shows, with drawing lines round it. It is path-traced offline in Blender Cycles (real bounce
+   light, a warm sun through the arch, Poly Haven CC0 furniture and surfaces) and played here as frames:
+   the model comes forward on its own when the page opens, then the scroll walks the camera down into the
+   entrance corridor to the walnut door; the door swings open and the finished room takes over (the photo). */
 export function HeroModel({ t, lang }: { t: Dict; lang: Lang }) {
   const ref = useRef<HTMLElement>(null);
-  const stage = useRef<HTMLDivElement>(null);
+  const canvas = useRef<HTMLCanvasElement>(null);
   const prog = useRef(0); // the walk through the model (0 = overview, 1 = door open), set by the scroll
   const kick = useRef(() => {});
   const [ready, setReady] = useState(false);
@@ -24,26 +27,70 @@ export function HeroModel({ t, lang }: { t: Dict; lang: Lang }) {
   const firstVisit = useRef<boolean | null>(null);
 
   useEffect(() => {
-    const el = stage.current!;
-    let stop = () => {}, dead = false;
-    (async () => {
-      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      let sc: Awaited<ReturnType<typeof import("./hero-scene").buildScene>>;
-      try { const { buildScene } = await import("./hero-scene"); sc = await buildScene(el, { lang, phone: innerWidth < 768, reduce }); }
-      catch { setFailed(true); return; }
-      if (dead) { sc.dispose(); return; }
-      let visible = true, raf = 0;
-      // turn while the overview shows; once the camera is in, draw only when the scroll moves it
-      const loop = () => { sc.draw(); raf = visible && !reduce && sc.get() < 0.3 ? requestAnimationFrame(loop) : 0; };
-      kick.current = () => { sc.set(prog.current); if (raf) return; if (visible && !reduce && prog.current < 0.3) loop(); else if (visible) sc.draw(); };
-      const seen = new IntersectionObserver(([x]) => { visible = x.isIntersecting; if (visible) kick.current(); });
-      seen.observe(el);
-      const ro = new ResizeObserver(() => { sc.fit(); sc.draw(); }); ro.observe(el);
-      sc.set(prog.current); sc.draw(); setReady(true); el.dataset.ready = "1"; if (!reduce) loop();
-      stop = () => { cancelAnimationFrame(raf); seen.disconnect(); ro.disconnect(); sc.dispose(); };
-    })();
-    return () => { dead = true; stop(); };
-  }, [lang]);
+    const cv = canvas.current!, ctx = cv.getContext("2d")!;
+    // portrait screens get the phone render (model above the words), the rest the wide one (model beside them)
+    let set = innerWidth / innerHeight < 1 ? "phone" : "desk";
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const imgs: (HTMLImageElement | null)[] = Array(FRAMES).fill(null);
+    let want = 0, shown = -1, introLoaded = 0, introDone = false, dead = false, raf = 0;
+    const nearest = (i: number) => { for (let d = 0; d < FRAMES; d++) { if (imgs[i - d]) return i - d; if (imgs[i + d]) return i + d; } return -1; };
+    const draw = (force = false) => {
+      const k = nearest(want); if (k < 0 || (k === shown && !force)) return;
+      const im = imgs[k]!, W = cv.width, H = cv.height, s = Math.max(W / im.naturalWidth, H / im.naturalHeight);
+      const w = im.naturalWidth * s, h = im.naturalHeight * s;
+      ctx.drawImage(im, (W - w) / 2, (H - h) / 2, w, h); shown = k;
+    };
+    const fit = () => { const d = Math.min(2, devicePixelRatio || 1); cv.width = cv.clientWidth * d; cv.height = cv.clientHeight * d; draw(true); };
+    // on load the model comes forward and settles by itself (the first frames), then the scroll takes over
+    const play = () => {
+      if (reduce) { want = INTRO - 1; introDone = true; draw(); return; }
+      const t0 = performance.now() + (firstVisit.current ? 2300 : 150);
+      const step = (now: number) => {
+        if (dead || introDone) return;
+        const t = Math.min(1, Math.max(0, (now - t0) / 1600));
+        want = Math.round(t * (INTRO - 1)); draw();
+        if (t < 1) raf = requestAnimationFrame(step); else introDone = true;
+      };
+      raf = requestAnimationFrame(step);
+    };
+    kick.current = () => {
+      if (!introDone && prog.current === 0) return;
+      introDone = true; want = INTRO - 1 + Math.round(prog.current * (FRAMES - INTRO)); draw();
+    };
+    // the opening frames first, then the walk coarse to fine, so any scroll position has a frame near it
+    const order: number[] = [], queued = new Set<number>();
+    const push = (i: number) => { if (!queued.has(i)) { queued.add(i); order.push(i); } };
+    let next = 0, count = FRAMES;
+    const pump = () => {
+      if (dead || next >= order.length) return;
+      const i = order[next++], im = new window.Image(); im.decoding = "async";
+      im.onload = () => {
+        if (dead) return; imgs[i] = im;
+        if (i === 0) { setReady(true); draw(true); }
+        if (i < INTRO && ++introLoaded === Math.min(INTRO, count)) play();
+        if (introDone) draw();
+        pump();
+      };
+      im.onerror = () => {
+        // no phone render yet: fall back to the wide one; nothing at all: the finished room photo instead
+        if (i === 0) { setFailed(true); gsap.set(ref.current!.querySelector(".hm-photo"), { opacity: 1, clipPath: "none" }); }
+        pump();
+      };
+      im.src = `/hero-frames/${set}/${String(i + 1).padStart(4, "0")}.webp`;
+    };
+    // the manifest says how many frames each render has (a render may still be in progress)
+    fetch("/hero-frames/manifest.json").then((r) => r.json()).catch(() => ({})).then((m: Record<string, number>) => {
+      if (dead) return;
+      if (!m[set] && m.desk) set = "desk";
+      count = Math.min(FRAMES, m[set] || 0);
+      if (!count) { setFailed(true); gsap.set(ref.current!.querySelector(".hm-photo"), { opacity: 1, clipPath: "none" }); return; }
+      for (let i = 0; i < Math.min(INTRO, count); i++) push(i);
+      for (const st of [8, 4, 2, 1]) for (let i = INTRO; i < count; i += st) push(i);
+      for (let k = 0; k < 6; k++) pump();
+    });
+    const ro = new ResizeObserver(fit); ro.observe(cv); fit();
+    return () => { dead = true; cancelAnimationFrame(raf); ro.disconnect(); };
+  }, []);
 
   useGSAP(() => {
     const sec = ref.current!;
@@ -93,11 +140,11 @@ export function HeroModel({ t, lang }: { t: Dict; lang: Lang }) {
     <section ref={ref} data-depth={t.gauge.surface} data-meters="0 m" data-deep="1" className="relative h-[100svh] min-h-[620px] overflow-hidden bg-[radial-gradient(ellipse_at_62%_42%,#1d2a30,#0B1013_70%)] text-[var(--surface)]">
       {/* the model; without WebGL the finished room shows instead */}
       <div className="hm-rise absolute inset-0">
-        <div ref={stage} className={`absolute inset-0 transition-opacity duration-1000 [&>canvas]:block [&>canvas]:h-full [&>canvas]:w-full ${ready ? "opacity-100" : "opacity-0"}`} aria-hidden />
+        <canvas ref={canvas} className={`absolute inset-0 block h-full w-full transition-opacity duration-1000 ${ready ? "opacity-100" : "opacity-0"}`} aria-hidden />
       </div>
       <div className="hm-photo absolute inset-0 opacity-0" style={failed ? { opacity: 1 } : undefined}>
-        <Image src={ROOM} alt={x.grow.eyebrow} fill sizes="100vw" className="object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0B1013] via-[#0B1013]/30 to-transparent" />
+        <Image src={ROOM} alt={ROOM_NAME[lang]} fill sizes="100vw" className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0B1013]/85 via-[#0B1013]/10 via-40% to-transparent" />
       </div>
 
       {/* the opening words beside the model; they lift away as the camera goes in */}
@@ -125,8 +172,8 @@ export function HeroModel({ t, lang }: { t: Dict; lang: Lang }) {
       </div>
 
       {/* through the door: the finished room and the studio's promise */}
-      <div className="hm-after pointer-events-none absolute inset-x-0 bottom-0 px-5 pb-10 md:px-10 md:pb-14">
-        <p className={`${u} text-[var(--bronze)] opacity-0`}>{x.grow.eyebrow}</p>
+      <div className="hm-after pointer-events-none absolute inset-x-0 bottom-0 px-5 pb-10 [text-shadow:0_2px_18px_rgba(11,16,19,.9)] md:px-10 md:pb-14">
+        <p className={`${u} text-[var(--bronze)] opacity-0`}>{ROOM_NAME[lang]}</p>
         <p className="display mt-3 max-w-4xl text-[10vw] leading-[1.02] opacity-0 rtl:leading-[1.3] md:text-[6vw] lg:text-[4.6vw]">
           {x.heroAlt[0]} <span className="italic text-[var(--bronze)] rtl:not-italic">{x.heroAlt[1]}</span>
         </p>

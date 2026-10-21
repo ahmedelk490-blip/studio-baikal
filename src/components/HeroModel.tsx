@@ -116,7 +116,12 @@ export function HeroModel({ t, lang }: { t: Dict; lang: Lang }) {
         .from(".h-fade", { opacity: 0, y: 16, duration: 0.8, ease: "power3.out", stagger: 0.08 }, "-=0.7")
         .call(() => setIntro(false));
       // the walk: the page holds while the camera goes in; the finished room takes over when the door opens
-      const dive = { p: 0 }, door = innerWidth < 768 ? "inset(20% 28% 16% 28%)" : "inset(18% 38% 16% 38%)";
+      // where the open doorway sits on screen when the room takes over: its place in the rendered frame
+      // (1280x720, door x 41-59 %, y 10-89 %), through the same cover-fit the canvas uses
+      const W = innerWidth, H = sec.clientHeight, k = Math.max(W / 1280, H / 720), ox = (W - 1280 * k) / 2, oy = (H - 720 * k) / 2;
+      const pc = (v: number, of: number) => `${Math.max(0, (v / of) * 100).toFixed(1)}%`;
+      const door = `inset(${pc(oy + 72 * k, H)} ${pc(W - (ox + 755 * k), W)} ${pc(H - (oy + 641 * k), H)} ${pc(ox + 525 * k, W)})`;
+      const dive = { p: 0 };
       gsap.timeline({ scrollTrigger: { trigger: sec, start: "top top", end: "+=190%", pin: true, scrub: 0.8, anticipatePin: 1 } })
         .to(dive, { p: 1, ease: "none", duration: 0.86, onUpdate: () => { prog.current = dive.p; kick.current(); } }, 0)
         .to(".hm-bar", { scaleY: 1, ease: "none", duration: 1 }, 0)

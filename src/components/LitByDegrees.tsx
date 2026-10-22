@@ -15,7 +15,7 @@ export function LitByDegrees({ t }: { t: Dict }) {
   const sec = useRef<HTMLElement>(null);
   const k = useRef<HTMLSpanElement>(null);
   useGSAP(() => {
-    const tl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: sec.current, start: "top top", end: "+=320%", pin: true, scrub: 0.6, anticipatePin: 1,
+    const tl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: sec.current, start: "top top", end: "+=210%", pin: true, scrub: 0.6, anticipatePin: 1,
       onUpdate: (st) => { const p = Math.min(1, Math.max(0, (st.progress - 0.2) / 0.75)); if (k.current) k.current.textContent = `${Math.round(6500 - p * 3800)} K`; } } });
     tl.fromTo(".asm > span", { yPercent: (i: number) => (i % 2 ? 70 : -70), opacity: 0 }, { yPercent: 0, opacity: 1, stagger: 0.035, duration: 0.2, ease: "power2.out" }, 0)
       .to(".t-a", { opacity: 0, y: -20, duration: 0.05 }, 0.24).fromTo(".t-b", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.05 }, 0.27)

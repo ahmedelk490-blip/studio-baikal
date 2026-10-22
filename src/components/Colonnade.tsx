@@ -15,7 +15,7 @@ export function Colonnade({ t }: { t: Dict }) {
   const sec = useRef<HTMLElement>(null);
   const st = useRef<ScrollTrigger | null>(null);
   useGSAP(() => {
-    st.current = ScrollTrigger.create({ trigger: sec.current, start: "top top", end: "+=" + n * 70 + "%", pin: true, anticipatePin: 1,
+    st.current = ScrollTrigger.create({ trigger: sec.current, start: "top top", end: "+=" + n * 45 + "%", pin: true, anticipatePin: 1,
       onUpdate: (s) => setA(Math.min(n - 1, Math.floor(s.progress * n))) });
     return () => { st.current = null; };
   }, { scope: sec });

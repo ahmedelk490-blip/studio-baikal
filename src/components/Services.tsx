@@ -25,7 +25,7 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
       // open again. The name changes while the doors are shut, so the switch is never seen half-done.
       const n = items.length;
       const leaves = (deg: number) => [{ target: ".svc-leaf-l", rotationY: -deg }, { target: ".svc-leaf-r", rotationY: deg }];
-      const t2 = gsap.timeline({ scrollTrigger: { trigger: ".svc-phone", start: "top 72px", end: "+=" + n * 90 + "%", pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true, onUpdate: (st) => setA(Math.min(n - 1, Math.floor(st.progress * n))) } });
+      const t2 = gsap.timeline({ scrollTrigger: { trigger: ".svc-phone", start: "top 72px", end: "+=" + n * 60 + "%", pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true, onUpdate: (st) => setA(Math.min(n - 1, Math.floor(st.progress * n))) } });
       for (let k = 0; k < n; k++) {
         if (k) { t2.set(`.svc-pane-${k}`, { opacity: 1 }, k); }
         for (const l of leaves(108)) t2.to(l.target, { rotationY: l.rotationY, ease: "power2.inOut", duration: 0.45 }, k);
@@ -35,7 +35,7 @@ export function Services({ t, lang }: { t: Dict; lang: Lang }) {
       tl.current = t2;
       return () => { tl.current = null; };
     });
-    gsap.matchMedia().add("(min-width: 1024px)", () => { ScrollTrigger.create({ trigger: sec.current, start: "top top", end: "+=" + items.length * 45 + "%", pin: true, anticipatePin: 1, onUpdate: (st) => setA(Math.min(items.length - 1, Math.floor(st.progress * items.length))) }); }); 
+    gsap.matchMedia().add("(min-width: 1024px)", () => { ScrollTrigger.create({ trigger: sec.current, start: "top top", end: "+=" + items.length * 35 + "%", pin: true, anticipatePin: 1, onUpdate: (st) => setA(Math.min(items.length - 1, Math.floor(st.progress * items.length))) }); }); 
   }, { scope: sec });
   const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
   return (

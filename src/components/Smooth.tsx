@@ -22,5 +22,5 @@ export function Smooth({ children }: { children: React.ReactNode }) {
     ref.current?.lenis?.on("scroll", ScrollTrigger.update);
     return () => gsap.ticker.remove(tick);
   }, []);
-  return <ReactLenis root ref={ref} options={{ autoRaf: false, lerp: 0.09, smoothWheel: true }}>{children}</ReactLenis>;
+  return <ReactLenis root ref={ref} options={{ autoRaf: false, lerp: 0.14, smoothWheel: true }}>{children}</ReactLenis>;
 }

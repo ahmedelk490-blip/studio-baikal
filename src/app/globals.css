@@ -225,6 +225,8 @@ html.is-deep { color-scheme: dark; }
 
 /* mirror hall: each arch reflects in the still floor (Chromium/Safari; elsewhere simply no reflection) */
 .mirror-arch { -webkit-box-reflect: below 6px linear-gradient(transparent 58%, rgba(255,255,255,.22)); }
+/* the reflection is costly to repaint while the hall turns; phones keep the floor without it */
+@media (max-width: 767px) { .mirror-arch { -webkit-box-reflect: none; } }
 .ripples { background: repeating-linear-gradient(180deg, transparent 0 14px, rgba(196,154,92,.16) 14px 15px); animation: ripple 9s linear infinite; -webkit-mask-image: linear-gradient(to bottom, #000, transparent); mask-image: linear-gradient(to bottom, #000, transparent); }
 @keyframes ripple { to { background-position: 0 150px; } }
 /* colonnade: the arch window glides between columns along the logical start edge (works RTL too) */

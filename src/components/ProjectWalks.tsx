@@ -40,7 +40,7 @@ export function DoorWalk(p: P) {
       const doors = gsap.utils.toArray<HTMLElement>(".dw-door"), rooms = gsap.utils.toArray<HTMLElement>(".dw-room");
       const phone = innerWidth < 768, r = phone ? 220 : 420;
       gsap.set(doors.slice(1), { width: phone ? "44vw" : "17vw", height: phone ? "38svh" : "50svh", borderTopLeftRadius: r, borderTopRightRadius: r, borderBottomLeftRadius: 6, borderBottomRightRadius: 6, opacity: 0 });
-      const tl = gsap.timeline({ scrollTrigger: { trigger: sec.current, start: "top top", end: `+=${(n - 1) * 85}%`, pin: true, scrub: 0.6, anticipatePin: 1,
+      const tl = gsap.timeline({ scrollTrigger: { trigger: sec.current, start: "top top", end: `+=${(n - 1) * 60}%`, pin: true, scrub: 0.6, anticipatePin: 1,
         onUpdate: (s) => setK(Math.min(n - 1, Math.floor(s.progress * (n - 1) + 0.35))) } });
       for (let i = 1; i < n; i++) {
         tl.to(doors[i], { opacity: 1, duration: 0.12 }, i - 1)
@@ -71,7 +71,7 @@ export function WindowWalk(p: P) {
   useGSAP(() => {
     gsap.matchMedia().add(MOTION, (c) => {
       if (c.conditions!.reduce) return;
-      gsap.timeline({ scrollTrigger: { trigger: sec.current, start: "top top", end: `+=${(n - 1) * 70}%`, pin: true, scrub: 0.7, anticipatePin: 1,
+      gsap.timeline({ scrollTrigger: { trigger: sec.current, start: "top top", end: `+=${(n - 1) * 55}%`, pin: true, scrub: 0.7, anticipatePin: 1,
         onUpdate: (s) => setK(Math.min(n - 1, Math.round(s.progress * (n - 1)))) } })
         .to(".ww-strip", { xPercent: (-100 * (n - 1)) / n, ease: "none" }, 0);
     });
@@ -116,7 +116,7 @@ export function PlanTable(p: P) {
       if (c.conditions!.reduce) { gsap.set(".pt-board", { opacity: (i: number) => (i === 0 ? 1 : 0) }); return; }
       const boards = gsap.utils.toArray<HTMLElement>(".pt-board");
       gsap.set(boards, { rotateX: 78, yPercent: 38, scale: 0.55, opacity: 0, transformOrigin: "50% 100%" });
-      const tl = gsap.timeline({ scrollTrigger: { trigger: sec.current, start: "top top", end: `+=${n * 70}%`, pin: true, scrub: 0.7, anticipatePin: 1,
+      const tl = gsap.timeline({ scrollTrigger: { trigger: sec.current, start: "top top", end: `+=${n * 55}%`, pin: true, scrub: 0.7, anticipatePin: 1,
         onUpdate: (s) => setK(Math.min(n - 1, Math.floor(s.progress * n))) } });
       boards.forEach((b, i) => {
         tl.to(b, { rotateX: 0, yPercent: 0, scale: 1, opacity: 1, ease: "power2.out", duration: 0.45 }, i);

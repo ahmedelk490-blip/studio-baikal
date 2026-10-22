@@ -30,7 +30,7 @@ export function HouseTurn({ hint, className = "" }: { hint: string; className?: 
       raf = visible ? requestAnimationFrame(tick) : 0;
     };
     const wake = () => { if (!raf && visible) { last = 0; raf = requestAnimationFrame(tick); } };
-    const fit = () => { const d = Math.min(2, devicePixelRatio || 1); c.width = c.clientWidth * d; c.height = c.clientHeight * d; draw(true); };
+    const fit = () => { const d = Math.min(innerWidth < 768 ? 1.5 : 2, devicePixelRatio || 1); c.width = c.clientWidth * d; c.height = c.clientHeight * d; draw(true); };
     c.style.touchAction = "pan-y";
     c.onpointerdown = (e) => { drag = e.clientX; vel = 0; c.setPointerCapture(e.pointerId); c.style.cursor = "grabbing"; wake(); };
     c.onpointermove = (e) => { if (drag === null) return; const d = ((e.clientX - drag) / c.clientWidth) * N * 0.9; pos -= d; vel = -d; drag = e.clientX; };

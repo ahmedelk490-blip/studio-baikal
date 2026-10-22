@@ -56,7 +56,7 @@ export function HeroModel({ t, lang }: { t: Dict; lang: Lang }) {
       ctx.translate(0.97 * W, 0.55 * H); ctx.scale(z, z); ctx.translate(-0.97 * W, -0.55 * H);
       ctx.drawImage(im, (W - w) / 2, (H - h) / 2, w, h); ctx.restore(); shown = k;
     };
-    const fit = () => { const d = Math.min(2, devicePixelRatio || 1); cv.width = cv.clientWidth * d; cv.height = cv.clientHeight * d; draw(true); };
+    const fit = () => { const d = Math.min(innerWidth < 768 ? 1.5 : 2, devicePixelRatio || 1); cv.width = cv.clientWidth * d; cv.height = cv.clientHeight * d; draw(true); };
     // on load the model comes forward and settles by itself (the first frames), then the scroll takes over
     const play = () => {
       if (reduce) { want = INTRO - 1; introDone = true; draw(); return; }
@@ -141,7 +141,7 @@ export function HeroModel({ t, lang }: { t: Dict; lang: Lang }) {
       const pc = (v: number, of: number) => `${Math.max(0, (v / of) * 100).toFixed(1)}%`;
       const door = `inset(${pc(oy + dy0 * k, H)} ${pc(W - (ox + dx1 * k), W)} ${pc(H - (oy + dy1 * k), H)} ${pc(ox + dx0 * k, W)})`;
       const dive = { p: 0 };
-      gsap.timeline({ scrollTrigger: { trigger: sec, start: "top top", end: "+=190%", pin: true, scrub: 0.8, anticipatePin: 1 } })
+      gsap.timeline({ scrollTrigger: { trigger: sec, start: "top top", end: "+=140%", pin: true, scrub: 0.8, anticipatePin: 1 } })
         .to(dive, { p: 1, ease: "none", duration: 0.86, onUpdate: () => { prog.current = dive.p; kick.current(); } }, 0)
         .to(".hm-bar", { scaleY: 1, ease: "none", duration: 1 }, 0)
         .to(".hm-copy", { opacity: 0, y: -40, duration: 0.2, ease: "power1.in" }, 0.04)

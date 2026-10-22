@@ -12,7 +12,7 @@ export function DepthField({ className = "" }: { className?: string }) {
     const N = innerWidth < 768 ? 90 : 160;
     const P = Array.from({ length: N }, () => ({ x: (Math.random() - 0.5) * 2, y: (Math.random() - 0.5) * 2, z: Math.random() }));
     let W = 0, H = 0, raf = 0, seen = false, last = performance.now();
-    const fit = () => { const d = Math.min(2, devicePixelRatio || 1); W = c.clientWidth; H = c.clientHeight; c.width = W * d; c.height = H * d; x.setTransform(d, 0, 0, d, 0, 0); };
+    const fit = () => { const d = Math.min(innerWidth < 768 ? 1.5 : 2, devicePixelRatio || 1); W = c.clientWidth; H = c.clientHeight; c.width = W * d; c.height = H * d; x.setTransform(d, 0, 0, d, 0, 0); };
     const draw = (dt: number) => {
       x.clearRect(0, 0, W, H);
       const f = Math.max(W, H) * 0.42;

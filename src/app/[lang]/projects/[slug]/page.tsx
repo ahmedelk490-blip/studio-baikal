@@ -42,7 +42,8 @@ export default async function ProjectPage({ params }: Props) {
   // each project walks its rooms in its own way, in turn, so neighbouring projects never repeat
   const walk = Math.max(0, (await listProjects(lang)).findIndex((x) => x.slug === p.slug)) % 3;
   const f = t.project.facts;
-  const facts = [[f.type, p.type], [f.area, p.area], [f.rooms, `${p.images.length}`], [f.year, p.year], [f.style, p.style], [f.scope, p.scope]];
+  const calm = process.env.NEXT_PUBLIC_HOME === "calm";
+  const facts = calm ? [[f.type, p.type], [f.style, p.style], [f.scope, p.scope]] : [[f.type, p.type], [f.area, p.area], [f.rooms, `${p.images.length}`], [f.year, p.year], [f.style, p.style], [f.scope, p.scope]];
   const cover = p.images.find((i) => i.src === p.cover && i.w >= i.h) ?? p.images.find((i) => i.w >= i.h) ?? p.images[0];
   const video = projectVideo[p.slug];
   const crumbs = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Studio Baikal", item: `https://baikalstudio.com/${lang}` }, { "@type": "ListItem", position: 2, name: t.project.all, item: `https://baikalstudio.com/${lang}/projects` }, { "@type": "ListItem", position: 3, name: p.name, item: `https://baikalstudio.com/${lang}/projects/${p.slug}` }] };
@@ -55,7 +56,7 @@ export default async function ProjectPage({ params }: Props) {
         <div className="relative grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="hero-in lg:col-span-5">
             {back}
-            <p className={`${u} eyebrow mt-2 text-[var(--bronze)]`}>{p.type} · <span dir="ltr">{p.area}</span></p>
+            <p className={`${u} eyebrow mt-2 text-[var(--bronze)]`}>{calm ? p.type : <>{p.type} · <span dir="ltr">{p.area}</span></>}</p>
             <h1 className="display mt-3 text-5xl leading-[1.05] rtl:leading-[1.3] md:text-7xl">{p.name}</h1>
             <p className="mt-4 text-sm text-[var(--muted)]">{p.location}</p>
             <p className="mt-6 max-w-md text-lg leading-relaxed">{p.blurb}</p>

@@ -61,7 +61,7 @@ export function CalmHero({ t, lang }: { t: Dict; lang: Lang }) {
           <Btn href={`/${lang}#projects`} variant="ghost">{t.hero.cta2}</Btn>
         </div>
       </div>
-      <a href="#intro" className={`absolute bottom-5 left-1/2 flex min-h-11 min-w-11 -translate-x-1/2 flex-col items-center gap-2 p-2 text-[var(--surface)]/60 ${u}`}>
+      <a href="#projects" className={`absolute bottom-5 left-1/2 flex min-h-11 min-w-11 -translate-x-1/2 flex-col items-center gap-2 p-2 text-[var(--surface)]/60 ${u}`}>
         {c.scroll}<span className="calm-line block h-10 w-px bg-[var(--bronze)]" aria-hidden />
       </a>
     </section>
@@ -71,7 +71,7 @@ export function CalmHero({ t, lang }: { t: Dict; lang: Lang }) {
 export function CalmIntro({ t, lang }: { t: Dict; lang: Lang }) {
   const ref = useFadeIn();
   return (
-    <section id="intro" data-depth={t.gauge.statement} className="bg-[#0B1013] px-5 py-20 text-[var(--surface)] md:px-10 md:py-32">
+    <section id="intro" data-depth={t.gauge.statement} className="bg-[#0B1013] px-5 max-md:hidden py-20 text-[var(--surface)] md:px-10 md:py-32">
       <div ref={ref} className="mx-auto max-w-5xl text-center">
         <p data-fade className={`${u} text-[var(--bronze)]`}>{COPY[lang].intro}</p>
         <p data-fade className="display mx-auto mt-6 max-w-4xl text-2xl leading-[1.35] rtl:leading-[1.6] md:text-4xl">{t.statement.text}</p>

@@ -55,11 +55,11 @@ export function ProjectsIndex({ rows, lang, p, facts }: { rows: Row[]; lang: Lan
                   <h2 className="display mt-3 text-4xl transition-colors group-hover:text-[var(--bronze)] md:text-6xl">{r.name}</h2>
                   <p className="mt-2 text-sm text-[var(--muted)]">{r.location}</p>
                   <p className="mt-5 max-w-md text-base">{r.blurb}</p>
-                  <dl className="mt-6 grid max-w-sm grid-cols-3 gap-4 border-t border-[var(--ink)]/15 pt-4">
+                  {process.env.NEXT_PUBLIC_HOME !== "calm" && <dl className="mt-6 grid max-w-sm grid-cols-3 gap-4 border-t border-[var(--ink)]/15 pt-4">
                     {([[facts.area, r.area], [facts.rooms, `${r.images.length}`], [facts.year, r.year]] as [string, string][]).map(([k, v]) => (
                       <div key={k}><dt className="text-xs text-[var(--muted)]">{k}</dt><dd className="mt-1 text-sm font-semibold" dir="ltr">{v}</dd></div>
                     ))}
-                  </dl>
+                  </dl>}
                   <span className="btn btn-dark mt-7"><span className="btn-roll"><span>{p.view}</span><span aria-hidden>{p.view}</span></span><span className="btn-ico" aria-hidden /></span>
                 </div>
               </Link>

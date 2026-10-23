@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MaskReveal } from "./MaskReveal";
 import { ShapeCycle } from "./ShapeCycle";
 import type { Project } from "@/data/projects";
@@ -17,6 +17,8 @@ type Facts = { area: string; rooms: string; year: string };
 export function ProjectsIndex({ rows, lang, p, facts }: { rows: Row[]; lang: Lang; p: PagesDict["projects"]; facts: Facts }) {
   const [f, setF] = useState("all");
   const kinds = ["all", ...Array.from(new Set(rows.map((r) => r.kind)))];
+  // ?type=Villa (from the home page tiles) opens the archive already filtered
+  useEffect(() => { const k = new URLSearchParams(location.search).get("type"); if (k && rows.some((r) => r.kind === k)) setF(k); }, [rows]);
   const list = f === "all" ? rows : rows.filter((r) => r.kind === f);
   const u = "text-xs uppercase tracking-[0.18em] rtl:tracking-normal";
   const covers = rows.map((r) => r.cover).filter(Boolean).slice(0, 8);

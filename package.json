@@ -9,7 +9,8 @@
     "lint": "eslint",
     "admin:create": "node scripts/create-admin.mjs",
     "dev:light": "set NEXT_DIST_DIR=.next-light&& set NEXT_PUBLIC_HERO=light&& node node_modules/next/dist/bin/next dev -p 3902",
-    "dev:v2": "set NEXT_DIST_DIR=.next-v2&& set NEXT_PUBLIC_HOME=v2&& node node_modules/next/dist/bin/next dev -p 3910"
+    "dev:v2": "set NEXT_DIST_DIR=.next-v2&& set NEXT_PUBLIC_HOME=v2&& node node_modules/next/dist/bin/next dev -p 3910",
+    "dev:calm": "set NEXT_DIST_DIR=.next-calm&& set NEXT_PUBLIC_HOME=calm&& node node_modules/next/dist/bin/next dev -p 3920"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

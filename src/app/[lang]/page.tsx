@@ -14,6 +14,7 @@ import { MirrorHall } from "@/components/MirrorHall";
 import { Colonnade } from "@/components/Colonnade";
 import { HeroV2, ProjectIndex, MaterialExplorer, DetailReveal, ChapterRail } from "@/components/v2/HomeV2";
 import { Contact } from "@/components/Contact";
+import { CalmHero, CalmIntro, CalmSpaces, CalmServices, CalmSteps, CalmStudio } from "@/components/calm/HomeCalm";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFab } from "@/components/WhatsAppFab";
 import { listProjects } from "@/lib/content";
@@ -33,6 +34,27 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   const t = dict[lang];
   const list = await listProjects(lang);
   // second home version (npm run dev:v2 on :3910): editorial and light, no video or WebGL
+  // the calm version the client asked for (dev:calm on :3920): fewer sections, still photographs, fades only
+  if (process.env.NEXT_PUBLIC_HOME === "calm") {
+    const counts = list.reduce<Record<string, number>>((a, p) => ({ ...a, [p.kind]: (a[p.kind] ?? 0) + 1 }), {});
+    return (
+      <>
+        <Header t={t} lang={lang} dark />
+        <main>
+          <CalmHero t={t} lang={lang} />
+          <CalmIntro t={t} lang={lang} />
+          <MirrorHall projects={list} t={t} lang={lang} />
+          <CalmSpaces t={t} lang={lang} counts={counts} />
+          <CalmServices t={t} lang={lang} />
+          <CalmSteps t={t} />
+          <CalmStudio t={t} lang={lang} />
+          <Contact t={t} contact={await getContact(lang)} />
+        </main>
+        <Footer t={t} lang={lang} />
+        <WhatsAppFab label={t.contact.fab} lang={lang} />
+      </>
+    );
+  }
   if (process.env.NEXT_PUBLIC_HOME === "v2") {
     return (
       <>

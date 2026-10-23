@@ -86,7 +86,7 @@ export function CalmIntro({ t, lang }: { t: Dict; lang: Lang }) {
 export function CalmSpaces({ t, lang, counts }: { t: Dict; lang: Lang; counts: Record<string, number> }) {
   const c = COPY[lang].spaces, ref = useFadeIn();
   return (
-    <section data-depth={t.gauge.rooms} className="bg-[#111619] px-5 py-20 text-[var(--surface)] md:px-10 md:py-28">
+    <section data-depth={t.gauge.rooms} className="bg-[#0B1013] px-5 py-20 text-[var(--surface)] md:px-10 md:py-28">
       <div ref={ref} className="mx-auto max-w-7xl">
         <div data-fade className="flex flex-wrap items-end justify-between gap-6">
           <div>

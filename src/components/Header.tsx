@@ -29,7 +29,7 @@ export function Header({ t, lang, dark = false }: { t: Dict; lang: Lang; dark?: 
     return () => { lenis?.start(); document.documentElement.style.overflow = ""; removeEventListener("keydown", esc); };
   }, [open, lenis]);
   return (
-    <header id="top" className={`${open && !CALM ? "fixed" : "absolute"} inset-x-0 top-0 z-50 ${open ? "bg-[var(--surface)] text-[var(--ink)] shadow-lg" : dark ? "bg-gradient-to-b from-[var(--deep)]/70 to-transparent text-[var(--surface)]" : "text-[var(--ink)]"}`}>
+    <header id="top" className={`${open && !CALM ? "fixed" : "absolute"} inset-x-0 top-0 z-50 ${open ? (CALM ? "bg-[#0B1013] text-[var(--surface)]" : "bg-[var(--surface)] text-[var(--ink)] shadow-lg") : dark ? "bg-gradient-to-b from-[var(--deep)]/70 to-transparent text-[var(--surface)]" : "text-[var(--ink)]"}`}>
       <div className="flex h-16 items-center justify-between px-5 md:h-20 md:px-10">
         <Link href={`/${lang}`} aria-label={t.nav.home} className="flex items-center gap-3">
           <Image src="/brand/logo.png" alt="Studio Baikal" width={36} height={36} priority className="h-9 w-9 bg-[var(--surface)] p-0.5" />
@@ -52,11 +52,11 @@ export function Header({ t, lang, dark = false }: { t: Dict; lang: Lang; dark?: 
         </div>
       </div>
       {/* design-guard-ignore: full-screen mobile menu overlay (top to bottom), not a bottom CTA bar */}
-      <nav id="mnav" className={`mnav ${CALM ? "absolute inset-x-0 top-16 shadow-lg" : "fixed inset-x-0 bottom-0 top-16 overflow-y-auto"} flex flex-col bg-[var(--surface)] px-5 pb-8 pt-2 text-[var(--ink)] md:top-20 lg:hidden ${open ? "is-open" : ""}`} aria-label="Mobile" inert={!open}>
-        {nav.map(([l, h], k) => <Link key={h} href={h} onClick={() => setOpen(false)} style={{ transitionDelay: open ? `${120 + k * 60}ms` : "0ms" }} className={`mnav-link display flex min-h-16 items-center justify-between border-b border-[var(--ink)]/10 text-3xl ${on(h) ? "text-[var(--bronze)]" : ""}`}>{CALM ? <span>{l}</span> : <><span><span className="me-3 align-middle text-xs text-[var(--muted)]" dir="ltr">0{k + 1}</span>{l}</span><span aria-hidden className="text-base rtl:-scale-x-100">&#8599;</span></>}</Link>)}
+      <nav id="mnav" className={`mnav ${CALM ? "absolute inset-x-0 top-16 bg-[#0B1013] text-[var(--surface)] shadow-[0_30px_60px_-20px_rgba(0,0,0,.6)]" : "fixed inset-x-0 bottom-0 top-16 overflow-y-auto bg-[var(--surface)] text-[var(--ink)]"} flex flex-col px-5 pb-8 pt-2 md:top-20 lg:hidden ${open ? "is-open" : ""}`} aria-label="Mobile" inert={!open}>
+        {nav.map(([l, h], k) => <Link key={h} href={h} onClick={() => setOpen(false)} style={{ transitionDelay: open ? `${120 + k * 60}ms` : "0ms" }} className={`mnav-link display flex min-h-16 items-center justify-between border-b ${CALM ? "border-[var(--surface)]/12 text-2xl" : "border-[var(--ink)]/10 text-3xl"} ${on(h) ? "text-[var(--bronze)]" : ""}`}>{CALM ? <span>{l}</span> : <><span><span className="me-3 align-middle text-xs text-[var(--muted)]" dir="ltr">0{k + 1}</span>{l}</span><span aria-hidden className="text-base rtl:-scale-x-100">&#8599;</span></>}</Link>)}
         <div className={`mnav-link ${CALM ? "mt-6" : "mt-auto"} flex flex-wrap items-center justify-between gap-4 pt-8`} style={{ transitionDelay: open ? "460ms" : "0ms" }}>
-          <Link href={`/${lang}/contact`} onClick={() => setOpen(false)} className={`${u} inline-flex min-h-11 items-center rounded-full bg-[var(--ink)] px-6 text-[var(--surface)]`}>{t.nav.book}</Link>
-          <Link href={other} hrefLang={t.other} className={`${u} inline-flex min-h-11 items-center gap-2`}><Globe />{t.otherLabel}</Link>
+          <Link href={`/${lang}/contact`} onClick={() => setOpen(false)} className={`${u} inline-flex min-h-11 items-center rounded-full px-6 ${CALM ? "bg-[var(--bronze)] text-[var(--deep)]" : "bg-[var(--ink)] text-[var(--surface)]"}`}>{t.nav.book}</Link>
+          <Link href={other} hrefLang={t.other} className={`${u} inline-flex min-h-11 items-center gap-2 ${CALM ? "text-[var(--surface)]/70" : ""}`}><Globe />{t.otherLabel}</Link>
         </div>
       </nav>
     </header>

@@ -50,8 +50,27 @@ export default async function ProjectPage({ params }: Props) {
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   const back = <Link href={`/${lang}/projects`} className={`${u} inline-block whitespace-nowrap py-3 opacity-70`}>{t.project.all}</Link>;
   return (
-    <PageShell lang={lang}>
+    <PageShell lang={lang} dark={calm}>
       <JsonLd lang={lang} extra={[crumbs]} />
+      {calm ? (
+        <section className="bg-[#0B1013] px-5 pb-6 pt-24 text-[var(--surface)] md:px-10 md:pb-10 md:pt-32">
+          <div className="mx-auto max-w-6xl">
+            {back}
+            <div className="mt-2 flex flex-wrap items-end justify-between gap-6">
+              <div>
+                <p className={`${u} text-[var(--bronze)]`}>{p.type} · {p.location}</p>
+                <h1 className="display mt-3 text-4xl leading-[1.1] rtl:leading-[1.3] md:text-6xl">{p.name}</h1>
+              </div>
+              <p className="max-w-md text-sm leading-relaxed text-[var(--surface)]/70 md:text-base">{p.blurb}</p>
+            </div>
+            <MaskReveal className="relative mt-10 overflow-hidden rounded-2xl md:mt-14">
+              {video
+                ? <Clip src={video} poster={cover.src} alt={`${p.name}, ${cover.room}`} priority className="aspect-[16/10] w-full" sizes="(min-width:1152px) 1152px, 100vw" />
+                : <Image src={cover.src} alt={`${p.name}, ${cover.room}`} width={cover.w} height={cover.h} priority sizes="(min-width:1152px) 1152px, 100vw" className="h-auto w-full" />}
+            </MaskReveal>
+          </div>
+        </section>
+      ) : (
       <section className="relative overflow-hidden bg-[var(--surface)] px-5 pb-12 pt-24 text-[var(--ink)] md:px-10 md:pb-16 md:pt-32">
         <div className="relative grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="hero-in lg:col-span-5">
@@ -68,7 +87,16 @@ export default async function ProjectPage({ params }: Props) {
           </MaskReveal>
         </div>
       </section>
+      )}
 
+      {calm ? (
+        <section className="bg-[#0B1013] px-5 text-[var(--surface)] md:px-10">
+          <dl className="mx-auto flex max-w-6xl flex-wrap gap-x-10 gap-y-3 border-y border-[var(--surface)]/12 py-5">
+            {facts.map(([k, val]) => <div key={k} className="flex items-baseline gap-2 text-sm"><dt className="text-[var(--bronze)]">{k}</dt><dd>{val}</dd></div>)}
+            <div className="flex items-baseline gap-2 text-sm"><dt className="text-[var(--bronze)]">{t.project.materials}</dt><dd>{p.materials.join(" · ")}</dd></div>
+          </dl>
+        </section>
+      ) : (
       <section className="border-t border-[var(--ink)]/10 bg-[var(--surface)] px-5 pb-14 pt-14 text-[var(--ink)] md:px-10 md:pb-20 md:pt-20">
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-7">
@@ -90,13 +118,14 @@ export default async function ProjectPage({ params }: Props) {
           </aside>
         </div>
       </section>
+      )}
 
-      <section className="bg-[var(--surface)] text-[var(--ink)]">
-        <ProjectGallery images={p.images} name={p.name} t={t} variant={walk} />
+      <section className={calm ? "bg-[#0B1013] text-[var(--surface)]" : "bg-[var(--surface)] text-[var(--ink)]"}>
+        <ProjectGallery images={p.images} name={p.name} t={t} variant={walk} story={calm ? p.story : undefined} />
       </section>
 
       {/* next project: text beside its cover in a Baikal arch (no text over the photo) */}
-      <section className="bg-[var(--deep)] px-5 py-16 text-[var(--surface)] md:px-10 md:py-24">
+      <section className={`${calm ? "border-t border-[var(--surface)]/12 " : ""}bg-[var(--deep)] px-5 py-16 text-[var(--surface)] md:px-10 md:py-24`}>
         <div className="grid items-center gap-10 md:grid-cols-12">
           <Link href={`/${lang}/projects/${next.slug}`} className="group order-2 block md:order-1 md:col-span-7">
             <p className={`${u} eyebrow text-[var(--bronze)]`}>{t.project.next}</p>

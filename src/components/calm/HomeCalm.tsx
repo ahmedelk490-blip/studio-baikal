@@ -51,8 +51,7 @@ export function CalmHero({ t, lang }: { t: Dict; lang: Lang }) {
       </video>
       <div className="absolute inset-0 bg-[#0B1013]/55" aria-hidden />
       <div className="calm-hero relative flex flex-col items-center px-6 text-center">
-        <div className="bg-[var(--surface)] p-2"><Image src="/brand/logo.png" alt={c.intro} width={96} height={96} priority className="h-16 w-16 md:h-20 md:w-20" /></div>
-        <span className="mt-8 h-px w-24 bg-[var(--bronze)]" aria-hidden />
+        <span className="h-px w-24 bg-[var(--bronze)]" aria-hidden />
         <h1 className="display mt-8 max-w-3xl text-4xl leading-[1.1] rtl:leading-[1.35] md:text-6xl">
           {t.hero.t1} <span className="italic text-[var(--bronze)] rtl:not-italic">{t.hero.t2}</span>
         </h1>

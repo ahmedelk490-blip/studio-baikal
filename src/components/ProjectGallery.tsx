@@ -17,20 +17,30 @@ export function ProjectGallery({ images, name, t, variant, story }: { images: Im
     </>
   );
 }
-/* The calm version: the rooms one after another, each large photograph with its name under it; a tap
-   opens it full screen. Nothing pinned, nothing to learn. */
+/* The calm version: the rooms composed on one board, the way a studio lays out a project sheet. A repeating
+   rhythm of rows: one wide room, then two side by side, then a tall one beside a wide one. The room's name
+   sits in the corner of its own photo on a quiet band. On phones the board is two columns, with the wide
+   rooms spanning both. A tap opens the room full screen. */
 function CalmGallery({ images, name, onOpen, story }: { images: Img[]; name: string; onOpen: (k: number) => void; story?: string }) {
+  // the rhythm: wide (2 cols) · half · half · tall · wide-beside-tall · half · half … repeats every 7;
+  // phones give every fourth room the full width too, so the small tiles never run long
+  const span = (k: number) => { const r = k % 7; return r === 0 ? "col-span-2 aspect-[16/9]" : r === 3 ? "row-span-2 aspect-[3/4] md:aspect-auto" : r === 4 ? "col-span-2 aspect-[16/10] md:col-span-1 md:aspect-[4/3]" : "aspect-[4/3]"; };
   return (
-    <div className="mx-auto max-w-6xl space-y-14 px-5 py-14 md:space-y-24 md:px-10 md:py-20">
-      {images.map((im, k) => (
-        <figure key={im.src}>
-          <button type="button" onClick={() => onOpen(k)} className="relative block w-full overflow-hidden rounded-xl" style={{ aspectRatio: `${im.w} / ${im.h}` }} aria-label={`${name}, ${im.room}`}>
-            <Image src={im.src} alt={`${name}, ${im.room}`} fill sizes="(min-width:1152px) 1152px, 100vw" className="object-cover" />
-          </button>
-          <figcaption className="mt-4 flex items-center gap-4"><span className="h-px w-8 bg-[var(--bronze)]" aria-hidden /><span className="display text-xl md:text-2xl">{im.room}</span></figcaption>
-        </figure>
-      ))}
-      {story && <p className="display mx-auto max-w-3xl pt-4 text-center text-xl leading-[1.5] text-[var(--surface)]/80 rtl:leading-[1.7] md:text-2xl">{story}</p>}
+    <div className="mx-auto max-w-6xl px-5 py-12 md:px-10 md:py-16">
+      <div className="grid grid-cols-2 gap-3 md:gap-5" style={{ gridAutoFlow: "dense" }}>
+        {images.map((im, k) => (
+          <figure key={im.src} className={`relative ${span(k)}`}>
+            <button type="button" onClick={() => onOpen(k)} className="group relative block h-full w-full overflow-hidden rounded-lg md:rounded-xl" aria-label={`${name}, ${im.room}`}>
+              <Image src={im.src} alt={`${name}, ${im.room}`} fill sizes="(min-width:1152px) 576px, 50vw" className="object-cover transition-transform duration-[1200ms] ease-out [@media(hover:hover)]:group-hover:scale-[1.04]" />
+              <span className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#05080A]/70 to-transparent" aria-hidden />
+              <figcaption className="absolute bottom-3 start-3 flex items-center gap-2 text-[var(--surface)] md:bottom-4 md:start-4">
+                <span className="h-px w-5 bg-[var(--bronze)]" aria-hidden /><span className="display text-sm md:text-lg">{im.room}</span>
+              </figcaption>
+            </button>
+          </figure>
+        ))}
+      </div>
+      {story && <p className="display mx-auto mt-12 max-w-3xl text-center text-xl leading-[1.5] text-[var(--surface)]/80 rtl:leading-[1.7] md:mt-16 md:text-2xl">{story}</p>}
     </div>
   );
 }

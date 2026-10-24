@@ -16,44 +16,44 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          # the first look (motion hero, pinned sections)
-          - site: lightcoral-penguin-341733.hostingersite.com
-            home: ""
-          # the calm version the client asked for (set CALM_SITE to the second temporary domain)
-          - site: ${{ vars.CALM_SITE }}
-            home: calm
-    concurrency: { group: deploy-${{ matrix.site }}, cancel-in-progress: false }
+        # one row per look; the calm row's domain is read from the CALM_SITE repository variable at run
+        # time (the vars context is not allowed inside a matrix), so it stays a plain name here
+        home: ["", "calm"]
     env:
-      SITE: ${{ matrix.site }}
       NEXT_PUBLIC_HOME: ${{ matrix.home }}
-    # a site whose domain is not set yet (the calm one until CALM_SITE exists) is skipped, not failed:
-    # the matrix is only readable inside steps, so each step carries the gate
     steps:
+      - name: Pick this look's site
+        id: site
+        env:
+          CALM_SITE: ${{ vars.CALM_SITE }}
+        run: |
+          if [ "${{ matrix.home }}" = "calm" ]; then S="$CALM_SITE"; else S="lightcoral-penguin-341733.hostingersite.com"; fi
+          echo "name=$S" >> "$GITHUB_OUTPUT"
+          [ -n "$S" ] && echo "deploying home='${{ matrix.home }}' to $S" || echo "no domain for home='${{ matrix.home }}' yet (set the CALM_SITE repository variable) - skipping"
       - uses: actions/checkout@v4
-        if: matrix.site != ''
+        if: steps.site.outputs.name != ''
       - uses: actions/setup-node@v4
-        if: matrix.site != ''
+        if: steps.site.outputs.name != ''
         with: { node-version: 22, cache: npm }
       - run: npm ci
-        if: matrix.site != ''
+        if: steps.site.outputs.name != ''
       - run: npm run build
-        if: matrix.site != ''
+        if: steps.site.outputs.name != ''
       - name: Pack the standalone app
-        if: matrix.site != ''
+        if: steps.site.outputs.name != ''
         run: |
           cp -r .next/static .next/standalone/.next/static
           cp -r public .next/standalone/public
           cp scripts/deploy/start.js .next/standalone/start.js
           tar --exclude=./.data -czf deploy.tgz -C .next/standalone .
       - name: Ship
-        if: matrix.site != ''
+        if: steps.site.outputs.name != ''
         run: |
           mkdir -p ~/.ssh && echo "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
-          scp -P $PORT -o StrictHostKeyChecking=no -o BatchMode=yes deploy.tgz scripts/deploy/remote.sh $HOST:domains/$SITE/
-          ssh -p $PORT -o StrictHostKeyChecking=no -o BatchMode=yes $HOST "bash domains/$SITE/remote.sh $SITE && rm domains/$SITE/remote.sh"
+          scp -P $PORT -o StrictHostKeyChecking=no -o BatchMode=yes deploy.tgz scripts/deploy/remote.sh $HOST:domains/${{ steps.site.outputs.name }}/
+          ssh -p $PORT -o StrictHostKeyChecking=no -o BatchMode=yes $HOST "bash domains/${{ steps.site.outputs.name }}/remote.sh ${{ steps.site.outputs.name }} && rm domains/${{ steps.site.outputs.name }}/remote.sh"
       - name: Check the site answers
-        if: matrix.site != ''
+        if: steps.site.outputs.name != ''
         run: |
           sleep 15
-          for i in 1 2 3 4 5 6; do c=$(curl -s -o /dev/null -w "%{http_code}" "https://$SITE/en"); echo "/en -> $c"; [ "$c" = 200 ] && exit 0; sleep 10; done; exit 1
+          for i in 1 2 3 4 5 6; do c=$(curl -s -o /dev/null -w "%{http_code}" "https://${{ steps.site.outputs.name }}/en"); echo "/en -> $c"; [ "$c" = 200 ] && exit 0; sleep 10; done; exit 1

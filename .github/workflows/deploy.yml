@@ -44,7 +44,7 @@ jobs:
         run: |
           cp -r .next/static .next/standalone/.next/static
           cp -r public .next/standalone/public
-          cp scripts/deploy/start.js .next/standalone/start.js
+          sed "s/__HOME__/${{ matrix.home }}/" scripts/deploy/start.js > .next/standalone/start.js
           tar --exclude=./.data -czf deploy.tgz -C .next/standalone .
       - name: Ship
         if: steps.site.outputs.name != ''

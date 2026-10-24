@@ -95,6 +95,18 @@ html.is-deep { color-scheme: dark; }
 /* calm version: an upright serif for every headline, no wonk, a touch larger since Cormorant sits small */
 html.calm .display { font-family: var(--font-calm), Georgia, serif; font-variation-settings: normal; font-weight: 500; letter-spacing: .005em; }
 html.calm[lang="en"] :is(h1, h2, h3).display { line-height: 1.08; }
+/* calm Arabic headlines: Markazi (Cormorant has no Arabic, which had left them in a system face) */
+html.calm[lang="ar"] .display { font-family: var(--font-calm-ar), var(--font-ar), serif; font-weight: 500; letter-spacing: 0; line-height: 1.4; }
+/* calm: one quiet label for every section (a short bronze rule, then the word), never a pill */
+html.calm .eyebrow { padding: 0; border: 0; border-radius: 0; gap: .75rem; }
+html.calm .eyebrow::before { width: 1.75rem; height: 1px; border-radius: 0; background: var(--bronze); }
+/* calm: every section on the same near-black, parted by a hairline, and every head on the same 72rem column */
+html.calm #projects { background: #0B1013; border-top: 1px solid rgb(196 154 92 / .14); }
+html.calm #projects > div:first-child { max-width: 72rem; margin-inline: auto; }
+html.calm #contact { background: #0B1013; border-top: 1px solid rgb(196 154 92 / .14); }
+html.calm #contact > div > div:last-child { background: #0E1417; }
+html.calm #contact .glow { opacity: .35; }
+html.calm .ft-cta { display: none; }
 /* Arabic: Alexandria everywhere, no letter-spacing, roomier leading, no Fraunces wonk */
 [lang="ar"] { font-family: var(--font-ar), system-ui, sans-serif; }
 [lang="ar"] .display { font-family: var(--font-ar), system-ui, sans-serif; font-variation-settings: normal; font-weight: 500; line-height: 1.3; }

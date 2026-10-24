@@ -30,7 +30,7 @@ export default async function Page({ params }: Props) {
   const faq = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: s.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
   const calm = process.env.NEXT_PUBLIC_HOME === "calm";
-  if (calm) return <PageShell lang={lang} dark><JsonLd lang={lang} extra={[faq]} /><CalmServices s={s} lang={lang} cta={s.cta} /></PageShell>;
+  if (calm) return <PageShell lang={lang} dark><JsonLd lang={lang} extra={[faq]} /><CalmServices s={s} lang={lang}/></PageShell>;
   return (
     <PageShell lang={lang} dark>
       <JsonLd lang={lang} extra={[faq]} />

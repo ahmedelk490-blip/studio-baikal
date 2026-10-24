@@ -48,7 +48,7 @@ export default async function ProjectPage({ params }: Props) {
   const video = projectVideo[p.slug];
   const crumbs = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Studio Baikal", item: `https://baikalstudio.com/${lang}` }, { "@type": "ListItem", position: 2, name: t.project.all, item: `https://baikalstudio.com/${lang}/projects` }, { "@type": "ListItem", position: 3, name: p.name, item: `https://baikalstudio.com/${lang}/projects/${p.slug}` }] };
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
-  const back = <Link href={`/${lang}/projects`} className={`${u} inline-block whitespace-nowrap py-3 opacity-70`}>{t.project.all}</Link>;
+  const back = <Link href={`/${lang}/projects`} className={`${u} inline-flex min-h-11 items-center gap-2 whitespace-nowrap opacity-70 transition-opacity [@media(hover:hover)]:hover:opacity-100`}><span aria-hidden>{lang === "ar" ? "→" : "←"}</span>{t.project.all}</Link>;
   return (
     <PageShell lang={lang} dark={calm}>
       <JsonLd lang={lang} extra={[crumbs]} />
@@ -58,8 +58,8 @@ export default async function ProjectPage({ params }: Props) {
             {back}
             <div className="mt-2 flex flex-wrap items-end justify-between gap-6">
               <div>
-                <p className={`${u} text-[var(--bronze)]`}>{p.type} · {p.location}</p>
-                <h1 className="display mt-3 text-4xl leading-[1.1] rtl:leading-[1.3] md:text-6xl">{p.name}</h1>
+                <p className={`${u} eyebrow text-[var(--bronze)]`}>{p.type} · {p.location}</p>
+                <h1 className="display mt-4 text-4xl leading-[1.1] rtl:leading-[1.3] md:text-6xl">{p.name}</h1>
               </div>
               <p className="max-w-md text-sm leading-relaxed text-[var(--surface)]/70 md:text-base">{p.blurb}</p>
             </div>
@@ -121,12 +121,12 @@ export default async function ProjectPage({ params }: Props) {
       )}
 
       <section className={calm ? "bg-[#0B1013] text-[var(--surface)]" : "bg-[var(--surface)] text-[var(--ink)]"}>
-        <ProjectGallery images={p.images} name={p.name} t={t} variant={walk} story={calm ? p.story : undefined} />
+        <ProjectGallery images={calm && !video ? p.images.filter((i) => i.src !== cover.src) : p.images} name={p.name} t={t} variant={walk} story={calm ? p.story : undefined} />
       </section>
 
       {/* next project: text beside its cover in a Baikal arch (no text over the photo) */}
-      <section className={`${calm ? "border-t border-[var(--surface)]/12 " : ""}bg-[var(--deep)] px-5 py-16 text-[var(--surface)] md:px-10 md:py-24`}>
-        <div className="grid items-center gap-10 md:grid-cols-12">
+      <section className={`${calm ? "border-t border-[var(--bronze)]/15 " : ""}bg-[var(--deep)] px-5 py-16 text-[var(--surface)] md:px-10 md:py-24`}>
+        <div className={`grid items-center gap-10 md:grid-cols-12${calm ? " mx-auto max-w-6xl" : ""}`}>
           <Link href={`/${lang}/projects/${next.slug}`} className="group order-2 block md:order-1 md:col-span-7">
             <p className={`${u} eyebrow text-[var(--bronze)]`}>{t.project.next}</p>
             <p className="display mt-3 text-5xl transition-colors duration-500 group-hover:text-[var(--bronze)] md:text-7xl">{next.name}</p>
@@ -136,7 +136,7 @@ export default async function ProjectPage({ params }: Props) {
             <Image src={next.cover} alt={next.name} fill sizes="(min-width:768px) 30vw, 80vw" className="object-cover transition-transform duration-[1200ms] group-hover:scale-105" />
           </Link>
         </div>
-        <div className="mt-12 border-t border-[var(--surface)]/10 pt-8"><Btn href={`/${lang}/contact`}>{t.project.start}</Btn></div>
+        <div className={`mt-12 border-t border-[var(--surface)]/10 pt-8${calm ? " mx-auto max-w-6xl" : ""}`}><Btn href={`/${lang}/contact`}>{t.project.start}</Btn></div>
       </section>
     </PageShell>
   );

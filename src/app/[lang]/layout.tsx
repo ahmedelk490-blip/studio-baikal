@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Manrope, Alexandria, Cormorant_Garamond } from "next/font/google";
+import { Fraunces, Manrope, Alexandria, Cormorant_Garamond, Markazi_Text } from "next/font/google";
 import "../globals.css";
 import { Smooth } from "@/components/Smooth";
 import { dict, isLang, langs } from "@/data/i18n";
@@ -9,6 +9,8 @@ const display = Fraunces({ subsets: ["latin"], axes: ["opsz", "SOFT", "WONK"], s
 const sans = Manrope({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-sans", display: "swap" });
 // the calm version's headline face: a straight, upright serif (no swashes), like the client's references
 const calmDisplay = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500", "600"], style: ["normal", "italic"], variable: "--font-calm", display: "swap" });
+// the calm look in Arabic: an editorial Naskh serif beside Cormorant, so Arabic headlines never fall back to a system face
+const calmArabic = Markazi_Text({ subsets: ["arabic"], weight: ["400", "500", "600"], variable: "--font-calm-ar", display: "swap" });
 const arabic = Alexandria({ subsets: ["arabic", "latin"], weight: ["300", "400", "500", "600"], variable: "--font-ar", display: "swap" });
 
 type Props = { children: React.ReactNode; params: Promise<{ lang: string }> };
@@ -33,7 +35,7 @@ export default async function RootLayout({ children, params }: Props) {
   const lang = isLang(raw) ? raw : "en"; // never throw from the root layout
   const t = dict[lang];
   return (
-    <html lang={lang} dir={t.dir} className={`${display.variable} ${sans.variable} ${arabic.variable} ${calmDisplay.variable}${process.env.NEXT_PUBLIC_HOME === "calm" ? " calm" : ""}`}>
+    <html lang={lang} dir={t.dir} className={`${display.variable} ${sans.variable} ${arabic.variable} ${calmDisplay.variable} ${calmArabic.variable}${process.env.NEXT_PUBLIC_HOME === "calm" ? " calm" : ""}`}>
       <body className="min-h-dvh antialiased" suppressHydrationWarning><JsonLd lang={lang} /><Smooth>{children}</Smooth></body>
     </html>
   );

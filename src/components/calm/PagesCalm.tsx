@@ -14,13 +14,31 @@ import type { PublicProject } from "@/lib/content";
    as a few chapters beside a few photographs. Fades only; nothing holds the page. */
 const u = "text-xs uppercase tracking-[0.24em] rtl:tracking-normal";
 const BG = "bg-[#0B1013] text-[var(--surface)]";
+const CTA = {
+  en: { t: "Have a space in mind?", s: "Tell us about it. We reply within one working day, and the first consultation is free.", b: "Book a free consultation" },
+  ar: { t: "عندك مساحة في بالك؟", s: "احكِ لنا عنها. نرد عليك خلال يوم عمل واحد، والاستشارة الأولى مجانية.", b: "احجز استشارة مجانية" },
+} as const;
+
+/* The one closing every calm inner page shares: a hairline, a short question, one line, one button. */
+export function CalmCta({ lang }: { lang: Lang }) {
+  const c = CTA[lang], ref = useFadeIn();
+  return (
+    <div ref={ref} className="mx-auto mt-24 max-w-6xl border-t border-[var(--bronze)]/20 pt-16 md:mt-32 md:pt-24">
+      <div data-fade className="mx-auto max-w-2xl text-center">
+        <h2 className="display text-4xl md:text-5xl">{c.t}</h2>
+        <p className="mx-auto mt-5 max-w-md text-[var(--surface)]/70">{c.s}</p>
+        <div className={`mt-10 flex justify-center ${u}`}><Btn href={`/${lang}/contact`}>{c.b}</Btn></div>
+      </div>
+    </div>
+  );
+}
 
 
 function Head({ eyebrow, title, intro }: { eyebrow: string; title: string; intro?: string }) {
   return (
     <div data-fade className="mx-auto max-w-3xl text-center">
-      <p className={`${u} text-[var(--bronze)]`}>{eyebrow}</p>
-      <h1 className="display mt-4 text-4xl leading-[1.1] rtl:leading-[1.3] md:text-6xl">{title}</h1>
+      <p className={`${u} eyebrow text-[var(--bronze)]`}>{eyebrow}</p>
+      <h1 className="display mt-5 text-4xl leading-[1.1] rtl:leading-[1.3] md:text-6xl">{title}</h1>
       {intro && <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-[var(--surface)]/70 md:text-base">{intro}</p>}
     </div>
   );
@@ -31,6 +49,8 @@ function Head({ eyebrow, title, intro }: { eyebrow: string; title: string; intro
 export function CalmArchive({ rows, lang, p }: { rows: PublicProject[]; lang: Lang; p: PagesDict["projects"] }) {
   const [f, setF] = useState("all");
   const kinds = ["all", ...Array.from(new Set(rows.map((r) => r.kind)))];
+  // the ?type= from the home tiles is only known in the browser, so it is read once after hydration
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { const k = new URLSearchParams(location.search).get("type"); if (k && rows.some((r) => r.kind === k)) setF(k); }, [rows]);
   const list = f === "all" ? rows : rows.filter((r) => r.kind === f);
   const ref = useFadeIn([f]);
@@ -62,6 +82,7 @@ export function CalmArchive({ rows, lang, p }: { rows: PublicProject[]; lang: La
             </li>
           ))}
         </ul>
+        <CalmCta lang={lang} />
       </div>
     </section>
   );
@@ -69,7 +90,7 @@ export function CalmArchive({ rows, lang, p }: { rows: PublicProject[]; lang: La
 
 /* Services: the two packages as two quiet columns (who it is for, what you get), the questions under
    them, one button. */
-export function CalmServices({ s, lang, cta }: { s: PagesDict["services"]; lang: Lang; cta: string }) {
+export function CalmServices({ s, lang }: { s: PagesDict["services"]; lang: Lang }) {
   const ref = useFadeIn();
   return (
     <section className={`${BG} px-5 pb-20 pt-28 md:px-10 md:pb-28 md:pt-36`}>
@@ -92,7 +113,7 @@ export function CalmServices({ s, lang, cta }: { s: PagesDict["services"]; lang:
           <h2 className="display text-center text-3xl md:text-4xl">{s.faqTitle}</h2>
           <div className="mt-8"><Faq items={s.faq} /></div>
         </div>
-        <div data-fade className={`mt-14 flex justify-center ${u}`}><Btn href={`/${lang}/contact`}>{cta}</Btn></div>
+        <CalmCta lang={lang} />
       </div>
     </section>
   );
@@ -128,7 +149,7 @@ export function CalmStudio({ s, t, lang }: { s: PagesDict["studio"]; t: Dict; la
             ))}
           </ul>
         </div>
-        <div data-fade className={`mt-14 flex justify-center ${u}`}><Btn href={`/${lang}/contact`}>{s.cta}</Btn></div>
+        <CalmCta lang={lang} />
       </div>
     </section>
   );

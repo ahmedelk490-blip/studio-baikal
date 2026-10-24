@@ -24,7 +24,29 @@ export function ProjectGallery({ images, name, t, variant, story }: { images: Im
 function CalmGallery({ images, name, onOpen, story }: { images: Img[]; name: string; onOpen: (k: number) => void; story?: string }) {
   // the rhythm: wide (2 cols) · half · half · tall · wide-beside-tall · half · half … repeats every 7;
   // phones give every fourth room the full width too, so the small tiles never run long
-  const span = (k: number) => { const r = k % 7; return r === 0 ? "col-span-2 aspect-[16/9]" : r === 3 ? "row-span-2 aspect-[3/4] md:aspect-auto" : r === 4 ? "col-span-2 aspect-[16/10] md:col-span-1 md:aspect-[4/3]" : "aspect-[4/3]"; };
+  // phone and wide-screen shapes of each room in the rhythm
+  const ph = (k: number) => { const r = k % 7; return r === 0 ? "col-span-2 aspect-[16/9]" : r === 4 ? "col-span-2 aspect-[16/10]" : r === 3 ? "row-span-2 aspect-[3/4]" : "aspect-[4/3]"; };
+  const md = (k: number) => { const r = k % 7; return r === 0 ? "md:col-span-2 md:aspect-[16/9]" : r === 3 ? "md:col-span-1 md:row-span-2 md:aspect-auto" : "md:col-span-1 md:aspect-[4/3]"; };
+  // the board must never end on a lone room beside an empty half: lay it out the way the grid will (two
+  // columns, dense), and if a gap is left, the room in the last row takes the whole row instead
+  const wideAt = (wideScreen: boolean) => {
+    const shape = (k: number) => { const r = k % 7; return r === 0 || (r === 4 && !wideScreen) ? [2, 1] : r === 3 ? [1, 2] : [1, 1]; };
+    const g: boolean[][] = [], end: number[] = [];
+    const fits = (y: number, x: number, [c, h]: number[]) => { for (let j = y; j < y + h; j++) for (let i = x; i < x + c; i++) if (i > 1 || g[j]?.[i]) return false; return true; };
+    images.forEach((_, k) => {
+      const s = shape(k);
+      for (let y = 0; ; y++) {
+        const x = [0, 1].find((c) => fits(y, c, s));
+        if (x === undefined) continue;
+        for (let j = y; j < y + s[1]; j++) for (let i = x; i < x + s[0]; i++) (g[j] ??= [])[i] = true;
+        end[k] = y + s[1] - 1;
+        break;
+      }
+    });
+    return g.some((row) => !row[0] || !row[1]) ? end.indexOf(Math.max(...end)) : -1;
+  };
+  const fixPhone = wideAt(false), fixWide = wideAt(true);
+  const span = (k: number) => `${k === fixPhone ? "col-span-2 row-span-1 aspect-[16/10]" : ph(k)} ${k === fixWide ? "md:col-span-2 md:row-span-1 md:aspect-[16/9]" : md(k)}`;
   return (
     <div className="mx-auto max-w-6xl px-5 py-12 md:px-10 md:py-16">
       <div className="grid grid-cols-2 gap-3 md:gap-5" style={{ gridAutoFlow: "dense" }}>

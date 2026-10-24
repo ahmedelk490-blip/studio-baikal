@@ -49,7 +49,7 @@ export async function Footer({ t, lang }: { t: Dict; lang: Lang }) {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-4 rounded-2xl border border-[var(--bronze)]/25 bg-[var(--surface)]/[.04] p-4 md:flex-row md:items-center md:gap-6 md:p-5">
+        <div className="ft-cta mt-12 flex flex-col gap-4 rounded-2xl border border-[var(--bronze)]/25 bg-[var(--surface)]/[.04] p-4 md:flex-row md:items-center md:gap-6 md:p-5">
           <p className="flex-1 text-sm leading-relaxed text-[var(--surface)]/75">{t.footer.cta}</p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link href={`/${lang}/contact`} className={`${u} inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--bronze)] px-6 font-semibold text-[var(--deep)] transition-opacity hover:opacity-90`}>{t.nav.book}</Link>

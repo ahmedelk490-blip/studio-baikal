@@ -1,36 +1,59 @@
-# Every push to master builds the site on GitHub (Linux) and ships it to Hostinger over SSH.
+# Every push to master builds the site on GitHub (Linux) and ships it to Hostinger over SSH: once per
+# site in the matrix below, each with its own home variant (NEXT_PUBLIC_HOME). Both sites share the one
+# data folder on the host, so leads from either land in the same admin.
 # Needs one repository secret: HOSTINGER_SSH_KEY (the private deploy key whose public half is on the host).
 name: Deploy to Hostinger
 on:
   push:
     branches: [master]
   workflow_dispatch:
-concurrency: { group: deploy, cancel-in-progress: false }
 env:
   HOST: u768758130@157.173.209.88
   PORT: "65002"
-  SITE: lightcoral-penguin-341733.hostingersite.com
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # the first look (motion hero, pinned sections)
+          - site: lightcoral-penguin-341733.hostingersite.com
+            home: ""
+          # the calm version the client asked for (set CALM_SITE to the second temporary domain)
+          - site: ${{ vars.CALM_SITE }}
+            home: calm
+    concurrency: { group: deploy-${{ matrix.site }}, cancel-in-progress: false }
+    env:
+      SITE: ${{ matrix.site }}
+      NEXT_PUBLIC_HOME: ${{ matrix.home }}
+    # a site whose domain is not set yet (the calm one until CALM_SITE exists) is skipped, not failed:
+    # the matrix is only readable inside steps, so each step carries the gate
     steps:
       - uses: actions/checkout@v4
+        if: matrix.site != ''
       - uses: actions/setup-node@v4
+        if: matrix.site != ''
         with: { node-version: 22, cache: npm }
       - run: npm ci
+        if: matrix.site != ''
       - run: npm run build
+        if: matrix.site != ''
       - name: Pack the standalone app
+        if: matrix.site != ''
         run: |
           cp -r .next/static .next/standalone/.next/static
           cp -r public .next/standalone/public
           cp scripts/deploy/start.js .next/standalone/start.js
           tar --exclude=./.data -czf deploy.tgz -C .next/standalone .
       - name: Ship
+        if: matrix.site != ''
         run: |
           mkdir -p ~/.ssh && echo "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
           scp -P $PORT -o StrictHostKeyChecking=no -o BatchMode=yes deploy.tgz scripts/deploy/remote.sh $HOST:domains/$SITE/
           ssh -p $PORT -o StrictHostKeyChecking=no -o BatchMode=yes $HOST "bash domains/$SITE/remote.sh $SITE && rm domains/$SITE/remote.sh"
       - name: Check the site answers
+        if: matrix.site != ''
         run: |
           sleep 15
           for i in 1 2 3 4 5 6; do c=$(curl -s -o /dev/null -w "%{http_code}" "https://$SITE/en"); echo "/en -> $c"; [ "$c" = 200 ] && exit 0; sleep 10; done; exit 1

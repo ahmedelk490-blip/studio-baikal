@@ -92,6 +92,9 @@ html.is-deep { color-scheme: dark; }
 .grain { position: relative; }
 .grain::after { content: ""; pointer-events: none; position: absolute; inset: 0; z-index: 5; opacity: .07; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
 
+/* calm version: an upright serif for every headline, no wonk, a touch larger since Cormorant sits small */
+html.calm .display { font-family: var(--font-calm), Georgia, serif; font-variation-settings: normal; font-weight: 500; letter-spacing: .005em; }
+html.calm[lang="en"] :is(h1, h2, h3).display { line-height: 1.08; }
 /* Arabic: Alexandria everywhere, no letter-spacing, roomier leading, no Fraunces wonk */
 [lang="ar"] { font-family: var(--font-ar), system-ui, sans-serif; }
 [lang="ar"] .display { font-family: var(--font-ar), system-ui, sans-serif; font-variation-settings: normal; font-weight: 500; line-height: 1.3; }

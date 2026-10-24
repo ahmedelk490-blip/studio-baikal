@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 /* Fades [data-fade] blocks in once as they reach the screen. Measured on scroll and resize rather than
    with an IntersectionObserver: the site's smooth scroll (Lenis) can leave the observer silent on wide
    screens, and the measurement is cheap (a few rects per frame, only while blocks remain). */
-export function useFadeIn() {
+export function useFadeIn(deps: unknown[] = []) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const left = new Set(ref.current?.querySelectorAll<HTMLElement>("[data-fade]") ?? []);
@@ -22,6 +22,7 @@ export function useFadeIn() {
     };
     tick();
     return () => { dead = true; cancelAnimationFrame(raf); };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
   return ref;
 }

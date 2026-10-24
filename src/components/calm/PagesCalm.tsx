@@ -33,7 +33,7 @@ export function CalmArchive({ rows, lang, p }: { rows: PublicProject[]; lang: La
   const kinds = ["all", ...Array.from(new Set(rows.map((r) => r.kind)))];
   useEffect(() => { const k = new URLSearchParams(location.search).get("type"); if (k && rows.some((r) => r.kind === k)) setF(k); }, [rows]);
   const list = f === "all" ? rows : rows.filter((r) => r.kind === f);
-  const ref = useFadeIn();
+  const ref = useFadeIn([f]);
   return (
     <section className={`${BG} px-5 pb-20 pt-28 md:px-10 md:pb-28 md:pt-36`}>
       <div ref={ref} className="mx-auto max-w-7xl">
@@ -46,7 +46,8 @@ export function CalmArchive({ rows, lang, p }: { rows: PublicProject[]; lang: La
             </button>
           ))}
         </div>
-        <ul className="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 md:mt-16 md:grid-cols-3 md:gap-x-8 md:gap-y-14">
+        {/* keyed on the filter so the covers fade in afresh on every switch and the list never looks empty */}
+        <ul key={f} className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 md:mt-10 md:grid-cols-3 md:gap-x-8 md:gap-y-14">
           {list.map((r, i) => (
             <li key={r.slug} data-fade style={{ transitionDelay: `${(i % 3) * 90}ms` }}>
               <Link href={`/${lang}/projects/${r.slug}`} className="group block">

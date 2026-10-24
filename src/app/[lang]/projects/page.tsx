@@ -4,6 +4,7 @@ import { extras } from "@/data/extras";
 import { notFound } from "next/navigation";
 import { PageShell } from "@/components/PageShell";
 import { ProjectsIndex } from "@/components/ProjectsIndex";
+import { CalmArchive } from "@/components/calm/PagesCalm";
 import { listProjects } from "@/lib/content";
 import { dict, isLang } from "@/data/i18n";
 import { pages } from "@/data/pages";
@@ -17,6 +18,8 @@ export default async function Page({ params }: Props) {
   const { lang } = await params;
   if (!isLang(lang)) notFound();
   const rows = await listProjects(lang);
+  const calm = process.env.NEXT_PUBLIC_HOME === "calm";
+  if (calm) return <PageShell lang={lang} dark><CalmArchive rows={rows} lang={lang} p={pages[lang].projects} /></PageShell>;
   return (
     <PageShell lang={lang}>
       <ProjectsIndex rows={rows} lang={lang} p={pages[lang].projects} facts={dict[lang].project.facts} />

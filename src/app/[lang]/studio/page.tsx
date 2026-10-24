@@ -8,6 +8,7 @@ import { Btn } from "@/components/Btn";
 import { Materials } from "@/components/Materials";
 import { Rooms } from "@/components/Rooms";
 import { GrowFrame } from "@/components/GrowFrame";
+import { CalmStudio } from "@/components/calm/PagesCalm";
 import { extras } from "@/data/extras";
 import { dict, isLang } from "@/data/i18n";
 import { pages } from "@/data/pages";
@@ -21,6 +22,8 @@ export default async function Page({ params }: Props) {
   const { lang } = await params;
   if (!isLang(lang)) notFound();
   const s = pages[lang].studio, t = dict[lang];
+  const calm = process.env.NEXT_PUBLIC_HOME === "calm";
+  if (calm) return <PageShell lang={lang} dark><CalmStudio s={s} t={t} lang={lang} /></PageShell>;
   return (
     <PageShell lang={lang} dark>
       <section className="relative h-[88svh] overflow-hidden bg-[var(--deep)] text-[var(--surface)]">

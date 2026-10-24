@@ -7,6 +7,7 @@ import { ShapeCycle } from "@/components/ShapeCycle";
 import { Faq } from "@/components/Faq";
 import { Btn } from "@/components/Btn";
 import { BuildLayers } from "@/components/BuildLayers";
+import { CalmServices } from "@/components/calm/PagesCalm";
 import { extras } from "@/data/extras";
 import { JsonLd } from "@/components/JsonLd";
 import { dict, isLang } from "@/data/i18n";
@@ -28,6 +29,8 @@ export default async function Page({ params }: Props) {
   const s = pages[lang].services, t = dict[lang];
   const faq = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: s.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
+  const calm = process.env.NEXT_PUBLIC_HOME === "calm";
+  if (calm) return <PageShell lang={lang} dark><JsonLd lang={lang} extra={[faq]} /><CalmServices s={s} lang={lang} cta={s.cta} /></PageShell>;
   return (
     <PageShell lang={lang} dark>
       <JsonLd lang={lang} extra={[faq]} />

@@ -1,7 +1,8 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useFadeIn } from "./useFadeIn";
 import { Btn } from "../Btn";
 import { Faq } from "../Faq";
 import type { Dict, Lang } from "@/data/i18n";
@@ -14,16 +15,6 @@ import type { PublicProject } from "@/lib/content";
 const u = "text-xs uppercase tracking-[0.24em] rtl:tracking-normal";
 const BG = "bg-[#0B1013] text-[var(--surface)]";
 
-function useFadeIn() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const els = ref.current?.querySelectorAll<HTMLElement>("[data-fade]") ?? [];
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("calm-in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -10% 0px" });
-    els.forEach((el) => { if (el.getBoundingClientRect().bottom < 0) el.classList.add("calm-in"); else io.observe(el); });
-    return () => io.disconnect();
-  }, []);
-  return ref;
-}
 
 function Head({ eyebrow, title, intro }: { eyebrow: string; title: string; intro?: string }) {
   return (

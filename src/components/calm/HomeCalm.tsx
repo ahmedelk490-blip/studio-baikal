@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useFadeIn } from "./useFadeIn";
 import { Btn } from "../Btn";
 import { heroVideo } from "@/data/media";
 import type { Dict, Lang } from "@/data/i18n";
@@ -28,18 +28,6 @@ const COPY = {
 const COVERS: Record<string, string> = { Villa: "/projects/el-nakhil-villa/01.webp", Apartment: "/projects/october-250/04.webp", Clinic: "/projects/ca-dental-clinic/04.webp" };
 const u = "text-xs uppercase tracking-[0.24em] rtl:tracking-normal";
 
-// fade a block in once as it comes into view (and leave it alone after)
-function useFadeIn() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const els = ref.current?.querySelectorAll<HTMLElement>("[data-fade]") ?? [];
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("calm-in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -12% 0px" });
-    // anything already above the screen (a reload mid-page, a jump to #projects) is simply shown
-    els.forEach((el) => { if (el.getBoundingClientRect().bottom < 0) el.classList.add("calm-in"); else io.observe(el); });
-    return () => io.disconnect();
-  }, []);
-  return ref;
-}
 
 export function CalmHero({ t, lang }: { t: Dict; lang: Lang }) {
   const c = COPY[lang];

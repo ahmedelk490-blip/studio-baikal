@@ -16,8 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # one row per look; the calm row's domain is read from the CALM_SITE repository variable at run
-        # time (the vars context is not allowed inside a matrix), so it stays a plain name here
+        # one row per look. The calm domain is named below; a CALM_SITE repository variable overrides it
+        # (the vars context is not allowed inside a matrix, so the name is resolved in a step)
         home: ["", "calm"]
     env:
       NEXT_PUBLIC_HOME: ${{ matrix.home }}
@@ -27,9 +27,9 @@ jobs:
         env:
           CALM_SITE: ${{ vars.CALM_SITE }}
         run: |
-          if [ "${{ matrix.home }}" = "calm" ]; then S="$CALM_SITE"; else S="lightcoral-penguin-341733.hostingersite.com"; fi
+          if [ "${{ matrix.home }}" = "calm" ]; then S="${CALM_SITE:-cyan-rhinoceros-347269.hostingersite.com}"; else S="lightcoral-penguin-341733.hostingersite.com"; fi
           echo "name=$S" >> "$GITHUB_OUTPUT"
-          [ -n "$S" ] && echo "deploying home='${{ matrix.home }}' to $S" || echo "no domain for home='${{ matrix.home }}' yet (set the CALM_SITE repository variable) - skipping"
+          [ -n "$S" ] && echo "deploying home='${{ matrix.home }}' to $S" || echo "no domain for home='${{ matrix.home }}' - skipping"
       - uses: actions/checkout@v4
         if: steps.site.outputs.name != ''
       - uses: actions/setup-node@v4

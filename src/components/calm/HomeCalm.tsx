@@ -14,14 +14,14 @@ import type { Dict, Lang } from "@/data/i18n";
 const COPY = {
   en: {
     intro: "Studio Baikal", scroll: "Scroll", free: "First consultation free", about: "About the studio",
-    spaces: { eyebrow: "What we design", title: "Homes, villas and clinics", lead: "Pick a kind of space and see how we shaped it.", view: "View projects",
-      items: [["Villa", "Villas"], ["Apartment", "Apartments"], ["Clinic", "Clinics & workspaces"]] },
+    spaces: { eyebrow: "What we design", title: "Residential and commercial", lead: "Homes of every size and spaces for work: pick one and see how we shaped it.", view: "View projects",
+      items: [["Villa", "Villas"], ["Apartment", "Apartments"], ["Clinic", "Commercial spaces"]] },
     book: "Book a free consultation",
   },
   ar: {
     intro: "استوديو بايكال", scroll: "مرّر", free: "الاستشارة الأولى مجانية", about: "عن الاستوديو",
-    spaces: { eyebrow: "ما نصممه", title: "بيوت وفيلات وعيادات", lead: "اختر نوع المساحة وشاهد كيف صممناها.", view: "شاهد المشاريع",
-      items: [["Villa", "فيلات"], ["Apartment", "شقق"], ["Clinic", "عيادات ومساحات عمل"]] },
+    spaces: { eyebrow: "ما نصممه", title: "سكني وتجاري", lead: "بيوت بكل أحجامها ومساحات للعمل: اختر نوعًا وشاهد كيف صممناه.", view: "شاهد المشاريع",
+      items: [["Villa", "فيلات"], ["Apartment", "شقق"], ["Clinic", "مساحات تجارية"]] },
     book: "احجز استشارة مجانية",
   },
 } as const;

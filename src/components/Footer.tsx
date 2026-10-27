@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Wordmark } from "./Wordmark";
 import { getSite, contactOf } from "@/lib/site";
 import type { Dict, Lang } from "@/data/i18n";
-import { pages } from "@/data/pages";
+import { pages, calmNav } from "@/data/pages";
 
 /* Lake-floor footer (Tama Square layout in Baikal's identity): a bronze line draws across, brand +
    three link columns, one consultation strip, the legal row, then a huge outlined BAIKAL that lights
@@ -11,7 +11,8 @@ import { pages } from "@/data/pages";
 export async function Footer({ t, lang }: { t: Dict; lang: Lang }) {
   const site = await getSite();
   const contact = contactOf(site, lang);
-  const n = pages[lang].nav;
+  const calm = process.env.NEXT_PUBLIC_HOME === "calm";
+  const n = calm ? { ...pages[lang].nav, ...calmNav[lang] } : pages[lang].nav;
   const links = [[n.home, `/${lang}`], [n.projects, `/${lang}/projects`], [n.services, `/${lang}/services`], [n.studio, `/${lang}/studio`], [n.contact, `/${lang}/contact`]];
   const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";
   const col = "text-sm text-[var(--surface)]/70 transition-colors hover:text-[var(--bronze)]";
@@ -25,7 +26,7 @@ export async function Footer({ t, lang }: { t: Dict; lang: Lang }) {
         <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-8">
           <div className="col-span-2 lg:col-span-1">
             <Link href={`/${lang}`} aria-label={t.nav.home} className="inline-flex items-center gap-3">
-              <Image src="/brand/logo.png" alt="" width={44} height={44} className="h-11 w-11 bg-[var(--surface)] p-1" />
+              {calm ? <Image src="/brand/logo-light.png" alt="" width={44} height={44} className="h-11 w-11" /> : <Image src="/brand/logo.png" alt="" width={44} height={44} className="h-11 w-11 bg-[var(--surface)] p-1" />}
               <span className="text-xs font-semibold uppercase tracking-[0.28em] rtl:tracking-normal">{lang === "ar" ? "استوديو بايكال" : "Studio Baikal"}</span>
             </Link>
             <p className="display mt-6 text-3xl italic leading-[1.3] md:text-4xl">{site.footer[lang].tagline}</p>

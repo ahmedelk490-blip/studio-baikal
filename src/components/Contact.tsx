@@ -6,6 +6,10 @@ import { Contours } from "./Contours";
 import { DepthField } from "./DepthField";
 import { WA_PATH } from "./wa-path";
 
+// the calm look asks for the area too, in three bands, before the name and number
+const CALM = process.env.NEXT_PUBLIC_HOME === "calm";
+const AREAS = { en: ["150 – 250 m²", "250 – 350 m²", "350+ m²"], ar: ["150 – 250 متر", "250 – 350 متر", "أكثر من 350 متر"] };
+
 const ic = {
   phone: "M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z",
   mail: "M3 5h18v14H3z M3 5l9 7 9-7",
@@ -21,11 +25,12 @@ export function Contact({ t, contact }: { t: Dict; contact: ContactInfo }) {
   const [state, setState] = useState<"idle" | "sending" | "sent" | "done" | "error">("idle");
   const [size, setSize] = useState(c.sizes[1]);
   const [need, setNeed] = useState(c.needs[1]);
+  const [area, setArea] = useState("");
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
     setState("sending");
-    const r = await fetch("/api/leads", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: f.get("name"), whatsapp: f.get("whatsapp"), size, need, website: f.get("website") }) }).catch(() => null);
+    const r = await fetch("/api/leads", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: f.get("name"), whatsapp: f.get("whatsapp"), size, need, message: area ? `${ar ? "المساحة" : "Area"}: ${area}` : undefined, website: f.get("website") }) }).catch(() => null);
     // the button itself confirms (a check) for a moment before the thank-you replaces the form
     if (r && r.ok) { setState("sent"); setTimeout(() => setState("done"), 1400); } else setState("error");
   }
@@ -81,6 +86,26 @@ export function Contact({ t, contact }: { t: Dict; contact: ContactInfo }) {
           ) : (
             <form onSubmit={submit} className="relative">
               <p className="display text-3xl md:text-4xl">{t.nav.book}</p>
+              {/* calm look: what the project is first (type, service, area), then who to answer */}
+              {CALM ? <>
+              <fieldset className="mt-7"><legend className={`${lab} text-[var(--surface)]/55`}>{CALM ? (ar ? "نوع المشروع" : "Project type") : c.size}</legend>
+                <div className="mt-3 flex flex-wrap gap-2">{c.sizes.map((s) => <button type="button" key={s} onClick={() => setSize(s)} aria-pressed={size === s} className={chip(size === s)}>{s}</button>)}</div>
+              </fieldset>
+              <fieldset className="mt-6"><legend className={`${lab} text-[var(--surface)]/55`}>{c.need}</legend>
+                <div className="mt-3 flex flex-wrap gap-2">{c.needs.map((s) => <button type="button" key={s} onClick={() => setNeed(s)} aria-pressed={need === s} className={chip(need === s)}>{s}</button>)}</div>
+              </fieldset>
+              <fieldset className="mt-6"><legend className={`${lab} text-[var(--surface)]/55`}>{ar ? "المساحة" : "Area"}</legend>
+                <div className="mt-3 flex flex-wrap gap-2">{AREAS[ar ? "ar" : "en"].map((s) => <button type="button" key={s} onClick={() => setArea(s)} aria-pressed={area === s} className={chip(area === s)}><bdi>{s}</bdi></button>)}</div>
+              </fieldset>
+              <label className={`${row} mt-7`}>
+                <span className={dot} aria-hidden><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4 21a8 8 0 0 1 16 0" /></svg></span>
+                <span className="min-w-0 flex-1"><span className={`${lab} block text-[var(--surface)]/55`}>{c.name}</span><input name="name" required autoComplete="name" placeholder={ar ? "اكتب اسمك" : "Your name"} className={field} /></span>
+              </label>
+              <label className={row}>
+                <span className={dot} aria-hidden><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d={WA_PATH} /></svg></span>
+                <span className="min-w-0 flex-1"><span className={`${lab} block text-[var(--surface)]/55`}>{c.whatsapp}</span><input name="whatsapp" required inputMode="tel" autoComplete="tel" dir="ltr" placeholder="01x xxxx xxxx" className={`${field} rtl:text-right`} /></span>
+              </label>
+              </> : <>
               <label className={row}>
                 <span className={dot} aria-hidden><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4 21a8 8 0 0 1 16 0" /></svg></span>
                 <span className="min-w-0 flex-1"><span className={`${lab} block text-[var(--surface)]/55`}>{c.name}</span><input name="name" required autoComplete="name" placeholder={ar ? "اكتب اسمك" : "Your name"} className={field} /></span>
@@ -89,13 +114,14 @@ export function Contact({ t, contact }: { t: Dict; contact: ContactInfo }) {
                 <span className={dot} aria-hidden><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d={WA_PATH} /></svg></span>
                 <span className="min-w-0 flex-1"><span className={`${lab} block text-[var(--surface)]/55`}>{c.whatsapp}</span><input name="whatsapp" required inputMode="tel" autoComplete="tel" dir="ltr" placeholder="01x xxxx xxxx" className={`${field} rtl:text-right`} /></span>
               </label>
-              <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
               <fieldset className="mt-7"><legend className={`${lab} text-[var(--surface)]/55`}>{c.size}</legend>
                 <div className="mt-3 flex flex-wrap gap-2">{c.sizes.map((s) => <button type="button" key={s} onClick={() => setSize(s)} aria-pressed={size === s} className={chip(size === s)}>{s}</button>)}</div>
               </fieldset>
               <fieldset className="mt-6"><legend className={`${lab} text-[var(--surface)]/55`}>{c.need}</legend>
                 <div className="mt-3 flex flex-wrap gap-2">{c.needs.map((s) => <button type="button" key={s} onClick={() => setNeed(s)} aria-pressed={need === s} className={chip(need === s)}>{s}</button>)}</div>
               </fieldset>
+              </>}
+              <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
               {state === "sent" ? (
                 <p role="status" className="btn btn-primary mt-8 w-full justify-center gap-3">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path className="check-draw" d="M5 12.5l4.5 4.5L19 7.5" pathLength={1} /></svg>{c.thanks}

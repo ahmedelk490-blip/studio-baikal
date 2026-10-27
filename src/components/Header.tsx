@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLenis } from "lenis/react";
 import type { Dict, Lang } from "@/data/i18n";
-import { pages } from "@/data/pages";
+import { pages, calmNav } from "@/data/pages";
 
 // the calm version: the menu drops down under the header and scrolls with the page, plain words only
 const CALM = process.env.NEXT_PUBLIC_HOME === "calm";
@@ -15,7 +15,7 @@ export function Header({ t, lang, dark = false }: { t: Dict; lang: Lang; dark?: 
   const [open, setOpen] = useState(false);
   const path = usePathname() ?? `/${lang}`;
   const other = `/${t.other}${path.replace(/^\/(en|ar)/, "")}`;
-  const n = pages[lang].nav;
+  const n = CALM ? { ...pages[lang].nav, ...calmNav[lang] } : pages[lang].nav;
   const nav: [string, string][] = [[n.home, `/${lang}`], [n.projects, `/${lang}/projects`], [n.services, `/${lang}/services`], [n.studio, `/${lang}/studio`], [n.contact, `/${lang}/contact`]];
   const on = (h: string) => (h === `/${lang}` ? path === h : path.startsWith(h));
   const u = "text-xs uppercase tracking-[0.2em] rtl:tracking-normal";
@@ -32,7 +32,9 @@ export function Header({ t, lang, dark = false }: { t: Dict; lang: Lang; dark?: 
     <header id="top" className={`${open && !CALM ? "fixed" : "absolute"} inset-x-0 top-0 z-50 ${open ? (CALM ? "bg-[#0B1013] text-[var(--surface)]" : "bg-[var(--surface)] text-[var(--ink)] shadow-lg") : dark ? "bg-gradient-to-b from-[var(--deep)]/70 to-transparent text-[var(--surface)]" : "text-[var(--ink)]"}`}>
       <div className="flex h-16 items-center justify-between px-5 md:h-20 md:px-10">
         <Link href={`/${lang}`} aria-label={t.nav.home} className="flex items-center gap-3">
-          <Image src="/brand/logo.png" alt="Studio Baikal" width={36} height={36} priority className="h-9 w-9 bg-[var(--surface)] p-0.5" />
+          {CALM
+            ? <Image src="/brand/logo-light.png" alt="Studio Baikal" width={40} height={40} priority className="h-10 w-10" />
+            : <Image src="/brand/logo.png" alt="Studio Baikal" width={36} height={36} priority className="h-9 w-9 bg-[var(--surface)] p-0.5" />}
           <span className="text-xs font-semibold uppercase tracking-[0.28em] rtl:tracking-normal">{lang === "ar" ? "استوديو بايكال" : "Studio Baikal"}</span>
         </Link>
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Main">

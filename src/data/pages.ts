@@ -4,8 +4,8 @@ const en = {
   nav: { home: "Home", projects: "Projects", services: "Services", studio: "Studio", contact: "Contact" },
   projects: {
     eyebrow: "Project archive", title: "Every home, every room", view: "Step inside", all: "All",
-    intro: "Villas, apartments and a clinic across Cairo, Giza and Sheikh Zayed. Filter by type, then step inside.",
-    filters: { Villa: "Villas", Apartment: "Apartments", Clinic: "Clinics" } as Record<string, string>,
+    intro: "Residential and commercial projects across Cairo, Giza and Sheikh Zayed. Filter by type, then step inside.",
+    filters: { Villa: "Villas", Apartment: "Apartments", Clinic: "Commercial" } as Record<string, string>,
   },
   services: {
     eyebrow: "Services & packages", title: "From drawing to doorstep", drawing: "Drawing", render: "Finished", forLabel: "Best for", included: "What you get", cta: "Book a free consultation",
@@ -50,8 +50,8 @@ const ar: PagesDict = {
   nav: { home: "الرئيسية", projects: "المشاريع", services: "الخدمات", studio: "الاستوديو", contact: "تواصل" },
   projects: {
     eyebrow: "أرشيف المشاريع", title: "كل بيت، كل غرفة", view: "استكشف", all: "الكل",
-    intro: "فيلات وشقق وعيادة في القاهرة والجيزة والشيخ زايد. اختر الفئة واستكشف المشاريع",
-    filters: { Villa: "فيلات", Apartment: "شقق", Clinic: "عيادات" },
+    intro: "مشاريع سكنية وتجارية في القاهرة والجيزة والشيخ زايد. اختر الفئة واستكشف المشاريع",
+    filters: { Villa: "فيلات", Apartment: "شقق", Clinic: "تجاري" },
   },
   services: {
     eyebrow: "الخدمات والباقات", title: "من الرسمة إلى باب البيت", drawing: "الرسمة", render: "النتيجة", forLabel: "مثالية لـ", included: "ما تحصل عليه", cta: "احجز استشارة مجانية",
@@ -92,3 +92,5 @@ const ar: PagesDict = {
 };
 
 export const pages: Record<Lang, PagesDict> = { en, ar };
+// the calm look names two menu items in full, as the client asked ("Studio" alone, "Contact" alone read as unfinished)
+export const calmNav = { en: { studio: "Studio Baikal", contact: "Contact us" }, ar: { studio: "استوديو بايكال", contact: "تواصل معنا" } } as const;

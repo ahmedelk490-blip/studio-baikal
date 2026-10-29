@@ -13,7 +13,7 @@ const out = path.join(root, "out"), dist = path.join(root, "dist-static");
 const LEADS = process.env.NEXT_PUBLIC_LEADS_URL || "https://cyan-rhinoceros-347269.hostingersite.com/api/leads";
 
 // server-only parts are set aside for the build and put back whatever happens
-const aside = ["src/app/api", "src/app/[lang]/admin", "src/app/uploads", "src/proxy.ts", "src/components/admin"].map((p) => path.join(root, p));
+const aside = ["src/app/api", "src/app/[lang]/admin", "src/app/uploads", "src/proxy.ts", "src/components/admin", "src/app/robots.ts", "src/app/sitemap.ts"].map((p) => path.join(root, p));
 const park = path.join(root, ".static-aside");
 // parked under their index: two of them are both called "admin"
 const spot = (i) => path.join(park, String(i));
@@ -64,6 +64,19 @@ ErrorDocument 404 /404.html
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
 </IfModule>
+`);
+
+// robots and sitemap by hand (the metadata routes cannot be exported under cache components)
+const SITE = "https://baikalstudio.com";
+const pages = walk(out).filter((f) => f.endsWith("index.html") && !f.includes("404")).map((f) => path.relative(out, path.dirname(f)).split(path.sep).join("/")).filter((p) => p && !p.includes("admin"));
+writeFileSync(path.join(out, "robots.txt"), `User-agent: *
+Allow: /
+Sitemap: ${SITE}/sitemap.xml
+`);
+writeFileSync(path.join(out, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${pages.map((p) => `  <url><loc>${SITE}/${p}/</loc></url>`).join("\n")}
+</urlset>
 `);
 
 rmSync(dist, { recursive: true, force: true });

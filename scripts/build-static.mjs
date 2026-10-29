@@ -89,6 +89,9 @@ ${urls.map((p) => `  <url><loc>${SITE}/${p}/</loc></url>`).join("\n")}
 </urlset>
 `);
 
+// a root page for hosts that ignore the rewrite: straight to the English home
+writeFileSync(path.join(out, "index.html"), '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Studio Baikal</title><meta http-equiv="refresh" content="0;url=/en/"><link rel="canonical" href="https://baikalstudio.com/en/"></head><body><a href="/en/">Studio Baikal</a></body></html>\n');
+
 rmSync(dist, { recursive: true, force: true });
 renameSync(out, dist);
 console.log(`static site in ${dist} (${made} resized photos); leads go to ${LEADS}`);

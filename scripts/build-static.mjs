@@ -31,8 +31,9 @@ mkdirSync(park, { recursive: true });
 aside.forEach((p, i) => { if (existsSync(p)) renameSync(p, spot(i)); });
 for (const p of pages) { const text = readFileSync(p, "utf8"); originals.set(p, text); writeFileSync(p, text.replace(/^export const instant = false;\r?\n/m, "")); }
 
+// a custom distDir would make Next export into that folder instead of out/, so this build uses the default .next
 rmSync(out, { recursive: true, force: true });
-execSync("node node_modules/next/dist/bin/next build", { cwd: root, stdio: "inherit", env: { ...process.env, NEXT_OUTPUT: "export", NEXT_DIST_DIR: ".next-static", NEXT_PUBLIC_HOME: "calm", NEXT_PUBLIC_LEADS_URL: LEADS } });
+execSync("node node_modules/next/dist/bin/next build", { cwd: root, stdio: "inherit", env: { ...process.env, NEXT_OUTPUT: "export", NEXT_DIST_DIR: "", NEXT_PUBLIC_HOME: "calm", NEXT_PUBLIC_LEADS_URL: LEADS } });
 restore();
 
 // smaller copies of every project photo, for the loader's srcset

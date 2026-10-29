@@ -3,7 +3,7 @@
 // What a static host cannot run is left out of this build: /admin, /api, /uploads and the proxy. The booking
 // form posts to the Node site instead (NEXT_PUBLIC_LEADS_URL), where /admin keeps working. Project photos get
 // 480 and 960 px copies so phones never download the 1600 px originals (src/lib/static-image-loader.ts).
-import { cpSync, existsSync, mkdirSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { execSync } from "node:child_process";
 import path from "node:path";
 import sharp from "sharp";
@@ -17,10 +17,19 @@ const aside = ["src/app/api", "src/app/[lang]/admin", "src/app/uploads", "src/pr
 const park = path.join(root, ".static-aside");
 // parked under their index: two of them are both called "admin"
 const spot = (i) => path.join(park, String(i));
-const restore = () => { aside.forEach((p, i) => { if (existsSync(spot(i))) renameSync(spot(i), p); }); if (existsSync(park)) rmSync(park, { recursive: true, force: true }); };
+// the pages' "instant = false" flag only exists under cache components, which export mode cannot use: the line is
+// taken out for this build and the original files are put back afterwards
+const pages = ["", "contact", "projects", "projects/[slug]", "services", "studio"].map((p) => path.join(root, "src/app/[lang]", p, "page.tsx"));
+const originals = new Map();
+const restore = () => {
+  aside.forEach((p, i) => { if (existsSync(spot(i))) renameSync(spot(i), p); });
+  for (const [p, text] of originals) writeFileSync(p, text);
+  if (existsSync(park)) rmSync(park, { recursive: true, force: true });
+};
 process.on("exit", restore);
 mkdirSync(park, { recursive: true });
 aside.forEach((p, i) => { if (existsSync(p)) renameSync(p, spot(i)); });
+for (const p of pages) { const text = readFileSync(p, "utf8"); originals.set(p, text); writeFileSync(p, text.replace(/^export const instant = false;\r?\n/m, "")); }
 
 rmSync(out, { recursive: true, force: true });
 execSync("node node_modules/next/dist/bin/next build", { cwd: root, stdio: "inherit", env: { ...process.env, NEXT_OUTPUT: "export", NEXT_DIST_DIR: ".next-static", NEXT_PUBLIC_HOME: "calm", NEXT_PUBLIC_LEADS_URL: LEADS } });
@@ -68,14 +77,14 @@ ErrorDocument 404 /404.html
 
 // robots and sitemap by hand (the metadata routes cannot be exported under cache components)
 const SITE = "https://baikalstudio.com";
-const pages = walk(out).filter((f) => f.endsWith("index.html") && !f.includes("404")).map((f) => path.relative(out, path.dirname(f)).split(path.sep).join("/")).filter((p) => p && !p.includes("admin"));
+const urls = walk(out).filter((f) => f.endsWith("index.html") && !f.includes("404")).map((f) => path.relative(out, path.dirname(f)).split(path.sep).join("/")).filter((p) => p && !p.includes("admin"));
 writeFileSync(path.join(out, "robots.txt"), `User-agent: *
 Allow: /
 Sitemap: ${SITE}/sitemap.xml
 `);
 writeFileSync(path.join(out, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages.map((p) => `  <url><loc>${SITE}/${p}/</loc></url>`).join("\n")}
+${urls.map((p) => `  <url><loc>${SITE}/${p}/</loc></url>`).join("\n")}
 </urlset>
 `);
 

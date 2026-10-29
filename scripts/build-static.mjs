@@ -13,7 +13,7 @@ const out = path.join(root, "out"), dist = path.join(root, "dist-static");
 const LEADS = process.env.NEXT_PUBLIC_LEADS_URL || "https://cyan-rhinoceros-347269.hostingersite.com/api/leads";
 
 // server-only parts are set aside for the build and put back whatever happens
-const aside = ["src/app/api", "src/app/[lang]/admin", "src/app/uploads", "src/proxy.ts"].map((p) => path.join(root, p));
+const aside = ["src/app/api", "src/app/[lang]/admin", "src/app/uploads", "src/proxy.ts", "src/components/admin"].map((p) => path.join(root, p));
 const park = path.join(root, ".static-aside");
 const restore = () => { for (const p of aside) { const q = path.join(park, path.basename(p)); if (existsSync(q)) renameSync(q, p); } if (existsSync(park)) rmSync(park, { recursive: true, force: true }); };
 process.on("exit", restore);

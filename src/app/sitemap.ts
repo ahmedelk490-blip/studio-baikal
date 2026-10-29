@@ -1,3 +1,5 @@
+// the static build (output: export) needs this; it is what the file is anyway
+export const dynamic = "force-static";
 import type { MetadataRoute } from "next";
 import { listProjects } from "@/lib/content";
 

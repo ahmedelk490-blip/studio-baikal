@@ -15,10 +15,12 @@ const LEADS = process.env.NEXT_PUBLIC_LEADS_URL || "https://cyan-rhinoceros-3472
 // server-only parts are set aside for the build and put back whatever happens
 const aside = ["src/app/api", "src/app/[lang]/admin", "src/app/uploads", "src/proxy.ts", "src/components/admin"].map((p) => path.join(root, p));
 const park = path.join(root, ".static-aside");
-const restore = () => { for (const p of aside) { const q = path.join(park, path.basename(p)); if (existsSync(q)) renameSync(q, p); } if (existsSync(park)) rmSync(park, { recursive: true, force: true }); };
+// parked under their index: two of them are both called "admin"
+const spot = (i) => path.join(park, String(i));
+const restore = () => { aside.forEach((p, i) => { if (existsSync(spot(i))) renameSync(spot(i), p); }); if (existsSync(park)) rmSync(park, { recursive: true, force: true }); };
 process.on("exit", restore);
 mkdirSync(park, { recursive: true });
-for (const p of aside) if (existsSync(p)) renameSync(p, path.join(park, path.basename(p)));
+aside.forEach((p, i) => { if (existsSync(p)) renameSync(p, spot(i)); });
 
 rmSync(out, { recursive: true, force: true });
 execSync("node node_modules/next/dist/bin/next build", { cwd: root, stdio: "inherit", env: { ...process.env, NEXT_OUTPUT: "export", NEXT_DIST_DIR: ".next-static", NEXT_PUBLIC_HOME: "calm", NEXT_PUBLIC_LEADS_URL: LEADS } });

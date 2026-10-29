@@ -63,3 +63,7 @@ public/previews/
 /art/
 /.next-ship/
 /.next-calm/
+dist-static
+.next-static
+.static-aside
+out

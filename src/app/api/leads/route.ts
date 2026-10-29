@@ -8,7 +8,18 @@ import { db, DATA_DIR } from "@/lib/db";
 const hits = new Map<string, number[]>();
 const known = ["name", "whatsapp", "email", "size", "need", "message", "source"] as const;
 
+// the static copy of the site on baikalstudio.com posts here from another origin
+const ORIGINS = new Set(["https://baikalstudio.com", "https://www.baikalstudio.com"]);
+const cors = (request: Request): Record<string, string> => { const o = request.headers.get("origin") ?? ""; return ORIGINS.has(o) ? { "access-control-allow-origin": o, "access-control-allow-headers": "content-type", "access-control-allow-methods": "POST, OPTIONS", vary: "origin" } : {}; };
+export async function OPTIONS(request: Request) { return new Response(null, { status: 204, headers: cors(request) }); }
+
 export async function POST(request: Request) {
+  const r = await handle(request);
+  for (const [k, v] of Object.entries(cors(request))) r.headers.set(k, v);
+  return r;
+}
+
+async function handle(request: Request) {
   if (Number(request.headers.get("content-length") ?? 0) > 10_000) return new Response("Payload too large", { status: 413 });
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "local";
   const now = Date.now(), recent = (hits.get(ip) ?? []).filter((t) => now - t < 60_000);

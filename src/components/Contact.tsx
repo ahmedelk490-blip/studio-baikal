@@ -30,7 +30,7 @@ export function Contact({ t, contact }: { t: Dict; contact: ContactInfo }) {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
     setState("sending");
-    const r = await fetch("/api/leads", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: f.get("name"), whatsapp: f.get("whatsapp"), size, need, message: area ? `${ar ? "المساحة" : "Area"}: ${area}` : undefined, website: f.get("website") }) }).catch(() => null);
+    const r = await fetch(process.env.NEXT_PUBLIC_LEADS_URL || "/api/leads", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: f.get("name"), whatsapp: f.get("whatsapp"), size, need, message: area ? `${ar ? "المساحة" : "Area"}: ${area}` : undefined, website: f.get("website") }) }).catch(() => null);
     // the button itself confirms (a check) for a moment before the thank-you replaces the form
     if (r && r.ok) { setState("sent"); setTimeout(() => setState("done"), 1400); } else setState("error");
   }

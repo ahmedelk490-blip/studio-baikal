@@ -18,7 +18,7 @@ export function ContactWizard({ t, p, contact }: { t: Dict; p: PagesDict["contac
     e.preventDefault();
     const f = new FormData(e.currentTarget);
     setState("sending");
-    const r = await fetch("/api/leads", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: f.get("name"), whatsapp: f.get("whatsapp"), size, need, source: "contact-page", website: f.get("website") }) }).catch(() => null);
+    const r = await fetch(process.env.NEXT_PUBLIC_LEADS_URL || "/api/leads", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: f.get("name"), whatsapp: f.get("whatsapp"), size, need, source: "contact-page", website: f.get("website") }) }).catch(() => null);
     setState(r && r.ok ? "done" : "error");
   }
   const u = "text-xs uppercase tracking-[0.16em] rtl:tracking-normal";

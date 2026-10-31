@@ -67,3 +67,4 @@ dist-static
 .next-static
 .static-aside
 out
+dist-php

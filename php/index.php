@@ -19,11 +19,14 @@ if ($path === '/api/leads') { require __DIR__ . '/api/leads.php'; exit; }
 if ($path === '/robots.txt') { header('Content-Type: text/plain'); echo "User-agent: *\nAllow: /\nDisallow: /admin\nSitemap: " . SITE_URL . "/sitemap.xml\n"; exit; }
 if ($path === '/sitemap.xml') { render_sitemap(); exit; }
 
+// a file that is not there (a photo, a script) is a plain 404, never a redirect: the host's CDN would
+// cache the redirect and keep sending it after the file arrives
+if (preg_match('/\.(webp|png|jpe?g|gif|svg|ico|mp4|webm|css|js|map|woff2?|ttf|json|txt|xml)$/i', $path)) { header('Cache-Control: no-store'); http_response_code(404); exit; }
 // redirects managed in the admin, then the old site's URLs, then English as the default language
 if ($r = find_redirect($path)) { header('Location: ' . $r['dest'], true, (int) $r['code']); exit; }
 $legacy = ['/interior-design-services' => '/en/services', '/project-stories' => '/en/projects', '/about-us' => '/en/studio', '/contact-us' => '/en/contact'];
 if (isset($legacy[$path])) { header('Location: ' . $legacy[$path], true, 301); exit; }
-if ($path === '/' || preg_match('#^/(projects(/[^/]+)?|services|studio|contact)$#', $path)) { header('Location: /en' . ($path === '/' ? '' : $path), true, 302); exit; }
+if ($path === '/' || preg_match('#^/(projects(/[^/]+)?|services|studio|contact)$#', $path)) { header('Cache-Control: no-store'); header('Location: /en' . ($path === '/' ? '' : $path), true, 302); exit; }
 
 if (!preg_match('#^/(en|ar)(/.*)?$#', $path, $m)) { render_404(); exit; }
 $L = $m[1];
